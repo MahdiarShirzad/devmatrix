@@ -1,0 +1,28 @@
+@import "tailwindcss";
+
+@theme {
+  /* DevMatrix brand palette */
+  --color-brand-bg: #0a0916; /* پس‌زمینه‌ی اصلی صفحه */
+  --color-brand-primary: #5e4ce6; /* بنفش-آبی الکتریک — رنگ اصلی برند */
+  --color-brand-surface: #f3f2fd; /* روشن، برای متن روی تیره یا کارت‌های روشن */
+  --color-brand-accent: #0077ff; /* آبی — لینک/hover/آیکون، هم‌پوشان با info */
+  --color-brand-highlight: #f2ae26; /* کهربایی — فقط CTA و هایلایت */
+
+  /* Neutral scale — derived from brand-bg / brand-surface */
+  --color-neutral-bg: #0a0916; /* پس‌زمینه‌ی صفحه */
+  --color-neutral-surface-1: #171625; /* پس‌زمینه‌ی کارت */
+  --color-neutral-surface-2: #242239; /* پس‌زمینه‌ی کارت روی کارت / مودال */
+  --color-neutral-border: #332f4d; /* بوردر پیش‌فرض */
+  --color-neutral-text-secondary: #8b899e; /* متن کم‌رنگ‌تر */
+  --color-neutral-text-primary: #e8e7ef; /* متن اصلی روی پس‌زمینه‌ی تیره */
+
+  /* Status / semantic colors — independent of brand */
+  --color-success: #2e7d32;
+  --color-success-bg: #eaf3de;
+  --color-error: #d32f2f;
+  --color-error-bg: #fcebeb;
+  --color-warning: #ed6c02;
+  --color-warning-bg: #faeeda;
+  --color-info: #0077ff; /* همون brand-accent، برای وضوح معنایی دوباره تعریف شده */
+  --color-info-bg: #e6f1fb;
+}
