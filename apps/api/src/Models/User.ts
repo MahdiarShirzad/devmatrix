@@ -1,57 +1,86 @@
-import mongoose, { Schema, Document, Model, Types } from "mongoose";
+import mongoose, { Schema, Document, Model } from "mongoose";
+import bcrypt from "bcrypt";
 
-export type ProjectType =
-  | "api-playground"
-  | "ai-debug"
-  | "analytics"
-  | "saas-validator"
-  | "general";
+export type AuthProvider = "local" | "github";
 
-export interface IProject extends Document {
-  userId: Types.ObjectId;
+export interface IUser extends Document {
   name: string;
-  description?: string;
-  type: ProjectType;
+  email: string;
+  password?: string;
+  avatar?: string;
+  authProvider: AuthProvider;
+  githubId?: string;
+  githubAccessToken?: string;
   createdAt: Date;
   updatedAt: Date;
+  comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
-const ProjectSchema = new Schema<IProject>(
+const UserSchema = new Schema<IUser>(
   {
-    userId: {
-      type: Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
-      index: true,
-    },
     name: {
       type: String,
       required: true,
       trim: true,
     },
-    description: {
+    email: {
       type: String,
+      required: true,
+      unique: true,
+      lowercase: true,
       trim: true,
     },
-    type: {
+    password: {
       type: String,
-      enum: [
-        "api-playground",
-        "ai-debug",
-        "analytics",
-        "saas-validator",
-        "general",
-      ],
+      // فقط برای کاربران local اجباریه، برای github نه
+      required: function (this: IUser) {
+        return this.authProvider === "local";
+      },
+      select: false, // به صورت پیش‌فرض توی query ها برنگرده
+    },
+    avatar: {
+      type: String,
+    },
+    authProvider: {
+      type: String,
+      enum: ["local", "github"],
       required: true,
-      default: "general",
+      default: "local",
+    },
+    githubId: {
+      type: String,
+      unique: true,
+      sparse: true, // اجازه میده چند تا کاربر null داشته باشن بدون تداخل unique
+    },
+    githubAccessToken: {
+      type: String,
+      select: false, // حساسه، به صورت پیش‌فرض برنگرده
     },
   },
   {
-    timestamps: true,
+    timestamps: true, // createdAt و updatedAt خودکار
   },
 );
 
-const Project: Model<IProject> =
-  mongoose.models.Project || mongoose.model<IProject>("Project", ProjectSchema);
+// هش کردن پسورد قبل از ذخیره، فقط اگه تغییر کرده باشه
+UserSchema.pre("save", async function () {
+  if (!this.isModified("password") || !this.password) {
+    return;
+  }
 
-export default Project;
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
+});
+
+// متد مقایسه پسورد برای لاگین
+UserSchema.methods.comparePassword = async function (
+  candidatePassword: string,
+): Promise<boolean> {
+  if (!this.password) return false;
+  return bcrypt.compare(candidatePassword, this.password);
+};
+
+const User: Model<IUser> =
+  mongoose.models.User || mongoose.model<IUser>("User", UserSchema);
+
+export default User;
