@@ -1,6 +1,6 @@
 import passport from "passport";
 import { Strategy as GitHubStrategy, Profile } from "passport-github2";
-import User from "../models/User.js";
+import User from "../Models/User.js";
 
 const GITHUB_CLIENT_ID = process.env.GITHUB_CLIENT_ID as string;
 const GITHUB_CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET as string;
