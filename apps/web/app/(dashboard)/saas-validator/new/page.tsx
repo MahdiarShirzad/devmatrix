@@ -2,85 +2,146 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Sparkles } from "lucide-react";
+import {
+  ArrowLeft,
+  Sparkles,
+  Lightbulb,
+  AlignLeft,
+  Loader2,
+  Target,
+} from "lucide-react";
 
 export default function NewIdeaPage() {
   const router = useRouter();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    // شبیه‌سازی تاخیر برای پردازش هوش مصنوعی و بعد انتقال به صفحه نتیجه
+    setTimeout(() => {
+      router.push("/saas-validator/idea_new");
+    }, 1500);
+  };
 
   return (
-    <div className="mx-auto max-w-2xl">
+    <div className="mx-auto max-w-2xl pb-8">
+      {/* دکمه بازگشت */}
       <button
         type="button"
         onClick={() => router.push("/saas-validator")}
-        className="mb-6 flex items-center gap-2 text-sm text-neutral-text-secondary hover:text-neutral-text-primary"
+        className="group mb-6 flex w-fit items-center gap-2 text-sm font-medium text-neutral-text-secondary transition-colors hover:text-neutral-text-primary"
       >
-        <ArrowLeft size={14} />
+        <ArrowLeft
+          size={16}
+          className="transition-transform group-hover:-translate-x-1"
+        />
         Back to ideas
       </button>
 
-      <h1 className="text-xl font-medium text-neutral-text-primary">
-        Validate a new idea
-      </h1>
-      <p className="mt-1 text-sm text-neutral-text-secondary">
-        Describe your idea and get a score for market fit, competition, and
-        risk.
-      </p>
-
-      <form
-        className="mt-6 space-y-4"
-        onSubmit={(e) => {
-          e.preventDefault();
-          // Idea created server-side, then redirect to the new idea id
-          router.push("/saas-validator/idea_new");
-        }}
-      >
-        <div>
-          <label
-            htmlFor="title"
-            className="mb-1.5 block text-sm text-neutral-text-primary"
-          >
-            Idea title
-          </label>
-          <input
-            id="title"
-            type="text"
-            required
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="e.g. Async standup bot for remote teams"
-            className="w-full rounded-lg border border-neutral-border bg-neutral-surface-1 px-3 py-2.5 text-sm text-neutral-text-primary placeholder:text-neutral-text-secondary focus:border-brand-primary focus:outline-none"
-          />
+      {/* کانتینر اصلی فرم */}
+      <div className="overflow-hidden rounded-2xl border border-neutral-border bg-neutral-surface-1 shadow-sm">
+        {/* هدر فرم */}
+        <div className="border-b border-neutral-border px-6 py-8 sm:px-8">
+          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-brand-primary/10 mb-5">
+            <Target size={24} className="text-brand-primary" />
+          </div>
+          <h1 className="text-2xl font-bold tracking-tight text-neutral-text-primary">
+            Validate a New Idea
+          </h1>
+          <p className="mt-2 text-sm leading-relaxed text-neutral-text-secondary">
+            Describe your software concept below. Our AI will analyze market
+            fit, potential competition, and execution risks to give you a
+            comprehensive validation score.
+          </p>
         </div>
 
-        <div>
-          <label
-            htmlFor="description"
-            className="mb-1.5 block text-sm text-neutral-text-primary"
-          >
-            Describe your idea
-          </label>
-          <textarea
-            id="description"
-            rows={6}
-            required
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="What does it do, who is it for, and how would it make money?"
-            className="w-full resize-none rounded-lg border border-neutral-border bg-neutral-surface-1 p-3 text-sm text-neutral-text-primary placeholder:text-neutral-text-secondary focus:border-brand-primary focus:outline-none"
-          />
-        </div>
+        {/* بدنه فرم */}
+        <form onSubmit={handleSubmit} className="px-6 py-6 sm:px-8 sm:py-8">
+          <div className="space-y-6">
+            {/* فیلد عنوان */}
+            <div>
+              <label
+                htmlFor="title"
+                className="mb-2 flex items-center gap-2 text-sm font-semibold text-neutral-text-primary"
+              >
+                <Lightbulb size={16} className="text-neutral-text-secondary" />
+                Idea Title
+              </label>
+              <input
+                id="title"
+                type="text"
+                required
+                disabled={isSubmitting}
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="e.g. Async standup bot for remote teams"
+                className="w-full rounded-xl border border-neutral-border bg-[#0d1117] px-4 py-3 text-sm text-neutral-text-primary placeholder:text-neutral-text-secondary transition-all focus:border-brand-primary focus:outline-none focus:ring-1 focus:ring-brand-primary disabled:cursor-not-allowed disabled:opacity-60"
+              />
+            </div>
 
-        <button
-          type="submit"
-          disabled={!title.trim() || !description.trim()}
-          className="flex items-center gap-2 rounded-lg bg-brand-primary px-4 py-2.5 text-sm font-medium text-white transition-opacity hover:opacity-90 disabled:opacity-50"
-        >
-          <Sparkles size={16} />
-          Validate idea
-        </button>
-      </form>
+            {/* فیلد توضیحات */}
+            <div>
+              <div className="mb-2 flex items-center justify-between">
+                <label
+                  htmlFor="description"
+                  className="flex items-center gap-2 text-sm font-semibold text-neutral-text-primary"
+                >
+                  <AlignLeft
+                    size={16}
+                    className="text-neutral-text-secondary"
+                  />
+                  Detailed Description
+                </label>
+                <span className="text-xs text-neutral-text-secondary">
+                  Min 50 chars recommended
+                </span>
+              </div>
+              <textarea
+                id="description"
+                rows={6}
+                required
+                disabled={isSubmitting}
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="What exactly does it do? Who is the primary target audience? How do you plan to monetize it?"
+                className="w-full resize-none rounded-xl border border-neutral-border bg-[#0d1117] p-4 text-sm leading-relaxed text-neutral-text-primary placeholder:text-neutral-text-secondary transition-all focus:border-brand-primary focus:outline-none focus:ring-1 focus:ring-brand-primary disabled:cursor-not-allowed disabled:opacity-60"
+              />
+              <p className="mt-2.5 text-xs text-neutral-text-secondary">
+                The more context you provide, the more accurate the validation
+                score will be.
+              </p>
+            </div>
+          </div>
+
+          {/* دکمه سابمیت */}
+          <div className="mt-8 flex items-center justify-end border-t border-neutral-border pt-6">
+            <button
+              type="submit"
+              disabled={!title.trim() || !description.trim() || isSubmitting}
+              className="group flex w-full items-center justify-center gap-2 rounded-xl bg-brand-primary px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-brand-primary/20 transition-all hover:bg-brand-primary/90 focus:ring-4 focus:ring-brand-primary/20 disabled:cursor-not-allowed disabled:opacity-50 disabled:shadow-none sm:w-auto active:scale-95"
+            >
+              {isSubmitting ? (
+                <>
+                  <Loader2 size={18} className="animate-spin" />
+                  Analyzing Idea...
+                </>
+              ) : (
+                <>
+                  <Sparkles
+                    size={18}
+                    className="transition-transform group-hover:scale-110"
+                  />
+                  Validate Idea Now
+                </>
+              )}
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }
