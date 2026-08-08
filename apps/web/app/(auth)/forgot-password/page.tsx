@@ -35,7 +35,7 @@ export default function ForgotPasswordPage() {
           <span className="font-semibold text-neutral-text-primary">
             {email}
           </span>
-          , we've sent a secure link to reset your password.
+          , we&apos;ve sent a secure link to reset your password.
         </p>
         <Link
           href="/login"
