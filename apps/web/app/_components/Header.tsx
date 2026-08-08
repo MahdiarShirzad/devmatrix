@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { Menu, X, Rocket } from "lucide-react";
+import Image from "next/image";
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -33,12 +34,7 @@ const Header = () => {
         <div className="flex h-14 items-center justify-between">
           {/* Logo */}
           <Link href="/" className=" group flex items-center gap-2">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 shadow-lg shadow-purple-500/20 transition-transform group-hover:scale-105">
-              <Rocket size={18} className="text-white" />
-            </div>
-            <span className="text-xl font-bold tracking-tight text-white transition-opacity group-hover:opacity-90">
-              DevMatrix
-            </span>
+            <Image src="/logo2.png" alt="logo" width={170} height={50} />
           </Link>
 
           {/* Desktop Navigation */}
@@ -50,7 +46,7 @@ const Header = () => {
               Features
             </Link>
             <Link
-              href="#"
+              href="/docs"
               className="text-sm font-medium text-slate-300 transition-colors hover:text-white"
             >
               Docs
@@ -105,7 +101,7 @@ const Header = () => {
             Features
           </Link>
           <Link
-            href="#"
+            href="/docs"
             className="text-base font-medium text-slate-300 hover:text-white"
           >
             Docs
