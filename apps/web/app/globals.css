@@ -1,28 +1,63 @@
 @import "tailwindcss";
 
 @theme {
+  /* Typography - Variables injected from layout.tsx */
+  --font-sans: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-mono), ui-monospace, SFMono-Regular, monospace;
+
   /* DevMatrix brand palette */
-  --color-brand-bg: #0a0916; /* پس‌زمینه‌ی اصلی صفحه */
-  --color-brand-primary: #5e4ce6; /* بنفش-آبی الکتریک — رنگ اصلی برند */
-  --color-brand-surface: #f3f2fd; /* روشن، برای متن روی تیره یا کارت‌های روشن */
-  --color-brand-accent: #0077ff; /* آبی — لینک/hover/آیکون، هم‌پوشان با info */
-  --color-brand-highlight: #f2ae26; /* کهربایی — فقط CTA و هایلایت */
+  --color-brand-bg: #0a0916;
+  --color-brand-primary: #5e4ce6;
+  --color-brand-surface: #f3f2fd;
+  --color-brand-accent: #0077ff;
+  --color-brand-highlight: #f2ae26;
 
-  /* Neutral scale — derived from brand-bg / brand-surface */
-  --color-neutral-bg: #0a0916; /* پس‌زمینه‌ی صفحه */
-  --color-neutral-surface-1: #171625; /* پس‌زمینه‌ی کارت */
-  --color-neutral-surface-2: #242239; /* پس‌زمینه‌ی کارت روی کارت / مودال */
-  --color-neutral-border: #332f4d; /* بوردر پیش‌فرض */
-  --color-neutral-text-secondary: #8b899e; /* متن کم‌رنگ‌تر */
-  --color-neutral-text-primary: #e8e7ef; /* متن اصلی روی پس‌زمینه‌ی تیره */
+  /* Neutral scale */
+  --color-neutral-bg: #0a0916;
+  --color-neutral-surface-1: #171625;
+  --color-neutral-surface-2: #242239;
+  --color-neutral-border: #332f4d;
+  --color-neutral-text-secondary: #8b899e;
+  --color-neutral-text-primary: #e8e7ef;
 
-  /* Status / semantic colors — independent of brand */
-  --color-success: #2e7d32;
-  --color-success-bg: #eaf3de;
-  --color-error: #d32f2f;
-  --color-error-bg: #fcebeb;
-  --color-warning: #ed6c02;
-  --color-warning-bg: #faeeda;
-  --color-info: #0077ff; /* همون brand-accent، برای وضوح معنایی دوباره تعریف شده */
-  --color-info-bg: #e6f1fb;
+  /* Status / semantic colors (Dark Mode Optimized) */
+  --color-success: #4caf50;
+  --color-success-bg: rgba(76, 175, 80, 0.15);
+  --color-error: #ef5350;
+  --color-error-bg: rgba(239, 83, 80, 0.15);
+  --color-warning: #ff9800;
+  --color-warning-bg: rgba(255, 152, 0, 0.15);
+  --color-info: #0077ff;
+  --color-info-bg: rgba(0, 119, 255, 0.15);
+}
+
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+
+  body {
+    background-color: var(--color-neutral-bg);
+    color: var(--color-neutral-text-primary);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  /* Custom IDE-like Scrollbar for WebKit (Chrome/Safari/Edge) */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: var(--color-neutral-border);
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: var(--color-neutral-text-secondary);
+  }
 }
