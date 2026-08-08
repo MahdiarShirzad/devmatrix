@@ -1,8 +1,18 @@
 import jwt from "jsonwebtoken";
 import type { Types } from "mongoose";
 
-const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET as string;
-const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET as string;
+const getEnv = () => {
+  const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET;
+  const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET;
+
+  if (!ACCESS_TOKEN_SECRET || !REFRESH_TOKEN_SECRET) {
+    throw new Error(
+      "ACCESS_TOKEN_SECRET و REFRESH_TOKEN_SECRET باید در .env تعریف شده باشن",
+    );
+  }
+
+  return { ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET };
+};
 
 const ACCESS_TOKEN_EXPIRY = "15m";
 const REFRESH_TOKEN_EXPIRY_DAYS = 30;
@@ -10,6 +20,8 @@ const REFRESH_TOKEN_EXPIRY_DAYS = 30;
 export interface AccessTokenPayload {
   userId: string;
 }
+
+const { ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET } = getEnv();
 
 if (!ACCESS_TOKEN_SECRET || !REFRESH_TOKEN_SECRET) {
   throw new Error(

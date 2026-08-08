@@ -1,34 +1,36 @@
-import express from "express";
-import dotenv from "dotenv";
-import cookieParser from "cookie-parser";
-import connectDB from "./config/db.js";
-import passport from "./config/passport.js";
-import authRoutes from "./routes/authRoutes.js";
+import dns from "dns";
+dns.setServers(["8.8.8.8", "8.8.4.4"]);
 
-import type { Request, Response } from "express";
+import "./utils/loadEnv.js";
+import mongoose from "mongoose";
 
-dotenv.config();
+const DB: string | undefined = process.env.MONGODB_URI;
 
-const app = express();
+if (!DB) {
+  console.error("❌ MONGODB_URI is not defined in environment variables");
+  process.exit(1);
+}
 
-app.use(express.json());
-app.use(cookieParser());
-app.use(passport.initialize());
+mongoose
+  .connect(DB, {
+    family: 4,
+  })
+  .then(async () => {
+    console.log("🔹 Connected to MongoDB Atlas...");
 
-app.get("/", (req: Request, res: Response) => {
-  res.send("DevMatrix API is running");
-});
+    const { default: app } = await import("./app.js");
 
-app.use("/api/auth", authRoutes);
+    const port: number = Number(process.env.PORT) || 3001;
 
-const PORT: number = Number(process.env.PORT) || 3001;
-
-const startServer = async (): Promise<void> => {
-  await connectDB();
-
-  app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+    app.listen(port, () => {
+      console.log(`Server running on port ${port}`);
+    });
+  })
+  .catch((err: unknown) => {
+    if (err instanceof Error) {
+      console.error(`❌ Database connection error: ${err.message}`);
+    } else {
+      console.error("❌ Unknown database error");
+    }
+    process.exit(1);
   });
-};
-
-startServer();

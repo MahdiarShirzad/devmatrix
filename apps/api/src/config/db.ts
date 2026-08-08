@@ -9,6 +9,7 @@ const connectDB = async (): Promise<void> => {
 
     console.log(`MongoDB Connected: ${conn.connection.host}`);
   } catch (error) {
+    console.error("RAW ERROR:", error);
     if (error instanceof Error) {
       console.error(`Error: ${error.message}`);
     }
