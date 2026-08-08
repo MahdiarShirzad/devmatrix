@@ -150,7 +150,7 @@ export default function Topbar({ onMenuClick }: TopbarProps) {
               <div className="p-2 flex flex-col gap-1">
                 {searchQuery.length > 0 ? (
                   <div className="px-3 py-2 text-sm text-neutral-text-secondary">
-                    Search results for "{searchQuery}"...
+                    Search results for &ldquo;{searchQuery}&ldquo;...
                   </div>
                 ) : (
                   <>
@@ -292,7 +292,7 @@ export default function Topbar({ onMenuClick }: TopbarProps) {
             <div className="p-2 flex flex-col gap-1">
               {searchQuery.length > 0 ? (
                 <div className="px-3 py-2 text-sm text-neutral-text-secondary">
-                  Search results for "{searchQuery}"...
+                  Search results for &ldquo;{searchQuery}&quot;...
                 </div>
               ) : (
                 <>
