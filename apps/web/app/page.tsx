@@ -19,9 +19,12 @@ import {
 } from "lucide-react";
 import GithubIcon from "./_utils/GithubIcon";
 
+import Header from "./_components/Header";
+
 export default function HomePage() {
   return (
     <div className="min-h-screen bg-[#0a0916] text-slate-300 font-sans selection:bg-purple-500/30">
+      <Header />
       {/* 1. Hero Section */}
       <section className="relative overflow-hidden pt-32 pb-20 lg:pt-48 lg:pb-32">
         {/* Background Gradients */}
@@ -78,17 +81,22 @@ export default function HomePage() {
               <pre className="text-slate-300">
                 <span className="text-purple-400">import</span> {"{ Matrix }"}{" "}
                 <span className="text-purple-400">from</span>{" "}
-                <span className="text-green-400">'@devmatrix/core'</span>;<br />
+                <span className="text-green-400">
+                  &apos;@devmatrix/core&apos;
+                </span>
+                ;<br />
                 <br />
                 <span className="text-blue-400">const</span> workspace ={" "}
                 <span className="text-purple-400">new</span>{" "}
                 <span className="text-yellow-300">Matrix</span>({"{"}
                 <br />
                 {"  "}name:{" "}
-                <span className="text-green-400">'Next-Gen-App&apos;</span>,
+                <span className="text-green-400">&apos;Next-Gen-App&apos;</span>
+                ,
                 <br />
                 {"  "}framework:{" "}
-                <span className="text-green-400">'Next.js'</span>,<br />
+                <span className="text-green-400">&apos;Next.js&apos;</span>,
+                <br />
                 {"  "}teamSize: <span className="text-orange-400">5</span>,
                 <br />
                 {"  "}autoScale: <span className="text-blue-400">true</span>
@@ -102,7 +110,7 @@ export default function HomePage() {
                 <br />
                 {"  "}console.<span className="text-yellow-300">log</span>(
                 <span className="text-green-400">
-                  '🚀 Project is live on DevMatrix!'
+                  &apos;🚀 Project is live on DevMatrix!&apos;
                 </span>
                 );
                 <br />
