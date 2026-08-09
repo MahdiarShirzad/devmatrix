@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   useCollection,
   useExecuteRequest,
@@ -18,7 +18,9 @@ export function usePlaygroundWorkspace(collectionId: string) {
   const createRequest = useCreateRequest(collectionId);
   const deleteRequest = useDeleteRequest(collectionId);
 
-  const [activeRequestId, setActiveRequestId] = useState<string | null>(null);
+  const [selectedRequestId, setSelectedRequestId] = useState<string | null>(
+    null,
+  );
   const [activeTab, setActiveTab] = useState<RequestTab>("Params");
   const [isNewRequestModalOpen, setIsNewRequestModalOpen] = useState(false);
   const [renamingRequest, setRenamingRequest] = useState<SavedRequest | null>(
@@ -28,36 +30,28 @@ export function usePlaygroundWorkspace(collectionId: string) {
     null,
   );
 
-  // Draft fields the user can edit before sending — seeded from the
-  // selected saved request, written back to the server via handleSave.
+  const requests = data?.requests ?? [];
+  const collection = data?.collection;
+
+  const activeRequestId =
+    selectedRequestId && requests.some((r) => r._id === selectedRequestId)
+      ? selectedRequestId
+      : (requests[0]?._id ?? null);
+
+  const currentReq = requests.find((r) => r._id === activeRequestId);
+
+  const [prevRequestId, setPrevRequestId] = useState<string | null>(null);
   const [draftMethod, setDraftMethod] = useState<HttpMethod>("GET");
   const [draftPath, setDraftPath] = useState("");
   const [draftBody, setDraftBody] = useState("");
 
-  const requests = data?.requests ?? [];
-  const collection = data?.collection;
-
-  // Pick the first request once the collection loads, if nothing is selected yet
-  useEffect(() => {
-    if (!activeRequestId && requests.length > 0) {
-      setActiveRequestId(requests[0]._id);
-    }
-  }, [requests, activeRequestId]);
-
-  const currentReq: SavedRequest | undefined = requests.find(
-    (r) => r._id === activeRequestId,
-  );
-
-  // Reset drafts (and any in-flight execution result) whenever the selected request changes
-  useEffect(() => {
-    if (currentReq) {
-      setDraftMethod(currentReq.method);
-      setDraftPath(currentReq.path);
-      setDraftBody(currentReq.body ?? "");
-      executeRequest.reset();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentReq?._id]);
+  if (currentReq && currentReq._id !== prevRequestId) {
+    setPrevRequestId(currentReq._id);
+    setDraftMethod(currentReq.method);
+    setDraftPath(currentReq.path);
+    setDraftBody(currentReq.body ?? "");
+    executeRequest.reset();
+  }
 
   const fullUrl = `${collection?.baseUrl ?? ""}${draftPath}`;
 
@@ -67,8 +61,6 @@ export function usePlaygroundWorkspace(collectionId: string) {
       draftPath !== currentReq.path ||
       draftBody !== (currentReq.body ?? ""));
 
-  // Prefer a fresh execution result; fall back to the persisted lastResponse
-  // for this request so switching back to it still shows something.
   const displayedResult = executeRequest.data?.data ?? currentReq?.lastResponse;
   const isShowingStaleResult =
     !executeRequest.data?.data && !!currentReq?.lastResponse;
@@ -101,7 +93,7 @@ export function usePlaygroundWorkspace(collectionId: string) {
   }) => {
     createRequest.mutate(payload, {
       onSuccess: (res) => {
-        setActiveRequestId(res.data.request._id);
+        setSelectedRequestId(res.data.request._id);
         setIsNewRequestModalOpen(false);
       },
     });
@@ -123,10 +115,8 @@ export function usePlaygroundWorkspace(collectionId: string) {
 
     deleteRequest.mutate(deletingRequest._id, {
       onSuccess: () => {
-        // If the deleted request was active, clear selection so the
-        // "pick first request" effect can choose a new one.
-        if (activeRequestId === deletingRequest._id) {
-          setActiveRequestId(null);
+        if (selectedRequestId === deletingRequest._id) {
+          setSelectedRequestId(null);
         }
         setDeletingRequest(null);
       },
@@ -139,7 +129,7 @@ export function usePlaygroundWorkspace(collectionId: string) {
     collection,
     requests,
     activeRequestId,
-    setActiveRequestId,
+    setActiveRequestId: setSelectedRequestId,
     activeTab,
     setActiveTab,
     currentReq,

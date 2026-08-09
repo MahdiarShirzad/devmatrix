@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { X } from "lucide-react";
 
 interface RenameRequestModalProps {
@@ -20,12 +20,17 @@ export default function RenameRequestModal({
   isPending,
   isError,
 }: RenameRequestModalProps) {
+  const [prevInitialName, setPrevInitialName] = useState(initialName);
+  const [prevOpen, setPrevOpen] = useState(open);
   const [name, setName] = useState(initialName);
 
-  // Reset the field whenever a different request is opened for renaming
-  useEffect(() => {
-    if (open) setName(initialName);
-  }, [open, initialName]);
+  if (open !== prevOpen || initialName !== prevInitialName) {
+    setPrevOpen(open);
+    setPrevInitialName(initialName);
+    if (open) {
+      setName(initialName);
+    }
+  }
 
   if (!open) return null;
 

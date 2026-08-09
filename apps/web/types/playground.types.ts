@@ -1,6 +1,15 @@
 export type PlaygroundEnv = "Local" | "Development" | "Production";
 export type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 
+export interface ILastResponse {
+  status: number;
+  headers?: Record<string, string>;
+  body: string;
+  durationMs: number;
+  sizeBytes: number;
+  executedAt: string | Date;
+}
+
 export interface Collection {
   _id: string;
   name: string;
@@ -21,13 +30,14 @@ export interface SavedRequest {
   headers: Record<string, string>;
   body?: string;
   params: Record<string, string>;
+  lastResponse?: ILastResponse;
   createdAt: string;
   updatedAt: string;
 }
 
 export interface ExecuteResult {
   status: number;
-  headers: Record<string, string>;
+  headers?: Record<string, string>;
   body: string;
   durationMs: number;
   sizeBytes: number;
@@ -38,4 +48,5 @@ export interface ExecuteParams {
   url: string;
   headers?: Record<string, string>;
   body?: string;
+  requestId?: string;
 }
