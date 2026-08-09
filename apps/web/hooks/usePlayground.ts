@@ -6,7 +6,7 @@ import type {
   ExecuteResult,
   PlaygroundEnv,
 } from "@/types/playground.types";
-import { api } from "@/lib/apiclent";
+import { api } from "@/lib/apiClient";
 
 const playgroundKeys = {
   collections: ["playground", "collections"] as const,

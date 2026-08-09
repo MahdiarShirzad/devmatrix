@@ -2,16 +2,40 @@
 
 import { useState } from "react";
 import { Copy, CheckCheck } from "lucide-react";
-import { SAMPLE_RESPONSE } from "./constants";
+import type { ExecuteResult } from "@/types/playground.types";
 
-export default function ResponseViewer() {
+interface ResponseViewerProps {
+  result?: ExecuteResult;
+  isError: boolean;
+  errorMessage?: string;
+}
+
+export default function ResponseViewer({
+  result,
+  isError,
+  errorMessage,
+}: ResponseViewerProps) {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(SAMPLE_RESPONSE);
+    if (!result) return;
+    navigator.clipboard.writeText(result.body);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
+
+  const isSuccessStatus = result && result.status >= 200 && result.status < 300;
+
+  // Best-effort pretty print — the body is stored as raw text since it
+  // isn't guaranteed to be JSON (could be HTML, plain text, etc.)
+  const formattedBody = (() => {
+    if (!result) return "";
+    try {
+      return JSON.stringify(JSON.parse(result.body), null, 2);
+    } catch {
+      return result.body;
+    }
+  })();
 
   return (
     <div className="flex flex-1 flex-col overflow-hidden rounded-xl border border-neutral-border bg-neutral-surface-1 shadow-sm">
@@ -20,106 +44,61 @@ export default function ResponseViewer() {
           Response
         </span>
         <div className="flex items-center gap-4 text-xs font-mono">
-          <div className="flex items-center gap-1.5">
-            <span className="h-2 w-2 rounded-full bg-success"></span>
-            <span className="font-semibold text-success">200 OK</span>
-          </div>
-          <span className="text-neutral-text-secondary">248 ms</span>
-          <span className="text-neutral-text-secondary">1.2 KB</span>
+          {result && (
+            <>
+              <div className="flex items-center gap-1.5">
+                <span
+                  className={`h-2 w-2 rounded-full ${isSuccessStatus ? "bg-success" : "bg-error"}`}
+                ></span>
+                <span
+                  className={`font-semibold ${isSuccessStatus ? "text-success" : "text-error"}`}
+                >
+                  {result.status}
+                </span>
+              </div>
+              <span className="text-neutral-text-secondary">
+                {result.durationMs} ms
+              </span>
+              <span className="text-neutral-text-secondary">
+                {(result.sizeBytes / 1024).toFixed(1)} KB
+              </span>
 
-          <div className="ml-2 h-4 w-px bg-neutral-border"></div>
+              <div className="ml-2 h-4 w-px bg-neutral-border"></div>
 
-          <button
-            onClick={handleCopy}
-            className="ml-2 text-neutral-text-secondary transition-colors hover:text-neutral-text-primary"
-            title="Copy to clipboard"
-          >
-            {copied ? (
-              <CheckCheck size={16} className="text-success" />
-            ) : (
-              <Copy size={16} />
-            )}
-          </button>
+              <button
+                onClick={handleCopy}
+                className="ml-2 text-neutral-text-secondary transition-colors hover:text-neutral-text-primary"
+                title="Copy to clipboard"
+              >
+                {copied ? (
+                  <CheckCheck size={16} className="text-success" />
+                ) : (
+                  <Copy size={16} />
+                )}
+              </button>
+            </>
+          )}
         </div>
       </div>
 
       <div className="flex-1 overflow-auto bg-[#0d0c1b] p-4">
-        <pre className="font-mono text-[13px] leading-relaxed text-neutral-text-primary">
-          {/* 
-            استفاده از رنگ‌آمیزی ساختگی (Syntax Highlighting) برای نمایش بهتر JSON 
-            در محیط واقعی می‌توانید از کتابخانه‌هایی مثل prismjs یا react-syntax-highlighter استفاده کنید.
-          */}
-          <span className="text-neutral-text-secondary">{`{`}</span>
-          <br />
-          <span className="text-brand-highlight">  "status"</span>
-          <span className="text-neutral-text-primary">: </span>
-          <span className="text-success">"success"</span>
-          <span className="text-neutral-text-primary">,</span>
-          <br />
-          <span className="text-brand-highlight">  "data"</span>
-          <span className="text-neutral-text-primary">: </span>
-          <span className="text-neutral-text-secondary">{`{`}</span>
-          <br />
-          <span className="text-brand-highlight">    "bookingId"</span>
-          <span className="text-neutral-text-primary">: </span>
-          <span className="text-success">"bk_98f2a1c"</span>
-          <span className="text-neutral-text-primary">,</span>
-          <br />
-          <span className="text-brand-highlight">    "userId"</span>
-          <span className="text-neutral-text-primary">: </span>
-          <span className="text-success">"usr_7729alx"</span>
-          <span className="text-neutral-text-primary">,</span>
-          <br />
-          <span className="text-brand-highlight">    "type"</span>
-          <span className="text-neutral-text-primary">: </span>
-          <span className="text-success">"flight"</span>
-          <span className="text-neutral-text-primary">,</span>
-          <br />
-          <span className="text-brand-highlight">    "details"</span>
-          <span className="text-neutral-text-primary">: </span>
-          <span className="text-neutral-text-secondary">{`{`}</span>
-          <br />
-          <span className="text-brand-highlight">      "airline"</span>
-          <span className="text-neutral-text-primary">: </span>
-          <span className="text-success">"Aseman Airlines"</span>
-          <span className="text-neutral-text-primary">,</span>
-          <br />
-          <span className="text-brand-highlight">      "route"</span>
-          <span className="text-neutral-text-primary">: </span>
-          <span className="text-success">"THR -&gt; BUZ"</span>
-          <span className="text-neutral-text-primary">,</span>
-          <br />
-          <span className="text-brand-highlight">      "class"</span>
-          <span className="text-neutral-text-primary">: </span>
-          <span className="text-success">"Economy"</span>
-          <span className="text-neutral-text-primary">,</span>
-          <br />
-          <span className="text-brand-highlight">      "departure"</span>
-          <span className="text-neutral-text-primary">: </span>
-          <span className="text-success">"2025-04-07T05:05:00Z"</span>
-          <br />
-          <span className="text-neutral-text-secondary">    {`}`}</span>
-          <span className="text-neutral-text-primary">,</span>
-          <br />
-          <span className="text-brand-highlight">    "paymentStatus"</span>
-          <span className="text-neutral-text-primary">: </span>
-          <span className="text-success">"verified"</span>
-          <br />
-          <span className="text-neutral-text-secondary">  {`}`}</span>
-          <span className="text-neutral-text-primary">,</span>
-          <br />
-          <span className="text-brand-highlight">  "meta"</span>
-          <span className="text-neutral-text-primary">: </span>
-          <span className="text-neutral-text-secondary">{`{`}</span>
-          <br />
-          <span className="text-brand-highlight">    "processedAt"</span>
-          <span className="text-neutral-text-primary">: </span>
-          <span className="text-success">"2026-08-08T09:34:00Z"</span>
-          <br />
-          <span className="text-neutral-text-secondary">  {`}`}</span>
-          <br />
-          <span className="text-neutral-text-secondary">{`}`}</span>
-        </pre>
+        {!result && !isError && (
+          <p className="text-sm italic text-neutral-text-secondary">
+            Send a request to see the response here.
+          </p>
+        )}
+
+        {isError && (
+          <p className="text-sm text-error">
+            {errorMessage || "The request failed. Check the URL and try again."}
+          </p>
+        )}
+
+        {result && (
+          <pre className="whitespace-pre-wrap font-mono text-[13px] leading-relaxed text-neutral-text-primary">
+            {formattedBody}
+          </pre>
+        )}
       </div>
     </div>
   );

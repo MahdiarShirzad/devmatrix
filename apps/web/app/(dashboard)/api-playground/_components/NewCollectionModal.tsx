@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { X } from "lucide-react";
 import type { PlaygroundEnv } from "@/types/playground.types";
-import { useCreateCollection } from "@/hooks/usePlaygroundd";
+import { useCreateCollection } from "@/hooks/usePlayground";
 
 interface NewCollectionModalProps {
   open: boolean;

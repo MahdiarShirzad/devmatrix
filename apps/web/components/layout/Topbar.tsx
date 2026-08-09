@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import {
   Search,
   Bell,
@@ -12,6 +13,8 @@ import {
   LayoutDashboard,
 } from "lucide-react";
 import Link from "next/link";
+import { useMe } from "@/hooks/useMe";
+import { useLogout } from "@/hooks/useAuth";
 
 interface TopbarProps {
   onMenuClick: () => void;
@@ -27,6 +30,27 @@ export default function Topbar({ onMenuClick }: TopbarProps) {
   const notifRef = useRef<HTMLDivElement>(null);
   const searchContainerRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
+
+  const router = useRouter();
+  const { data: user } = useMe();
+  const logout = useLogout();
+
+  const initials = user?.name
+    ? user.name
+        .split(" ")
+        .map((part) => part[0])
+        .slice(0, 2)
+        .join("")
+        .toUpperCase()
+    : "";
+
+  const handleLogout = () => {
+    logout.mutate(undefined, {
+      onSuccess: () => {
+        router.replace("/login");
+      },
+    });
+  };
 
   // هندل کردن شورت‌کات Cmd+K یا Ctrl+K و دکمه Escape
   useEffect(() => {
@@ -230,10 +254,10 @@ export default function Topbar({ onMenuClick }: TopbarProps) {
             className={`flex cursor-pointer items-center gap-2 rounded-full border py-1 pl-1 pr-3 transition-colors hover:border-brand-primary/50 ${isProfileOpen ? "border-brand-primary/50 bg-neutral-surface-2" : "border-neutral-border bg-neutral-surface-1"}`}
           >
             <div className="flex h-7 w-7 items-center justify-center rounded-full bg-brand-primary/20 text-xs font-bold text-brand-primary">
-              MS
+              {initials}
             </div>
             <span className="hidden text-sm font-medium text-neutral-text-primary sm:block">
-              Mahdiar
+              {user?.name}
             </span>
           </button>
 
@@ -255,9 +279,13 @@ export default function Topbar({ onMenuClick }: TopbarProps) {
                 Account Settings
               </Link>
               <div className="my-1 border-t border-neutral-border"></div>
-              <button className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm text-red-500 hover:bg-red-500/10">
+              <button
+                onClick={handleLogout}
+                disabled={logout.isPending}
+                className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm text-red-500 hover:bg-red-500/10 disabled:opacity-50"
+              >
                 <LogOut size={16} />
-                Log out
+                {logout.isPending ? "Logging out..." : "Log out"}
               </button>
             </div>
           )}

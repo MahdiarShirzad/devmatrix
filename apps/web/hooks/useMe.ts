@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { api, ApiError } from "@/lib/apiclent";
+import { api, ApiError } from "@/lib/apiClient";
 import type { AuthUser } from "@/types/auth.types";
 
 export function useMe() {

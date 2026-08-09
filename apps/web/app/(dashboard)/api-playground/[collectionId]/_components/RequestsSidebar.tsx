@@ -1,25 +1,33 @@
 "use client";
 
 import { Plus, MoreVertical } from "lucide-react";
-import { REQUESTS, METHOD_COLORS } from "./constants";
+import { METHOD_COLORS } from "./constants";
+import type { SavedRequest } from "@/types/playground.types";
 
 interface RequestsSidebarProps {
-  activeRequest: string;
+  collectionName: string;
+  requests: SavedRequest[];
+  activeRequestId: string | null;
   onSelectRequest: (id: string) => void;
+  onAddRequest: () => void;
 }
 
 export default function RequestsSidebar({
-  activeRequest,
+  collectionName,
+  requests,
+  activeRequestId,
   onSelectRequest,
+  onAddRequest,
 }: RequestsSidebarProps) {
   return (
     <div className="flex w-64 shrink-0 flex-col overflow-hidden rounded-xl border border-neutral-border bg-neutral-surface-1 shadow-sm">
       <div className="flex items-center justify-between border-b border-neutral-border bg-neutral-surface-2/50 px-4 py-3">
         <span className="text-xs font-bold uppercase tracking-wider text-neutral-text-primary">
-          my-trip API
+          {collectionName}
         </span>
         <button
           type="button"
+          onClick={onAddRequest}
           className="rounded p-1 text-neutral-text-secondary transition-colors hover:bg-neutral-surface-2 hover:text-neutral-text-primary"
         >
           <Plus size={16} />
@@ -27,13 +35,19 @@ export default function RequestsSidebar({
       </div>
 
       <div className="flex-1 overflow-y-auto p-2">
-        {REQUESTS.map((req) => (
+        {requests.length === 0 && (
+          <p className="px-2 py-4 text-center text-xs text-neutral-text-secondary">
+            No requests yet — add one to get started.
+          </p>
+        )}
+
+        {requests.map((req) => (
           <button
-            key={req.id}
+            key={req._id}
             type="button"
-            onClick={() => onSelectRequest(req.id)}
+            onClick={() => onSelectRequest(req._id)}
             className={`group flex w-full items-center justify-between gap-2 rounded-lg px-3 py-2.5 text-left text-sm transition-all ${
-              activeRequest === req.id
+              activeRequestId === req._id
                 ? "bg-brand-primary/10 text-neutral-text-primary"
                 : "text-neutral-text-secondary hover:bg-neutral-surface-2 hover:text-neutral-text-primary"
             }`}
@@ -46,7 +60,7 @@ export default function RequestsSidebar({
               </span>
               <span className="truncate text-sm font-medium">{req.name}</span>
             </div>
-            {activeRequest === req.id && (
+            {activeRequestId === req._id && (
               <MoreVertical
                 size={14}
                 className="shrink-0 text-brand-primary opacity-50 transition-opacity hover:opacity-100"

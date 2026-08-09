@@ -8,7 +8,7 @@ import GithubIcon from "@/app/_utils/GithubIcon";
 import { Mail, Lock, LogIn, Loader2 } from "lucide-react";
 import { loginSchema, type LoginFormValues } from "@/lib/auth.schemas";
 import { useLogin } from "@/hooks/useAuth";
-import { ApiError } from "@/lib/apiclent";
+import { ApiError } from "@/lib/apiClient";
 
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api";

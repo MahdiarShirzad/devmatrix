@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import { api } from "@/lib/apiclent";
+import { api } from "@/lib/apiClient";
 import type { AuthResponse } from "@/types/auth.types";
 import type { LoginFormValues, RegisterFormValues } from "@/lib/auth.schemas";
 

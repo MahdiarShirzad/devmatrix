@@ -1,20 +1,35 @@
 "use client";
 
-import { Send, ChevronDown } from "lucide-react";
-import { METHOD_COLORS, RequestItem } from "./constants";
+import { Send, ChevronDown, Loader2 } from "lucide-react";
+import { METHOD_COLORS } from "./constants";
+import type { HttpMethod } from "@/types/playground.types";
 
 interface OmniboxBarProps {
-  currentReq: RequestItem | undefined;
+  method: HttpMethod;
+  onMethodChange: (method: HttpMethod) => void;
+  fullUrl: string;
+  onPathChange: (path: string) => void;
+  baseUrl: string;
+  onSend: () => void;
+  isSending: boolean;
 }
 
-export default function OmniboxBar({ currentReq }: OmniboxBarProps) {
+export default function OmniboxBar({
+  method,
+  onMethodChange,
+  fullUrl,
+  onPathChange,
+  baseUrl,
+  onSend,
+  isSending,
+}: OmniboxBarProps) {
   return (
     <div className="flex items-center gap-2 rounded-xl border border-neutral-border bg-neutral-surface-1 p-1 shadow-sm">
       <div className="relative shrink-0">
         <select
-          className={`appearance-none rounded-lg bg-transparent py-2 pl-4 pr-8 text-sm font-bold focus:outline-none ${METHOD_COLORS[currentReq?.method || "GET"]}`}
-          value={currentReq?.method}
-          onChange={() => {}}
+          className={`appearance-none rounded-lg bg-transparent py-2 pl-4 pr-8 text-sm font-bold focus:outline-none ${METHOD_COLORS[method]}`}
+          value={method}
+          onChange={(e) => onMethodChange(e.target.value as HttpMethod)}
         >
           <option value="GET" className="text-success">
             GET
@@ -24,6 +39,9 @@ export default function OmniboxBar({ currentReq }: OmniboxBarProps) {
           </option>
           <option value="PUT" className="text-warning">
             PUT
+          </option>
+          <option value="PATCH" className="text-warning">
+            PATCH
           </option>
           <option value="DELETE" className="text-error">
             DELETE
@@ -39,17 +57,29 @@ export default function OmniboxBar({ currentReq }: OmniboxBarProps) {
 
       <input
         type="text"
-        value={`https://api.devmatrix.dev${currentReq?.path || ""}`}
-        readOnly
+        value={fullUrl}
+        onChange={(e) => {
+          // Strip the baseUrl prefix back off so we only store the path portion
+          const value = e.target.value;
+          onPathChange(
+            value.startsWith(baseUrl) ? value.slice(baseUrl.length) : value,
+          );
+        }}
         className="flex-1 bg-transparent px-3 py-2 text-sm font-mono text-neutral-text-primary focus:outline-none"
       />
 
       <button
         type="button"
-        className="flex items-center gap-2 rounded-lg bg-brand-primary px-5 py-2 text-sm font-semibold text-white shadow-md transition-all hover:bg-brand-primary/90 focus:ring-2 focus:ring-brand-accent focus:ring-offset-2 focus:ring-offset-neutral-bg active:scale-95"
+        onClick={onSend}
+        disabled={isSending}
+        className="flex items-center gap-2 rounded-lg bg-brand-primary px-5 py-2 text-sm font-semibold text-white shadow-md transition-all hover:bg-brand-primary/90 focus:ring-2 focus:ring-brand-accent focus:ring-offset-2 focus:ring-offset-neutral-bg active:scale-95 disabled:opacity-60"
       >
-        <Send size={14} />
-        Send
+        {isSending ? (
+          <Loader2 size={14} className="animate-spin" />
+        ) : (
+          <Send size={14} />
+        )}
+        {isSending ? "Sending..." : "Send"}
       </button>
     </div>
   );

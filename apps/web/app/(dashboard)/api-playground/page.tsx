@@ -6,7 +6,7 @@ import CollectionSearchToolbar from "./_components/CollectionSearchToolbar";
 import CollectionsGrid from "./_components/CollectionsGrid";
 import NewCollectionModal from "./_components/NewCollectionModal";
 import QuickRequestModal from "./_components/QuickRequestModal";
-import { useCollections } from "@/hooks/usePlaygroundd";
+import { useCollections } from "@/hooks/usePlayground";
 
 export default function ApiPlaygroundPage() {
   const [isNewCollectionModalOpen, setIsNewCollectionModalOpen] =
