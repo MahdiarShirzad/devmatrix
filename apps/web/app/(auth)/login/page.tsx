@@ -1,34 +1,53 @@
 "use client";
 
-import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import GithubIcon from "@/app/_utils/GithubIcon";
 import { Mail, Lock, LogIn, Loader2 } from "lucide-react";
+import { loginSchema, type LoginFormValues } from "@/lib/auth.schemas";
+import { useLogin } from "@/hooks/useAuth";
+import { ApiError } from "@/lib/apiclent";
+
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api";
 
 export default function LoginPage() {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const router = useRouter();
+  const loginMutation = useLogin();
 
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginFormValues>({
+    resolver: zodResolver(loginSchema),
+  });
 
-    // شبیه‌سازی درخواست لاگین
-    setTimeout(() => {
-      setIsSubmitting(false);
-    }, 1500);
+  const onSubmit = (values: LoginFormValues) => {
+    loginMutation.mutate(values, {
+      onSuccess: () => {
+        router.push("/dashboard");
+      },
+    });
   };
 
   const handleGithubLogin = () => {
-    // ریدایرکت به روت بک‌اند برای شروع فلوی Passport.js OAuth
-    // window.location.href = "http://localhost:5000/api/auth/github";
-    console.log("Initiating GitHub OAuth flow...");
+    // Full page redirect — this kicks off the passport GitHub OAuth flow,
+    // which isn't something a client-side fetch can drive.
+    window.location.href = `${API_BASE_URL}/auth/github`;
   };
+
+  const errorMessage =
+    loginMutation.error instanceof ApiError
+      ? loginMutation.error.message
+      : loginMutation.isError
+        ? "Something went wrong. Please try again."
+        : null;
 
   return (
     <div className="w-full">
-      {/* هدر صفحه */}
       <div className="mb-8">
         <h2 className="text-2xl font-bold tracking-tight text-neutral-text-primary">
           Welcome back
@@ -38,7 +57,6 @@ export default function LoginPage() {
         </p>
       </div>
 
-      {/* دکمه ورود با گیت‌هاب */}
       <button
         type="button"
         onClick={handleGithubLogin}
@@ -52,7 +70,6 @@ export default function LoginPage() {
         Continue with GitHub
       </button>
 
-      {/* خط جداکننده */}
       <div className="my-7 flex items-center gap-4">
         <div className="h-px flex-1 bg-neutral-border" />
         <span className="text-xs font-semibold uppercase tracking-wider text-neutral-text-secondary">
@@ -61,8 +78,7 @@ export default function LoginPage() {
         <div className="h-px flex-1 bg-neutral-border" />
       </div>
 
-      {/* فرم ورود با ایمیل */}
-      <form onSubmit={handleLogin} className="space-y-5">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
         <div>
           <label
             htmlFor="email"
@@ -78,13 +94,14 @@ export default function LoginPage() {
             <input
               id="email"
               type="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
               placeholder="name@company.com"
+              {...register("email")}
               className="w-full rounded-xl border border-neutral-border bg-[#0d1117] py-3 pl-11 pr-4 text-sm text-neutral-text-primary placeholder:text-neutral-text-secondary transition-all focus:border-brand-primary focus:outline-none focus:ring-1 focus:ring-brand-primary"
             />
           </div>
+          {errors.email && (
+            <p className="mt-1.5 text-xs text-error">{errors.email.message}</p>
+          )}
         </div>
 
         <div>
@@ -110,21 +127,30 @@ export default function LoginPage() {
             <input
               id="password"
               type="password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
+              {...register("password")}
               className="w-full rounded-xl border border-neutral-border bg-[#0d1117] py-3 pl-11 pr-4 text-sm text-neutral-text-primary placeholder:text-neutral-text-secondary transition-all focus:border-brand-primary focus:outline-none focus:ring-1 focus:ring-brand-primary"
             />
           </div>
+          {errors.password && (
+            <p className="mt-1.5 text-xs text-error">
+              {errors.password.message}
+            </p>
+          )}
         </div>
+
+        {errorMessage && (
+          <p className="text-sm text-error" role="alert">
+            {errorMessage}
+          </p>
+        )}
 
         <button
           type="submit"
-          disabled={!email || !password || isSubmitting}
+          disabled={loginMutation.isPending}
           className="group mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-brand-primary py-3.5 text-sm font-semibold text-white shadow-lg shadow-brand-primary/20 transition-all hover:bg-brand-primary/90 focus:ring-4 focus:ring-brand-primary/20 disabled:cursor-not-allowed disabled:opacity-50 disabled:shadow-none active:scale-95"
         >
-          {isSubmitting ? (
+          {loginMutation.isPending ? (
             <>
               <Loader2 size={18} className="animate-spin" />
               Authenticating...
@@ -141,7 +167,6 @@ export default function LoginPage() {
         </button>
       </form>
 
-      {/* لینک ثبت‌نام */}
       <p className="mt-8 text-center text-sm text-neutral-text-secondary">
         Don&apos;t have an account?{" "}
         <Link

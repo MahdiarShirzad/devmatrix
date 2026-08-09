@@ -1,9 +1,40 @@
-import type { ReactNode } from "react";
+"use client";
+
+import { useEffect, type ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Terminal, Activity, FlaskConical, Sparkles } from "lucide-react";
+import {
+  Terminal,
+  Activity,
+  FlaskConical,
+  Sparkles,
+  Loader2,
+} from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useMe } from "@/hooks/useMe";
 
 export default function AuthLayout({ children }: { children: ReactNode }) {
+  const router = useRouter();
+  const { data: user, isLoading, isSuccess } = useMe();
+
+  useEffect(() => {
+    // isSuccess (not just `user` truthy) means /auth/me returned 200 —
+    // the user has a valid session, so login/register are pointless for them.
+    if (isSuccess && user) {
+      router.replace("/dashboard");
+    }
+  }, [isSuccess, user, router]);
+
+  // Still checking auth state, or a redirect is about to fire — avoid
+  // flashing the login form for an already-authenticated user.
+  if (isLoading || (isSuccess && user)) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-neutral-bg">
+        <Loader2 className="animate-spin text-brand-primary" size={24} />
+      </div>
+    );
+  }
+
   return (
     <div className="flex min-h-screen bg-neutral-bg">
       {/* هدر مخصوص موبایل (لوگو در موبایل مخفی نمی‌شود) */}
