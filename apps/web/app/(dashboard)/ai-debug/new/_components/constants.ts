@@ -1,4 +1,3 @@
-// لیست زبان‌ها و فریم‌ورک‌های پشتیبانی‌شده برای انتخاب محیط دیباگ
 export const LANGUAGES = [
   "TypeScript",
   "JavaScript",

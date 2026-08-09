@@ -10,7 +10,6 @@ export function useNewDebugForm() {
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // TODO: ارسال کد و توضیحات به بک‌اند برای آنالیز
     router.push("/ai-debug/sess_new");
   };
 
