@@ -1,10 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
 import { verifyAccessToken } from "../utils/jwt.js";
 
-/**
- * محافظت از route ها با چک کردن Access Token توی کوکی
- * در صورت معتبر بودن، userId رو روی req می‌ذاره تا controller بعدی استفاده کنه
- */
 export const requireAuth = (
   req: Request,
   res: Response,

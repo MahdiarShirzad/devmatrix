@@ -1,7 +1,7 @@
 import AppError from "../utils/appError.js";
 
-const GEMINI_MODEL = "gemini-2.0-flash";
-const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
+const GROQ_MODEL = "llama-3.3-70b-versatile";
+const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
 
 interface AnalyzeCodeInput {
   language: string;
@@ -21,22 +21,12 @@ Given a code snippet, its language, and an optional user description of the prob
 2. Explain it clearly in plain language.
 3. Provide the corrected version of the full code.
 4. Generate a short, descriptive title (max 10 words) summarizing the issue, in the style of a bug tracker ticket title.
-Respond ONLY with valid JSON matching the required schema. Do not include markdown code fences or any extra text.`;
-
-const RESPONSE_SCHEMA = {
-  type: "OBJECT",
-  properties: {
-    title: { type: "STRING" },
-    explanation: { type: "STRING" },
-    fixedCode: { type: "STRING" },
-  },
-  required: ["title", "explanation", "fixedCode"],
-};
+Respond ONLY with a valid JSON object with exactly these keys: "title", "explanation", "fixedCode". No markdown fences, no extra text.`;
 
 export async function analyzeCode(
   input: AnalyzeCodeInput,
 ): Promise<AnalyzeCodeResult> {
-  const apiKey = process.env.AI_DEBUG_GEMINI_API_KEY;
+  const apiKey = process.env.AI_DEBUG_GROQ_API_KEY;
   if (!apiKey) {
     throw new AppError("AI Debug service is not configured", 500);
   }
@@ -45,17 +35,20 @@ export async function analyzeCode(
 
   let response: Response;
   try {
-    response = await fetch(`${GEMINI_API_URL}?key=${apiKey}`, {
+    response = await fetch(GROQ_API_URL, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`,
+      },
       body: JSON.stringify({
-        systemInstruction: { parts: [{ text: SYSTEM_INSTRUCTION }] },
-        contents: [{ role: "user", parts: [{ text: userPrompt }] }],
-        generationConfig: {
-          responseMimeType: "application/json",
-          responseSchema: RESPONSE_SCHEMA,
-          temperature: 0.3,
-        },
+        model: GROQ_MODEL,
+        messages: [
+          { role: "system", content: SYSTEM_INSTRUCTION },
+          { role: "user", content: userPrompt },
+        ],
+        response_format: { type: "json_object" },
+        temperature: 0.3,
       }),
       signal: AbortSignal.timeout(30_000),
     });
@@ -64,12 +57,12 @@ export async function analyzeCode(
   }
 
   if (!response.ok) {
-    console.error("Gemini API error:", response.status, await response.text());
+    console.error("Groq API error:", response.status, await response.text());
     throw new AppError("AI service failed to process the request", 502);
   }
 
   const data = await response.json();
-  const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+  const rawText = data?.choices?.[0]?.message?.content;
 
   if (!rawText) {
     throw new AppError("AI service returned an empty response", 502);
