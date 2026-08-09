@@ -32,11 +32,10 @@ const UserSchema = new Schema<IUser>(
     },
     password: {
       type: String,
-      // فقط برای کاربران local اجباریه، برای github نه
       required: function (this: IUser) {
         return this.authProvider === "local";
       },
-      select: false, // به صورت پیش‌فرض توی query ها برنگرده
+      select: false,
     },
     avatar: {
       type: String,
@@ -50,19 +49,18 @@ const UserSchema = new Schema<IUser>(
     githubId: {
       type: String,
       unique: true,
-      sparse: true, // اجازه میده چند تا کاربر null داشته باشن بدون تداخل unique
+      sparse: true,
     },
     githubAccessToken: {
       type: String,
-      select: false, // حساسه، به صورت پیش‌فرض برنگرده
+      select: false,
     },
   },
   {
-    timestamps: true, // createdAt و updatedAt خودکار
+    timestamps: true,
   },
 );
 
-// هش کردن پسورد قبل از ذخیره، فقط اگه تغییر کرده باشه
 UserSchema.pre("save", async function () {
   if (!this.isModified("password") || !this.password) {
     return;
@@ -72,7 +70,6 @@ UserSchema.pre("save", async function () {
   this.password = await bcrypt.hash(this.password, salt);
 });
 
-// متد مقایسه پسورد برای لاگین
 UserSchema.methods.comparePassword = async function (
   candidatePassword: string,
 ): Promise<boolean> {

@@ -14,9 +14,6 @@ import AppError from "../utils/appError.js";
 
 const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:3000";
 
-/**
- * کمک‌کننده: بعد از احراز هویت موفق، توکن‌ها رو بساز، Session رو ذخیره کن، کوکی‌ها رو ست کن
- */
 const issueTokensAndSession = async (
   user: IUser,
   res: Response,
@@ -86,7 +83,6 @@ export const login = catchAsync(
       return next(new AppError("ایمیل و پسورد الزامی هستند", 400));
     }
 
-    // password با select: false مخفیه، پس صریحاً درخواستش می‌کنیم
     const user = await User.findOne({ email }).select("+password");
 
     if (!user || user.authProvider !== "local") {

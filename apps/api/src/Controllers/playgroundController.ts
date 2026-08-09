@@ -1,42 +1,43 @@
-import { NextFunction, Request, Response } from "express";
-import catchAsync from "../utils/catchAsync.js";
+import type { Request, Response, NextFunction } from "express";
 import Collection from "../Models/Collection.js";
 import SavedRequest from "../Models/SavedRequest.js";
+import catchAsync from "../utils/catchAsync.js";
 import AppError from "../utils/appError.js";
+import { runExecuteRequest } from "../services/playgroundService.js";
 
-interface AuthRequest extends Request {
-  user?: { id: string };
-}
-
+// POST /api/playground/collections
 export const createCollection = catchAsync(
-  async (req: AuthRequest, res: Response) => {
+  async (req: Request, res: Response): Promise<void> => {
     const { name, env, baseUrl } = req.body;
+    const userId = (req as any).userId;
 
     const collection = await Collection.create({
       name,
       env,
       baseUrl,
-      userId: req.user!.id,
+      userId,
     });
 
     res.status(201).json({ status: "success", data: { collection } });
   },
 );
 
+// GET /api/playground/collections
 export const getCollections = catchAsync(
-  async (req: AuthRequest, res: Response) => {
-    const collections = await Collection.find({ userId: req.user!.id }).sort(
-      "-updatedAt",
-    );
+  async (req: Request, res: Response): Promise<void> => {
+    const userId = (req as any).userId;
+    const collections = await Collection.find({ userId }).sort("-updatedAt");
 
+    // requestCount is derived, not stored — attach it per collection
     const withCounts = await Promise.all(
       collections.map(async (collection) => {
         const requestCount = await SavedRequest.countDocuments({
-          collectionId: collection._id,
+          collectionId: collection._id.toString(),
         });
         return { ...collection.toObject(), requestCount };
       }),
     );
+
     res.status(200).json({
       status: "success",
       results: withCounts.length,
@@ -45,11 +46,14 @@ export const getCollections = catchAsync(
   },
 );
 
+// GET /api/playground/collections/:id
 export const getCollection = catchAsync(
-  async (req: AuthRequest, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const userId = (req as any).userId;
+
     const collection = await Collection.findOne({
       _id: req.params.id,
-      userId: req.user!.id,
+      userId,
     });
 
     if (!collection) {
@@ -57,8 +61,8 @@ export const getCollection = catchAsync(
     }
 
     const requests = await SavedRequest.find({
-      collectionId: collection._id,
-    }).sort("_createdAt");
+      collectionId: collection._id.toString(),
+    }).sort("createdAt");
 
     res.status(200).json({
       status: "success",
@@ -67,31 +71,37 @@ export const getCollection = catchAsync(
   },
 );
 
+// DELETE /api/playground/collections/:id
 export const deleteCollection = catchAsync(
-  async (req: AuthRequest, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const userId = (req as any).userId;
+
     const collection = await Collection.findOneAndDelete({
       _id: req.params.id,
-      userId: req.user!.id,
+      userId,
     });
 
     if (!collection) {
       return next(new AppError("Collection not found", 404));
     }
 
-    await SavedRequest.deleteMany({ collectionId: collection._id });
-
-    res.status(204).json({
-      status: "success",
-      data: null,
+    // Requests belong to the collection — clean them up too
+    await SavedRequest.deleteMany({
+      collectionId: collection._id.toString(),
     });
+
+    res.status(204).json({ status: "success", data: null });
   },
 );
 
+// POST /api/playground/collections/:id/requests
 export const createRequest = catchAsync(
-  async (req: AuthRequest, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const userId = (req as any).userId;
+
     const collection = await Collection.findOne({
       _id: req.params.id,
-      userId: req.user!.id,
+      userId,
     });
 
     if (!collection) {
@@ -101,34 +111,40 @@ export const createRequest = catchAsync(
     const { name, method, path, headers, body, params } = req.body;
 
     const savedRequest = await SavedRequest.create({
-      collectionId: collection._id,
+      collectionId: collection._id.toString(),
       name,
-      mathod,
+      method,
       path,
       headers,
       body,
       params,
     });
 
-    res.status(201).json({ status: "success", data: { savedRequest } });
+    res
+      .status(201)
+      .json({ status: "success", data: { request: savedRequest } });
   },
 );
 
+// PATCH /api/playground/requests/:id
 export const updateRequest = catchAsync(
-  async (req: AuthRequest, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const userId = (req as any).userId;
+
     const savedRequest = await SavedRequest.findById(req.params.id);
 
     if (!savedRequest) {
       return next(new AppError("Request not found", 404));
     }
 
+    // Ownership check goes through the parent collection
     const collection = await Collection.findOne({
-      _id: savedRequest.collectionId,
-      userId: req.user!.id,
+      _id: savedRequest.collectionId.toString(),
+      userId,
     });
 
     if (!collection) {
-      return next(new AppError("Collection not found", 404));
+      return next(new AppError("Request not found", 404));
     }
 
     const { name, method, path, headers, body, params } = req.body;
@@ -142,12 +158,17 @@ export const updateRequest = catchAsync(
 
     await savedRequest.save();
 
-    res.status(200).json({ status: "success", data: { savedRequest } });
+    res
+      .status(200)
+      .json({ status: "success", data: { request: savedRequest } });
   },
 );
 
+// DELETE /api/playground/requests/:id
 export const deleteRequest = catchAsync(
-  async (req: AuthRequest, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const userId = (req as any).userId;
+
     const savedRequest = await SavedRequest.findById(req.params.id);
 
     if (!savedRequest) {
@@ -155,8 +176,8 @@ export const deleteRequest = catchAsync(
     }
 
     const collection = await Collection.findOne({
-      _id: savedRequest.collectionId,
-      userId: req.user!.id,
+      _id: savedRequest.collectionId.toString(),
+      userId,
     });
 
     if (!collection) {
@@ -169,8 +190,9 @@ export const deleteRequest = catchAsync(
   },
 );
 
+// POST /api/playground/execute
 export const executeRequest = catchAsync(
-  async (req: AuthRequest, res: Response) => {
+  async (req: Request, res: Response): Promise<void> => {
     const { method, url, headers, body } = req.body;
 
     // All the tricky logic (SSRF guard, timeout, size limit) lives in the service

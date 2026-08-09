@@ -9,12 +9,12 @@ import {
   deleteRequest,
   executeRequest,
 } from "../Controllers/playgroundController.js";
-import { protect } from "../middleware/authMiddleware.js";
+import { requireAuth } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
 // Every playground route requires an authenticated user
-router.use(protect);
+router.use(requireAuth);
 
 router.route("/collections").post(createCollection).get(getCollections);
 
