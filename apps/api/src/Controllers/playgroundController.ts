@@ -191,12 +191,40 @@ export const deleteRequest = catchAsync(
 );
 
 // POST /api/playground/execute
+// POST /api/playground/execute
 export const executeRequest = catchAsync(
-  async (req: Request, res: Response): Promise<void> => {
-    const { method, url, headers, body } = req.body;
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const userId = (req as any).userId;
+    const { method, url, headers, body, requestId } = req.body;
 
     // All the tricky logic (SSRF guard, timeout, size limit) lives in the service
     const result = await runExecuteRequest({ method, url, headers, body });
+
+    // If this execution is tied to a saved request, persist the response
+    // so it's still visible after a refresh or switching requests.
+    if (requestId) {
+      const savedRequest = await SavedRequest.findById(requestId);
+
+      if (savedRequest) {
+        const collection = await Collection.findOne({
+          _id: savedRequest.collectionId.toString(),
+          userId,
+        });
+
+        // Only persist if the request still belongs to this user — otherwise
+        // silently skip persistence but still return the result below.
+        if (collection) {
+          savedRequest.lastResponse = {
+            status: result.status,
+            body: result.body,
+            durationMs: result.durationMs,
+            sizeBytes: result.sizeBytes,
+            executedAt: new Date(),
+          };
+          await savedRequest.save();
+        }
+      }
+    }
 
     res.status(200).json({ status: "success", data: result });
   },

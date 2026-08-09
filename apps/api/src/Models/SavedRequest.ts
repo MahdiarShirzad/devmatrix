@@ -2,6 +2,14 @@ import mongoose, { Document, Schema } from "mongoose";
 
 export type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 
+export interface ILastResponse {
+  status: number;
+  body: string;
+  durationMs: number;
+  sizeBytes: number;
+  executedAt: Date;
+}
+
 export interface ISavedRequest extends Document {
   collectionId: string;
   name: string;
@@ -10,9 +18,21 @@ export interface ISavedRequest extends Document {
   headers: Record<string, string>;
   body?: string;
   params: Record<string, string>;
+  lastResponse?: ILastResponse;
   createdAt: Date;
   updatedAt: Date;
 }
+
+const lastResponseSchema = new Schema<ILastResponse>(
+  {
+    status: { type: Number, required: true },
+    body: { type: String, required: true },
+    durationMs: { type: Number, required: true },
+    sizeBytes: { type: Number, required: true },
+    executedAt: { type: Date, required: true },
+  },
+  { _id: false },
+);
 
 const savedRequestSchema = new Schema<ISavedRequest>(
   {
@@ -47,6 +67,10 @@ const savedRequestSchema = new Schema<ISavedRequest>(
     params: {
       type: Schema.Types.Mixed,
       default: {},
+    },
+    lastResponse: {
+      type: lastResponseSchema,
+      required: false,
     },
   },
   {
