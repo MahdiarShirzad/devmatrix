@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
+import QueryProvider from "./_components/providers/QueryProvider";
 import "./globals.css";
 
 const inter = Inter({
@@ -32,7 +33,7 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="flex min-h-full flex-col bg-neutral-bg text-neutral-text-primary">
-        {children}
+        <QueryProvider>{children}</QueryProvider>
       </body>
     </html>
   );

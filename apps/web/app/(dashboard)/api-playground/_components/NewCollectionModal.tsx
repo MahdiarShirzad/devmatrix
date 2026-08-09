@@ -1,6 +1,9 @@
 "use client";
 
+import { useState } from "react";
 import { X } from "lucide-react";
+import type { PlaygroundEnv } from "@/types/playground.types";
+import { useCreateCollection } from "@/hooks/usePlaygroundd";
 
 interface NewCollectionModalProps {
   open: boolean;
@@ -11,7 +14,26 @@ export default function NewCollectionModal({
   open,
   onClose,
 }: NewCollectionModalProps) {
+  const [name, setName] = useState("");
+  const [env, setEnv] = useState<PlaygroundEnv>("Local");
+  const createCollection = useCreateCollection();
+
   if (!open) return null;
+
+  const handleCreate = () => {
+    if (!name.trim()) return;
+
+    createCollection.mutate(
+      { name, env },
+      {
+        onSuccess: () => {
+          setName("");
+          setEnv("Local");
+          onClose();
+        },
+      },
+    );
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
@@ -35,6 +57,8 @@ export default function NewCollectionModal({
             </label>
             <input
               type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
               placeholder="e.g. Authentication API"
               className="w-full rounded-lg border border-neutral-border bg-neutral-surface-2 px-3 py-2.5 text-sm text-neutral-text-primary focus:border-brand-primary focus:outline-none"
             />
@@ -43,12 +67,22 @@ export default function NewCollectionModal({
             <label className="block text-sm font-medium text-neutral-text-primary mb-1.5">
               Environment
             </label>
-            <select className="w-full rounded-lg border border-neutral-border bg-neutral-surface-2 px-3 py-2.5 text-sm text-neutral-text-primary focus:border-brand-primary focus:outline-none appearance-none">
+            <select
+              value={env}
+              onChange={(e) => setEnv(e.target.value as PlaygroundEnv)}
+              className="w-full rounded-lg border border-neutral-border bg-neutral-surface-2 px-3 py-2.5 text-sm text-neutral-text-primary focus:border-brand-primary focus:outline-none appearance-none"
+            >
               <option>Local</option>
               <option>Development</option>
               <option>Production</option>
             </select>
           </div>
+
+          {createCollection.isError && (
+            <p className="text-sm text-error">
+              Couldn&apos;t create the collection. Try again.
+            </p>
+          )}
         </div>
 
         <div className="mt-8 flex justify-end gap-3">
@@ -58,8 +92,12 @@ export default function NewCollectionModal({
           >
             Cancel
           </button>
-          <button className="rounded-lg bg-brand-primary px-5 py-2 text-sm font-medium text-white transition-opacity hover:opacity-90 shadow-md">
-            Create Collection
+          <button
+            onClick={handleCreate}
+            disabled={!name.trim() || createCollection.isPending}
+            className="rounded-lg bg-brand-primary px-5 py-2 text-sm font-medium text-white transition-opacity hover:opacity-90 shadow-md disabled:opacity-50"
+          >
+            {createCollection.isPending ? "Creating..." : "Create Collection"}
           </button>
         </div>
       </div>
