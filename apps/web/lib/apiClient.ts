@@ -14,14 +14,27 @@ interface RequestOptions extends RequestInit {
   json?: unknown;
 }
 
-/**
- * Base fetch wrapper. Sends httpOnly cookies (credentials: "include") since
- * auth uses cookie-based access/refresh tokens, not Authorization headers.
- */
-async function apiFetch<T>(
+let refreshPromise: Promise<boolean> | null = null;
+
+async function performRefresh(): Promise<boolean> {
+  if (!refreshPromise) {
+    refreshPromise = fetch(`${API_BASE_URL}/auth/refresh`, {
+      method: "POST",
+      credentials: "include",
+    })
+      .then((res) => res.ok)
+      .catch(() => false)
+      .finally(() => {
+        refreshPromise = null;
+      });
+  }
+  return refreshPromise;
+}
+
+async function rawFetch<T>(
   path: string,
-  { json, ...options }: RequestOptions = {},
-): Promise<T> {
+  { json, ...options }: RequestOptions,
+): Promise<{ res: Response; data: T | null }> {
   const res = await fetch(`${API_BASE_URL}${path}`, {
     ...options,
     credentials: "include",
@@ -32,16 +45,47 @@ async function apiFetch<T>(
     body: json !== undefined ? JSON.stringify(json) : options.body,
   });
 
-  // 204 No Content has no body to parse
+  if (res.status === 204) {
+    return { res, data: null };
+  }
+
+  const data = await res.json().catch(() => null);
+  return { res, data };
+}
+
+async function apiFetch<T>(
+  path: string,
+  options: RequestOptions = {},
+  isRetry = false,
+): Promise<T> {
+  const { res, data } = await rawFetch<T>(path, options);
+
   if (res.status === 204) {
     return undefined as T;
   }
 
-  const data = await res.json().catch(() => null);
-
   if (!res.ok) {
-    const message = data?.message || `Request failed with ${res.status}`;
-    throw new ApiError(message, res.status);
+    const isAuthEndpoint =
+      path.startsWith("/auth/refresh") ||
+      path.startsWith("/auth/login") ||
+      path.startsWith("/auth/register");
+
+    if (res.status === 401 && !isRetry && !isAuthEndpoint) {
+      const refreshed = await performRefresh();
+      if (refreshed) {
+        return apiFetch<T>(path, options, true);
+      }
+    }
+
+    const message =
+      (typeof data === "object" &&
+      data !== null &&
+      "message" in data &&
+      typeof (data as Record<string, unknown>).message === "string"
+        ? (data as Record<string, unknown>).message
+        : null) || `Request failed with ${res.status}`;
+
+    throw new ApiError(message as string, res.status);
   }
 
   return data as T;
