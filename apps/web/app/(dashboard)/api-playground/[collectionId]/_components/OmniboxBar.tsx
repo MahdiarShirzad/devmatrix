@@ -1,6 +1,6 @@
 "use client";
 
-import { Send, ChevronDown, Loader2 } from "lucide-react";
+import { Send, ChevronDown, Loader2, Save } from "lucide-react";
 import { METHOD_COLORS } from "./constants";
 import type { HttpMethod } from "@/types/playground.types";
 
@@ -12,6 +12,9 @@ interface OmniboxBarProps {
   baseUrl: string;
   onSend: () => void;
   isSending: boolean;
+  onSave: () => void;
+  isSaving: boolean;
+  isDirty: boolean;
 }
 
 export default function OmniboxBar({
@@ -22,6 +25,9 @@ export default function OmniboxBar({
   baseUrl,
   onSend,
   isSending,
+  onSave,
+  isSaving,
+  isDirty,
 }: OmniboxBarProps) {
   return (
     <div className="flex items-center gap-2 rounded-xl border border-neutral-border bg-neutral-surface-1 p-1 shadow-sm">
@@ -67,6 +73,21 @@ export default function OmniboxBar({
         }}
         className="flex-1 bg-transparent px-3 py-2 text-sm font-mono text-neutral-text-primary focus:outline-none"
       />
+
+      <button
+        type="button"
+        onClick={onSave}
+        disabled={!isDirty || isSaving}
+        title={isDirty ? "Save changes to this request" : "No changes to save"}
+        className="flex items-center gap-2 rounded-lg border border-neutral-border px-4 py-2 text-sm font-medium text-neutral-text-primary transition-colors hover:bg-neutral-surface-2 disabled:cursor-not-allowed disabled:opacity-40"
+      >
+        {isSaving ? (
+          <Loader2 size={14} className="animate-spin" />
+        ) : (
+          <Save size={14} />
+        )}
+        {isSaving ? "Saving..." : "Save"}
+      </button>
 
       <button
         type="button"

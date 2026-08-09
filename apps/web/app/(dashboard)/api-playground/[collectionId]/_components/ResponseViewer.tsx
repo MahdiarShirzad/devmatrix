@@ -8,12 +8,14 @@ interface ResponseViewerProps {
   result?: ExecuteResult;
   isError: boolean;
   errorMessage?: string;
+  isStale?: boolean; // true when showing a persisted lastResponse, not a fresh execution
 }
 
 export default function ResponseViewer({
   result,
   isError,
   errorMessage,
+  isStale,
 }: ResponseViewerProps) {
   const [copied, setCopied] = useState(false);
 
@@ -40,9 +42,16 @@ export default function ResponseViewer({
   return (
     <div className="flex flex-1 flex-col overflow-hidden rounded-xl border border-neutral-border bg-neutral-surface-1 shadow-sm">
       <div className="flex items-center justify-between border-b border-neutral-border bg-neutral-surface-2/30 px-4 py-2.5">
-        <span className="text-xs font-bold tracking-wider text-neutral-text-secondary uppercase">
-          Response
-        </span>
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-bold tracking-wider text-neutral-text-secondary uppercase">
+            Response
+          </span>
+          {isStale && result && (
+            <span className="rounded-full bg-neutral-surface-2 px-2 py-0.5 text-[10px] font-medium text-neutral-text-secondary">
+              Last saved
+            </span>
+          )}
+        </div>
         <div className="flex items-center gap-4 text-xs font-mono">
           {result && (
             <>

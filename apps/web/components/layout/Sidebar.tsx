@@ -64,16 +64,18 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
       }`}
     >
       <div className="flex h-14 shrink-0 items-center gap-3 border-b border-neutral-border px-5">
-        <Image
-          src="/logo.png"
-          alt="DevMatrix"
-          width={24}
-          height={24}
-          className="rounded"
-        />
-        <span className="font-mono text-sm font-bold tracking-tight text-neutral-text-primary">
-          DevMatrix
-        </span>
+        <Link href="/" className="flex items-center gap-2">
+          <Image
+            src="/logo.png"
+            alt="DevMatrix"
+            width={24}
+            height={24}
+            className="rounded"
+          />
+          <span className="font-mono text-sm font-bold tracking-tight text-neutral-text-primary">
+            DevMatrix
+          </span>
+        </Link>
       </div>
 
       {/* انتخابگر پروژه (Project Switcher) */}

@@ -119,9 +119,20 @@ export function useDeleteRequest(collectionId: string) {
 
 // ---- Execute ----
 
-export function useExecuteRequest() {
+export function useExecuteRequest(collectionId?: string) {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: (params: ExecuteParams) =>
       api.post<{ data: ExecuteResult }>("/playground/execute", params),
+    onSuccess: () => {
+      // The server may have persisted this onto a SavedRequest —
+      // refetch so lastResponse shows up after switching requests.
+      if (collectionId) {
+        queryClient.invalidateQueries({
+          queryKey: playgroundKeys.collection(collectionId),
+        });
+      }
+    },
   });
 }

@@ -6,6 +6,9 @@ import RequestsSidebar from "./_components/RequestsSidebar";
 import OmniboxBar from "./_components/OmniboxBar";
 import RequestBuilderPanel from "./_components/RequestBuilderPanel";
 import ResponseViewer from "./_components/ResponseViewer";
+import NewRequestModal from "./_components/NewRequestModal";
+import RenameRequestModal from "./_components/RenameRequestModal";
+import DeleteRequestDialog from "./_components/DeleteRequestDialog";
 import { usePlaygroundWorkspace } from "./_components/usePlaygroundWorkspace";
 import { ApiError } from "@/lib/apiClient";
 
@@ -31,6 +34,22 @@ export default function PlaygroundCollectionPage() {
     fullUrl,
     handleSend,
     executeRequest,
+    handleSave,
+    isDirty,
+    updateRequest,
+    isNewRequestModalOpen,
+    setIsNewRequestModalOpen,
+    handleCreateRequest,
+    createRequest,
+    displayedResult,
+    isShowingStaleResult,
+    renamingRequest,
+    setRenamingRequest,
+    handleRenameRequest,
+    deletingRequest,
+    setDeletingRequest,
+    handleConfirmDelete,
+    deleteRequest,
   } = usePlaygroundWorkspace(params.collectionId);
 
   if (isLoading) {
@@ -64,9 +83,9 @@ export default function PlaygroundCollectionPage() {
         requests={requests}
         activeRequestId={activeRequestId}
         onSelectRequest={setActiveRequestId}
-        onAddRequest={() => {
-          // TODO: open a "new request" modal — creation flow not built yet
-        }}
+        onAddRequest={() => setIsNewRequestModalOpen(true)}
+        onRenameRequest={setRenamingRequest}
+        onDeleteRequest={setDeletingRequest}
       />
 
       <div className="flex flex-1 flex-col gap-4 overflow-hidden">
@@ -78,6 +97,9 @@ export default function PlaygroundCollectionPage() {
           baseUrl={collection.baseUrl ?? ""}
           onSend={handleSend}
           isSending={executeRequest.isPending}
+          onSave={handleSave}
+          isSaving={updateRequest.isPending}
+          isDirty={isDirty}
         />
 
         <div className="flex flex-1 gap-4 overflow-hidden">
@@ -90,12 +112,38 @@ export default function PlaygroundCollectionPage() {
             onBodyChange={setDraftBody}
           />
           <ResponseViewer
-            result={executeRequest.data?.data}
+            result={displayedResult}
             isError={executeRequest.isError}
             errorMessage={executeErrorMessage}
+            isStale={isShowingStaleResult}
           />
         </div>
       </div>
+
+      <NewRequestModal
+        open={isNewRequestModalOpen}
+        onClose={() => setIsNewRequestModalOpen(false)}
+        onCreate={handleCreateRequest}
+        isPending={createRequest.isPending}
+        isError={createRequest.isError}
+      />
+
+      <RenameRequestModal
+        open={!!renamingRequest}
+        initialName={renamingRequest?.name ?? ""}
+        onClose={() => setRenamingRequest(null)}
+        onRename={handleRenameRequest}
+        isPending={updateRequest.isPending}
+        isError={updateRequest.isError}
+      />
+
+      <DeleteRequestDialog
+        open={!!deletingRequest}
+        requestName={deletingRequest?.name ?? ""}
+        onClose={() => setDeletingRequest(null)}
+        onConfirm={handleConfirmDelete}
+        isPending={deleteRequest.isPending}
+      />
     </div>
   );
 }
