@@ -26,8 +26,7 @@ export default function HowItWorksSection() {
           How It Works
         </h2>
         <div className="flex flex-col md:flex-row items-start justify-between gap-8 relative">
-          {/* Connecting Line for Desktop */}
-          <div className="hidden md:block absolute top-8 left-[10%] right-[10%] h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+          <div className="hidden md:block absolute top-8 left-[10%] right-[10%] h-[1px] bg-gradient-to-r from-transparent via-[#fca311]/30 to-transparent" />
 
           {steps.map((item) => (
             <StepCard key={item.step} {...item} />

@@ -33,7 +33,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
             </h3>
             <span className="flex items-center gap-1.5 rounded-full border border-neutral-border bg-neutral-surface-2 px-2 py-0.5 text-[11px] font-medium text-neutral-text-secondary">
               {project.provider === "GitHub" ? (
-                <GithubIcon width={24} height={24} />
+                <GithubIcon width={24} height={24} className="text-black" />
               ) : (
                 <GitCommit size={12} />
               )}

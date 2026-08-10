@@ -1,3 +1,4 @@
+// DeveloperExperienceSection.tsx
 import { Zap, Layout, Layers, Rocket } from "lucide-react";
 import DxListItem from "./DxListItem";
 import TerminalPreview from "./TerminalPreview";
@@ -34,7 +35,7 @@ export default function DeveloperExperienceSection() {
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
               Designed for the ultimate Developer Experience
             </h2>
-            <p className="text-[#e5e5e5] opacity-80 mb-8 text-lg">
+            <p className="text-[#e5e5e5]/80 mb-8 text-lg">
               We stripped away the complexity so you can focus on what matters:
               writing great code and shipping products.
             </p>
