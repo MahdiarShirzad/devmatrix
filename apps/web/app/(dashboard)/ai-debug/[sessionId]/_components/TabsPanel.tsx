@@ -4,16 +4,21 @@ import { TABS, Tab } from "./constants";
 import ExplanationTab from "./ExplanationTab";
 import FixTab from "./FixTab";
 import DiffTab from "./DiffTab";
+import { DebugSession } from "@/types/aiDebug.types";
 
 interface TabsPanelProps {
   activeTab: Tab;
   onTabChange: (tab: Tab) => void;
+  session: DebugSession;
 }
 
-export default function TabsPanel({ activeTab, onTabChange }: TabsPanelProps) {
+export default function TabsPanel({
+  activeTab,
+  onTabChange,
+  session,
+}: TabsPanelProps) {
   return (
     <div className="flex flex-col overflow-hidden rounded-2xl border border-neutral-border bg-neutral-surface-1 shadow-sm">
-      {/* هدر تب‌ها */}
       <div className="flex border-b border-neutral-border px-2">
         {TABS.map((tab) => (
           <button
@@ -34,11 +39,10 @@ export default function TabsPanel({ activeTab, onTabChange }: TabsPanelProps) {
         ))}
       </div>
 
-      {/* محتوای تب‌ها */}
       <div className="flex-1 overflow-y-auto p-5">
-        {activeTab === "Explanation" && <ExplanationTab />}
-        {activeTab === "Fix" && <FixTab />}
-        {activeTab === "Diff" && <DiffTab />}
+        {activeTab === "Explanation" && <ExplanationTab session={session} />}
+        {activeTab === "Fix" && <FixTab session={session} />}
+        {activeTab === "Diff" && <DiffTab session={session} />}
       </div>
     </div>
   );

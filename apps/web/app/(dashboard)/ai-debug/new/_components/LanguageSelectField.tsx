@@ -1,7 +1,15 @@
 import { Terminal } from "lucide-react";
 import { LANGUAGES } from "./constants";
+import { UseFormRegister } from "react-hook-form";
+import { CreateDebugSessionFormValues } from "@/lib/ai-debug.schemas";
 
-export default function LanguageSelectField() {
+interface LanguageSelectFieldProps {
+  register: UseFormRegister<CreateDebugSessionFormValues>;
+}
+
+export default function LanguageSelectField({
+  register,
+}: LanguageSelectFieldProps) {
   return (
     <div>
       <label
@@ -14,6 +22,7 @@ export default function LanguageSelectField() {
       <div className="relative">
         <select
           id="language"
+          {...register("language")}
           className="w-full appearance-none rounded-xl border border-neutral-border bg-neutral-surface-2/50 px-4 py-3 text-sm text-neutral-text-primary transition-all focus:border-brand-primary focus:bg-neutral-surface-1 focus:outline-none focus:ring-4 focus:ring-brand-primary/10"
         >
           {LANGUAGES.map((lang) => (
@@ -22,7 +31,6 @@ export default function LanguageSelectField() {
             </option>
           ))}
         </select>
-        {/* آیکون فلش سفارشی برای Select */}
         <div className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-neutral-text-secondary">
           <svg
             width="16"

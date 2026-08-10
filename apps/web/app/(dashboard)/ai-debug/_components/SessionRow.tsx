@@ -2,18 +2,22 @@ import Link from "next/link";
 import { Bug, Clock, CheckCircle2, CircleDashed } from "lucide-react";
 import SessionActionsMenu from "./SessionActionsMenu";
 
-export interface Session {
-  id: string;
-  title: string;
-  project: string;
-  language: string;
-  status: "resolved" | "in progress";
-  time: string;
-}
+import { DebugSession } from "@/types/aiDebug.types";
 
 interface SessionRowProps {
-  session: Session;
+  session: DebugSession;
   isLast: boolean;
+}
+
+function formatRelativeTime(iso: string): string {
+  const diffMs = Date.now() - new Date(iso).getTime();
+  const diffMin = Math.floor(diffMs / 60000);
+  if (diffMin < 1) return "Just now";
+  if (diffMin < 60) return `${diffMin}m ago`;
+  const diffHr = Math.floor(diffMin / 60);
+  if (diffHr < 24) return `${diffHr}h ago`;
+  const diffDay = Math.floor(diffHr / 24);
+  return `${diffDay}d ago`;
 }
 
 export default function SessionRow({ session, isLast }: SessionRowProps) {
@@ -21,7 +25,7 @@ export default function SessionRow({ session, isLast }: SessionRowProps) {
 
   return (
     <Link
-      href={`/ai-debug/${session.id}`}
+      href={`/ai-debug/${session?._id}`}
       className={`group flex flex-col items-start gap-4 p-4 transition-colors hover:bg-neutral-surface-2/50 sm:flex-row sm:items-center sm:justify-between ${
         !isLast ? "border-b border-neutral-border" : ""
       }`}
@@ -44,7 +48,7 @@ export default function SessionRow({ session, isLast }: SessionRowProps) {
           </h3>
           <div className="flex flex-wrap items-center gap-3 text-[11px] font-medium">
             <span className="inline-flex items-center rounded-md border border-neutral-border bg-neutral-surface-2 px-2 py-0.5 text-neutral-text-secondary">
-              {session.project}
+              {/* {session.project} */}
             </span>
             <span className="text-neutral-text-secondary before:mr-2 before:content-['•']">
               {session.language}
@@ -72,11 +76,11 @@ export default function SessionRow({ session, isLast }: SessionRowProps) {
           </span>
           <span className="flex items-center gap-1.5 text-xs text-neutral-text-secondary">
             <Clock size={14} />
-            {session.time}
+            {/* {session.time} */}
           </span>
         </div>
 
-        <SessionActionsMenu sessionId={session.id} />
+        <SessionActionsMenu sessionId={session?._id} />
       </div>
     </Link>
   );

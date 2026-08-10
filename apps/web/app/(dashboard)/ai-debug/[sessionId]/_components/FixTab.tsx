@@ -2,25 +2,29 @@
 
 import { useState } from "react";
 import { Copy, Check } from "lucide-react";
+import { DebugSession } from "@/types/aiDebug.types";
 
-const FIXED_CODE = `function getUser(id) {
-  const user = users.find(u => u.id === id);
-  
-  if (!user) {
-    throw new AppError('User not found', 404);
-  }
-  
-  return user.name;
-}`;
+interface FixTabProps {
+  session: DebugSession;
+}
 
-export default function FixTab() {
+export default function FixTab({ session }: FixTabProps) {
   const [isCopied, setIsCopied] = useState(false);
 
-  // شبیه‌سازی کپی کردن کد
   const handleCopy = () => {
+    if (!session.fixedCode) return;
+    navigator.clipboard.writeText(session.fixedCode);
     setIsCopied(true);
     setTimeout(() => setIsCopied(false), 2000);
   };
+
+  if (!session.fixedCode) {
+    return (
+      <p className="text-sm text-neutral-text-secondary">
+        کد اصلاح‌شده موجود نیست.
+      </p>
+    );
+  }
 
   return (
     <div className="group relative flex h-full flex-col animate-in fade-in duration-300">
@@ -36,7 +40,7 @@ export default function FixTab() {
         )}
       </button>
       <pre className="h-full overflow-x-auto rounded-xl bg-[#0d1117] p-5 font-mono text-[13px] leading-loose text-neutral-200">
-        {FIXED_CODE}
+        {session.fixedCode}
       </pre>
     </div>
   );
