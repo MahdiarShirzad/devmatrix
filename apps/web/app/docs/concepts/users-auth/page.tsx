@@ -1,3 +1,4 @@
+// UsersAuthPage.tsx
 import Breadcrumb from "../../_components/Breadcrumb";
 import PageHeader from "../../_components/PageHeader";
 import SectionHeading from "../../_components/SectionHeading";
@@ -13,7 +14,10 @@ export default function UsersAuthPage() {
         <Breadcrumb
           items={[
             { name: "Docs", href: "/docs/introduction" },
-            { name: "Core Concepts", href: "/docs/concepts/projects-workspaces" },
+            {
+              name: "Core Concepts",
+              href: "/docs/concepts/projects-workspaces",
+            },
           ]}
           current="Users & Auth"
         />
@@ -23,15 +27,15 @@ export default function UsersAuthPage() {
           description="DevMatrix uses a JWT-based session model shared by the web app and the API. This page covers the User and Session entities and the auth flow."
         />
 
-        <div className="prose prose-invert prose-slate max-w-none">
+        <div className="max-w-none">
           <SectionHeading id="user-and-session">User & Session</SectionHeading>
-          <p className="text-slate-300 mb-4 text-sm leading-7">
+          <p className="text-[#e5e5e5]/80 mb-4 text-sm leading-7">
             Every account is a{" "}
-            <code className="bg-white/10 px-1.5 py-0.5 rounded text-sm text-slate-200">
+            <code className="bg-white/10 px-1.5 py-0.5 rounded text-sm text-[#e5e5e5]">
               User
             </code>
             . Signing in issues a{" "}
-            <code className="bg-white/10 px-1.5 py-0.5 rounded text-sm text-slate-200">
+            <code className="bg-white/10 px-1.5 py-0.5 rounded text-sm text-[#e5e5e5]">
               Session
             </code>{" "}
             backed by a JWT token.
@@ -63,8 +67,11 @@ interface Session {
               "The client stores the token and sends it as an Authorization: Bearer <token> header on every request.",
               "Every module — Playground, Debugging, Analytics, Idea Validator — trusts this same token.",
             ].map((line, idx) => (
-              <li key={idx} className="flex items-start gap-3 text-sm text-slate-300">
-                <span className="shrink-0 flex h-6 w-6 items-center justify-center rounded-full bg-purple-500/10 border border-purple-500/30 text-xs font-semibold text-purple-300">
+              <li
+                key={idx}
+                className="flex items-start gap-3 text-sm text-[#e5e5e5]/80"
+              >
+                <span className="shrink-0 flex h-6 w-6 items-center justify-center rounded-full bg-[#fca311]/10 border border-[#fca311]/30 text-xs font-semibold text-[#fca311]">
                   {idx + 1}
                 </span>
                 <span className="pt-0.5">{line}</span>
@@ -74,16 +81,16 @@ interface Session {
 
           <Callout variant="warning" title="Tokens are bearer credentials">
             Anyone holding a valid token can act as that user. Keep{" "}
-            <code className="bg-amber-500/20 px-1.5 py-0.5 rounded text-amber-300">
+            <code className="bg-amber-500/20 px-1.5 py-0.5 rounded text-amber-300 font-mono text-xs">
               DEVMATRIX_API_KEY
             </code>{" "}
             and session tokens server-side or in secure storage — never in
             client-exposed code.
           </Callout>
 
-          <p className="text-slate-300 mb-4 text-sm leading-7">
+          <p className="text-[#e5e5e5]/80 mb-4 text-sm leading-7">
             For the exact request and response shapes, see{" "}
-            <code className="bg-white/10 px-1.5 py-0.5 rounded text-sm text-slate-200">
+            <code className="bg-white/10 px-1.5 py-0.5 rounded text-sm text-[#e5e5e5]">
               API Reference → Authentication
             </code>
             .

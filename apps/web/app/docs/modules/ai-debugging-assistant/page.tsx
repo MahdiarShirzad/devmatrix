@@ -1,3 +1,4 @@
+// AiDebuggingAssistantPage.tsx
 import { Bug, CheckCircle2 } from "lucide-react";
 import Breadcrumb from "../../_components/Breadcrumb";
 import PageHeader from "../../_components/PageHeader";
@@ -29,8 +30,8 @@ export default function AiDebuggingAssistantPage() {
         />
 
         <div className="flex items-center gap-3 mb-4">
-          <div className="rounded-lg bg-blue-500/10 p-2">
-            <Bug size={20} className="text-blue-400" />
+          <div className="rounded-lg bg-[#fca311]/10 p-2">
+            <Bug size={20} className="text-[#fca311]" />
           </div>
         </div>
         <PageHeader
@@ -38,22 +39,28 @@ export default function AiDebuggingAssistantPage() {
           description="An intelligent assistant that helps developers debug code and errors, right where the error happened."
         />
 
-        <div className="prose prose-invert prose-slate max-w-none">
+        <div className="max-w-none">
           <SectionHeading id="features">Features</SectionHeading>
           <ul className="space-y-2 mb-6 not-prose">
             {features.map((f) => (
-              <li key={f} className="flex items-start gap-2 text-sm text-slate-300">
-                <CheckCircle2 size={16} className="shrink-0 mt-0.5 text-blue-400" />
+              <li
+                key={f}
+                className="flex items-start gap-2 text-sm text-[#e5e5e5]/80"
+              >
+                <CheckCircle2
+                  size={16}
+                  className="shrink-0 mt-0.5 text-[#fca311]"
+                />
                 {f}
               </li>
             ))}
           </ul>
 
           <SectionHeading id="how-it-works">How it works</SectionHeading>
-          <p className="text-slate-300 mb-4 text-sm leading-7">
-            Submit an error message or stack trace, and the assistant
-            analyzes it against your project's context to suggest likely
-            causes, a concrete fix, and — where relevant — a refactor.
+          <p className="text-[#e5e5e5]/80 mb-4 text-sm leading-7">
+            Submit an error message or stack trace, and the assistant analyzes
+            it against your project&apos;s context to suggest likely causes, a
+            concrete fix, and — where relevant — a refactor.
           </p>
           <CodeBlock
             label="submit-error.ts"
@@ -68,13 +75,13 @@ console.log(result.suggestedFix);`}
           />
 
           <Callout variant="info" title="Where this fits in the roadmap">
-            This is the platform's first AI-powered module — it's what
+            This is the platform&apos;s first AI-powered module — it&apos;s what
             establishes the LLM integration and prompt-handling pattern that
             Developer Analytics and the Idea Validator later build on.
           </Callout>
 
           <SectionHeading id="goal">Goal</SectionHeading>
-          <p className="text-slate-300 mb-4 text-sm leading-7">
+          <p className="text-[#e5e5e5]/80 mb-4 text-sm leading-7">
             Reduce debugging time and improve problem-solving efficiency.
           </p>
         </div>

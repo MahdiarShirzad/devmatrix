@@ -1,3 +1,4 @@
+// Callout.tsx
 import { Info, Lightbulb, AlertTriangle, CheckCircle2 } from "lucide-react";
 import type { ReactNode } from "react";
 
@@ -9,15 +10,15 @@ const variantStyles: Record<
 > = {
   info: {
     Icon: Info,
-    wrap: "border-blue-500/20 bg-blue-500/10 text-blue-200",
-    icon: "text-blue-400",
-    title: "text-blue-300",
+    wrap: "border-sky-500/20 bg-sky-500/10 text-sky-200",
+    icon: "text-sky-400",
+    title: "text-sky-300",
   },
   tip: {
     Icon: Lightbulb,
-    wrap: "border-purple-500/20 bg-purple-500/10 text-purple-200",
-    icon: "text-purple-400",
-    title: "text-purple-300",
+    wrap: "border-[#fca311]/20 bg-[#fca311]/10 text-amber-100",
+    icon: "text-[#fca311]",
+    title: "text-[#fca311]",
   },
   warning: {
     Icon: AlertTriangle,
@@ -45,7 +46,9 @@ export default function Callout({
   const s = variantStyles[variant];
   const { Icon } = s;
   return (
-    <div className={`my-8 flex gap-4 rounded-xl border p-4 not-prose ${s.wrap}`}>
+    <div
+      className={`my-8 flex gap-4 rounded-xl border p-4 not-prose ${s.wrap}`}
+    >
       <Icon size={20} className={`shrink-0 ${s.icon}`} />
       <div className="text-sm leading-6">
         <strong className={`block mb-1 ${s.title}`}>{title}</strong>

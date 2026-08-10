@@ -1,3 +1,4 @@
+// SectionHeading.tsx
 import { Hash } from "lucide-react";
 import type { ReactNode } from "react";
 
@@ -16,7 +17,7 @@ export default function SectionHeading({
       {children}
       <Hash
         size={18}
-        className="ml-2 opacity-0 group-hover:opacity-100 text-slate-500 transition-opacity"
+        className="ml-2 opacity-0 group-hover:opacity-100 text-[#fca311] transition-opacity"
       />
     </h2>
   );

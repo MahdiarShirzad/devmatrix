@@ -1,3 +1,4 @@
+// DocsSidebar.tsx
 "use client";
 
 import Link from "next/link";
@@ -25,8 +26,8 @@ export default function DocsSidebar() {
                         href={item.href}
                         className={`text-sm transition-colors flex items-center gap-2 ${
                           active
-                            ? "text-purple-400 font-medium -ml-[17px] border-l-2 border-purple-500 pl-4"
-                            : "text-slate-400 hover:text-white"
+                            ? "text-[#fca311] font-medium -ml-[17px] border-l-2 border-[#fca311] pl-4"
+                            : "text-[#e5e5e5]/70 hover:text-white"
                         }`}
                       >
                         {item.name}

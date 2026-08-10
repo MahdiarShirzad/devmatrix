@@ -1,3 +1,4 @@
+// ApiPlaygroundPage.tsx
 import { Zap, CheckCircle2 } from "lucide-react";
 import Breadcrumb from "../../_components/Breadcrumb";
 import PageHeader from "../../_components/PageHeader";
@@ -29,8 +30,8 @@ export default function ApiPlaygroundPage() {
         />
 
         <div className="flex items-center gap-3 mb-4">
-          <div className="rounded-lg bg-purple-500/10 p-2">
-            <Zap size={20} className="text-purple-400" />
+          <div className="rounded-lg bg-[#fca311]/10 p-2">
+            <Zap size={20} className="text-[#fca311]" />
           </div>
         </div>
         <PageHeader
@@ -38,22 +39,28 @@ export default function ApiPlaygroundPage() {
           description="A lightweight API testing environment, similar to Postman, built directly into your project — no external tool required."
         />
 
-        <div className="prose prose-invert prose-slate max-w-none">
+        <div className="max-w-none">
           <SectionHeading id="features">Features</SectionHeading>
           <ul className="space-y-2 mb-6 not-prose">
             {features.map((f) => (
-              <li key={f} className="flex items-start gap-2 text-sm text-slate-300">
-                <CheckCircle2 size={16} className="shrink-0 mt-0.5 text-purple-400" />
+              <li
+                key={f}
+                className="flex items-start gap-2 text-sm text-[#e5e5e5]/80"
+              >
+                <CheckCircle2
+                  size={16}
+                  className="shrink-0 mt-0.5 text-[#fca311]"
+                />
                 {f}
               </li>
             ))}
           </ul>
 
           <SectionHeading id="collections">Collections</SectionHeading>
-          <p className="text-slate-300 mb-4 text-sm leading-7">
-            Requests are grouped into collections so a whole API surface —
-            auth, projects, a third-party integration — can be saved,
-            re-run, and shared with the rest of the team on the project.
+          <p className="text-[#e5e5e5]/80 mb-4 text-sm leading-7">
+            Requests are grouped into collections so a whole API surface — auth,
+            projects, a third-party integration — can be saved, re-run, and
+            shared with the rest of the team on the project.
           </p>
           <CodeBlock
             label="collection example"
@@ -67,13 +74,13 @@ export default function ApiPlaygroundPage() {
           />
 
           <Callout variant="tip" title="Built first, on purpose">
-            API Playground needs no AI and no external integrations, which
-            is exactly why it ships first in the roadmap — it defines the
-            module pattern every later module follows.
+            API Playground needs no AI and no external integrations, which is
+            exactly why it ships first in the roadmap — it defines the module
+            pattern every later module follows.
           </Callout>
 
           <SectionHeading id="goal">Goal</SectionHeading>
-          <p className="text-slate-300 mb-4 text-sm leading-7">
+          <p className="text-[#e5e5e5]/80 mb-4 text-sm leading-7">
             Provide a simple, built-in API testing tool without external
             dependencies.
           </p>

@@ -1,3 +1,4 @@
+// ProjectsWorkspacesPage.tsx
 import Breadcrumb from "../../_components/Breadcrumb";
 import PageHeader from "../../_components/PageHeader";
 import SectionHeading from "../../_components/SectionHeading";
@@ -13,7 +14,10 @@ export default function ProjectsWorkspacesPage() {
         <Breadcrumb
           items={[
             { name: "Docs", href: "/docs/introduction" },
-            { name: "Core Concepts", href: "/docs/concepts/projects-workspaces" },
+            {
+              name: "Core Concepts",
+              href: "/docs/concepts/projects-workspaces",
+            },
           ]}
           current="Projects & Workspaces"
         />
@@ -23,14 +27,16 @@ export default function ProjectsWorkspacesPage() {
           description="A Project is the container every module's data lives under. This page covers the Project entity and how workspaces group projects for a team."
         />
 
-        <div className="prose prose-invert prose-slate max-w-none">
-          <SectionHeading id="the-project-entity">The Project entity</SectionHeading>
-          <p className="text-slate-300 mb-4 text-sm leading-7">
-            Every request you make in the API Playground, every error you
-            submit to the AI Debugging Assistant, every commit tracked by
-            Developer Analytics, and every report from the SaaS Idea
-            Validator is stored against a single{" "}
-            <code className="bg-white/10 px-1.5 py-0.5 rounded text-sm text-slate-200">
+        <div className="max-w-none">
+          <SectionHeading id="the-project-entity">
+            The Project entity
+          </SectionHeading>
+          <p className="text-[#e5e5e5]/80 mb-4 text-sm leading-7">
+            Every request you make in the API Playground, every error you submit
+            to the AI Debugging Assistant, every commit tracked by Developer
+            Analytics, and every report from the SaaS Idea Validator is stored
+            against a single{" "}
+            <code className="bg-white/10 px-1.5 py-0.5 rounded text-sm text-[#e5e5e5]">
               Project
             </code>{" "}
             record.
@@ -48,28 +54,30 @@ export default function ProjectsWorkspacesPage() {
           />
 
           <SectionHeading id="workspaces">Workspaces</SectionHeading>
-          <p className="text-slate-300 mb-4 text-sm leading-7">
+          <p className="text-[#e5e5e5]/80 mb-4 text-sm leading-7">
             A workspace is simply the set of projects a{" "}
-            <code className="bg-white/10 px-1.5 py-0.5 rounded text-sm text-slate-200">
+            <code className="bg-white/10 px-1.5 py-0.5 rounded text-sm text-[#e5e5e5]">
               User
             </code>{" "}
-            has access to. There's no separate workspace table today —
-            access is resolved from ownership on the Project itself, which
-            keeps the model simple while the platform is early.
+            has access to. There&apos;s no separate workspace table today —
+            access is resolved from ownership on the Project itself, which keeps
+            the model simple while the platform is early.
           </p>
 
           <Callout variant="info" title="One project, every module">
-            You don't create a separate "API Playground project" and
-            "Analytics project" — you create one project, then use whichever
-            modules you need inside it.
+            You don&apos;t create a separate &quot;API Playground project&quot;
+            and &quot;Analytics project&quot; — you create one project, then use
+            whichever modules you need inside it.
           </Callout>
 
-          <SectionHeading id="switching-projects">Switching projects</SectionHeading>
-          <p className="text-slate-300 mb-4 text-sm leading-7">
-            The project switcher in the dashboard sidebar lets you move
-            between projects without losing your place — each module reads
-            the active project ID from the same client instance you
-            configured in Quick Start.
+          <SectionHeading id="switching-projects">
+            Switching projects
+          </SectionHeading>
+          <p className="text-[#e5e5e5]/80 mb-4 text-sm leading-7">
+            The project switcher in the dashboard sidebar lets you move between
+            projects without losing your place — each module reads the active
+            project ID from the same client instance you configured in Quick
+            Start.
           </p>
         </div>
 

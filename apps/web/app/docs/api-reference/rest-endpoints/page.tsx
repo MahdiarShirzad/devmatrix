@@ -1,3 +1,4 @@
+// RestEndpointsPage.tsx
 import Breadcrumb from "../../_components/Breadcrumb";
 import PageHeader from "../../_components/PageHeader";
 import SectionHeading from "../../_components/SectionHeading";
@@ -22,7 +23,11 @@ const endpointGroups = [
     rows: [
       ["GET", "/api/projects/:id/requests", "List saved requests"],
       ["POST", "/api/projects/:id/requests", "Save a request"],
-      ["POST", "/api/projects/:id/requests/:reqId/send", "Send a saved request"],
+      [
+        "POST",
+        "/api/projects/:id/requests/:reqId/send",
+        "Send a saved request",
+      ],
       ["GET", "/api/projects/:id/collections", "List collections"],
     ],
   },
@@ -30,7 +35,11 @@ const endpointGroups = [
     id: "ai-debugging",
     title: "AI Debugging Assistant",
     rows: [
-      ["POST", "/api/projects/:id/debug/analyze", "Analyze an error or stack trace"],
+      [
+        "POST",
+        "/api/projects/:id/debug/analyze",
+        "Analyze an error or stack trace",
+      ],
       ["GET", "/api/projects/:id/debug/history", "List past analyses"],
     ],
   },
@@ -38,27 +47,43 @@ const endpointGroups = [
     id: "analytics",
     title: "Developer Analytics",
     rows: [
-      ["POST", "/api/projects/:id/analytics/connect-github", "Connect a GitHub repository"],
-      ["POST", "/api/projects/:id/analytics/connect-jira", "Connect a Jira project"],
+      [
+        "POST",
+        "/api/projects/:id/analytics/connect-github",
+        "Connect a GitHub repository",
+      ],
+      [
+        "POST",
+        "/api/projects/:id/analytics/connect-jira",
+        "Connect a Jira project",
+      ],
       ["GET", "/api/projects/:id/analytics/dashboard", "Get dashboard metrics"],
-      ["GET", "/api/projects/:id/analytics/report", "Generate a project report"],
+      [
+        "GET",
+        "/api/projects/:id/analytics/report",
+        "Generate a project report",
+      ],
     ],
   },
   {
     id: "idea-validator",
     title: "SaaS Idea Validator",
     rows: [
-      ["POST", "/api/projects/:id/ideas/analyze", "Submit an idea for analysis"],
+      [
+        "POST",
+        "/api/projects/:id/ideas/analyze",
+        "Submit an idea for analysis",
+      ],
       ["GET", "/api/projects/:id/ideas/:reportId", "Get a validation report"],
     ],
   },
 ];
 
 const methodColor: Record<string, string> = {
-  GET: "text-blue-400 bg-blue-500/10",
+  GET: "text-sky-400 bg-sky-500/10",
   POST: "text-emerald-400 bg-emerald-500/10",
-  PATCH: "text-amber-400 bg-amber-500/10",
-  DELETE: "text-red-400 bg-red-500/10",
+  PATCH: "text-[#fca311] bg-[#fca311]/10",
+  DELETE: "text-rose-400 bg-rose-500/10",
 };
 
 export default function RestEndpointsPage() {
@@ -68,7 +93,10 @@ export default function RestEndpointsPage() {
         <Breadcrumb
           items={[
             { name: "Docs", href: "/docs/introduction" },
-            { name: "API Reference", href: "/docs/api-reference/authentication" },
+            {
+              name: "API Reference",
+              href: "/docs/api-reference/authentication",
+            },
           ]}
           current="REST Endpoints"
         />
@@ -78,16 +106,16 @@ export default function RestEndpointsPage() {
           description="Every endpoint DevMatrix exposes, grouped by the module it belongs to. All routes require an Authorization: Bearer <token> header."
         />
 
-        <div className="prose prose-invert prose-slate max-w-none">
+        <div className="max-w-none">
           {endpointGroups.map((group) => (
             <div key={group.id}>
               <SectionHeading id={group.id}>{group.title}</SectionHeading>
-              <div className="not-prose overflow-hidden rounded-xl border border-white/10 mb-6">
+              <div className="not-prose overflow-hidden rounded-xl border border-white/10 bg-[#0D1117] mb-6">
                 <table className="w-full text-sm">
                   <tbody>
                     {group.rows.map(([method, path, desc], idx) => (
                       <tr
-                        key={path}
+                        key={`${method}-${path}`}
                         className={idx !== 0 ? "border-t border-white/10" : ""}
                       >
                         <td className="px-4 py-3 w-24">
@@ -97,10 +125,10 @@ export default function RestEndpointsPage() {
                             {method}
                           </span>
                         </td>
-                        <td className="px-4 py-3 font-mono text-xs text-slate-200 whitespace-nowrap">
+                        <td className="px-4 py-3 font-mono text-xs text-[#e5e5e5] whitespace-nowrap">
                           {path}
                         </td>
-                        <td className="px-4 py-3 text-xs text-slate-400">
+                        <td className="px-4 py-3 text-xs text-[#e5e5e5]/70">
                           {desc}
                         </td>
                       </tr>
@@ -115,9 +143,7 @@ export default function RestEndpointsPage() {
         <DocsPagination current="/docs/api-reference/rest-endpoints" />
       </main>
 
-      <Toc
-        items={endpointGroups.map((g) => ({ id: g.id, label: g.title }))}
-      />
+      <Toc items={endpointGroups.map((g) => ({ id: g.id, label: g.title }))} />
     </>
   );
 }

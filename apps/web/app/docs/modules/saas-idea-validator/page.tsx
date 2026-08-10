@@ -1,3 +1,4 @@
+// SaasIdeaValidatorPage.tsx
 import { Rocket, CheckCircle2 } from "lucide-react";
 import Breadcrumb from "../../_components/Breadcrumb";
 import PageHeader from "../../_components/PageHeader";
@@ -30,8 +31,8 @@ export default function SaasIdeaValidatorPage() {
         />
 
         <div className="flex items-center gap-3 mb-4">
-          <div className="rounded-lg bg-amber-500/10 p-2">
-            <Rocket size={20} className="text-amber-400" />
+          <div className="rounded-lg bg-[#fca311]/10 p-2">
+            <Rocket size={20} className="text-[#fca311]" />
           </div>
         </div>
         <PageHeader
@@ -39,19 +40,27 @@ export default function SaasIdeaValidatorPage() {
           description="An AI-powered tool for validating SaaS ideas before you spend time building them."
         />
 
-        <div className="prose prose-invert prose-slate max-w-none">
+        <div className="max-w-none">
           <SectionHeading id="features">Features</SectionHeading>
           <ul className="space-y-2 mb-6 not-prose">
             {features.map((f) => (
-              <li key={f} className="flex items-start gap-2 text-sm text-slate-300">
-                <CheckCircle2 size={16} className="shrink-0 mt-0.5 text-amber-400" />
+              <li
+                key={f}
+                className="flex items-start gap-2 text-sm text-[#e5e5e5]/80"
+              >
+                <CheckCircle2
+                  size={16}
+                  className="shrink-0 mt-0.5 text-[#fca311]"
+                />
                 {f}
               </li>
             ))}
           </ul>
 
-          <SectionHeading id="requesting-a-report">Requesting a report</SectionHeading>
-          <p className="text-slate-300 mb-4 text-sm leading-7">
+          <SectionHeading id="requesting-a-report">
+            Requesting a report
+          </SectionHeading>
+          <p className="text-[#e5e5e5]/80 mb-4 text-sm leading-7">
             Describe the idea in plain language, and the validator returns a
             structured report covering market size, competitors, suggested
             features, a revenue model, and a SWOT breakdown.
@@ -69,12 +78,12 @@ console.log(report.swot);`}
 
           <Callout variant="tip" title="Most complex module in the platform">
             The Idea Validator combines AI processing, external market-data
-            APIs, and competitor research — it's built last in the roadmap,
+            APIs, and competitor research — it&apos;s built last in the roadmap,
             after the AI and analytics patterns are already established.
           </Callout>
 
           <SectionHeading id="goal">Goal</SectionHeading>
-          <p className="text-slate-300 mb-4 text-sm leading-7">
+          <p className="text-[#e5e5e5]/80 mb-4 text-sm leading-7">
             Help developers and founders evaluate ideas before building
             products.
           </p>

@@ -1,3 +1,4 @@
+// AuthenticationApiPage.tsx
 import Breadcrumb from "../../_components/Breadcrumb";
 import PageHeader from "../../_components/PageHeader";
 import SectionHeading from "../../_components/SectionHeading";
@@ -13,7 +14,10 @@ export default function AuthenticationApiPage() {
         <Breadcrumb
           items={[
             { name: "Docs", href: "/docs/introduction" },
-            { name: "API Reference", href: "/docs/api-reference/authentication" },
+            {
+              name: "API Reference",
+              href: "/docs/api-reference/authentication",
+            },
           ]}
           current="Authentication"
         />
@@ -23,9 +27,9 @@ export default function AuthenticationApiPage() {
           description="Register, log in, and use the JWT you get back to authenticate every other request."
         />
 
-        <div className="prose prose-invert prose-slate max-w-none">
+        <div className="max-w-none">
           <SectionHeading id="register">POST /api/auth/register</SectionHeading>
-          <p className="text-slate-300 mb-4 text-sm leading-7">
+          <p className="text-[#e5e5e5]/80 mb-4 text-sm leading-7">
             Creates a new user.
           </p>
           <CodeBlock
@@ -52,7 +56,7 @@ Content-Type: application/json
           />
 
           <SectionHeading id="login">POST /api/auth/login</SectionHeading>
-          <p className="text-slate-300 mb-4 text-sm leading-7">
+          <p className="text-[#e5e5e5]/80 mb-4 text-sm leading-7">
             Exchanges credentials for a session token.
           </p>
           <CodeBlock
@@ -74,9 +78,8 @@ Content-Type: application/json
           />
 
           <SectionHeading id="using-the-token">Using the token</SectionHeading>
-          <p className="text-slate-300 mb-4 text-sm leading-7">
-            Send the token on every authenticated request as a bearer
-            header:
+          <p className="text-[#e5e5e5]/80 mb-4 text-sm leading-7">
+            Send the token on every authenticated request as a bearer header:
           </p>
           <CodeBlock
             label="request header"
@@ -84,12 +87,12 @@ Content-Type: application/json
           />
 
           <Callout variant="warning" title="Tokens expire">
-            A token is valid until the Session's{" "}
-            <code className="bg-amber-500/20 px-1.5 py-0.5 rounded text-amber-300">
+            A token is valid until the Session&apos;s{" "}
+            <code className="bg-amber-500/20 px-1.5 py-0.5 rounded text-amber-300 font-mono text-xs">
               expiresAt
             </code>
-            . A 401 response means the client should send the user back
-            through login.
+            . A 401 response means the client should send the user back through
+            login.
           </Callout>
         </div>
 
