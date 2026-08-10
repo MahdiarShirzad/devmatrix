@@ -16,7 +16,7 @@ export default function MobileHeader({
       <h1 className="text-2xl font-bold text-white">Settings</h1>
       <button
         onClick={onToggle}
-        className="p-2 bg-white/5 rounded-lg border border-white/10 text-white"
+        className="p-2 bg-white/5 rounded-lg border border-white/10 text-white hover:bg-white/10 transition-colors"
       >
         {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
       </button>

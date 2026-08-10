@@ -19,6 +19,9 @@ export const metadata: Metadata = {
   title: "DevMatrix | Developer Productivity Suite",
   description:
     "A centralized platform for developers to manage, analyze, and debug projects.",
+  icons: {
+    icon: "/logo.png",
+  },
 };
 
 export default function RootLayout({

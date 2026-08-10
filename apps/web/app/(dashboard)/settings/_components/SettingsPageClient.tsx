@@ -24,7 +24,7 @@ export default function SettingsPageClient() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0916] text-slate-300 font-sans selection:bg-purple-500/30">
+    <div className="min-h-screen bg-[#0a0916] text-[#e5e5e5] font-sans selection:bg-[#fca311]/30">
       <div className="container mx-auto px-4 md:px-6 py-8 max-w-7xl">
         <MobileHeader
           isMobileMenuOpen={isMobileMenuOpen}
@@ -50,9 +50,7 @@ export default function SettingsPageClient() {
               {activeTab === "api-keys" && <ApiKeysPanel />}
 
               {activeTab !== "profile" && activeTab !== "api-keys" && (
-                <ComingSoonPlaceholder
-                  tabLabel={activeTab.replace("-", " ")}
-                />
+                <ComingSoonPlaceholder tabLabel={activeTab.replace("-", " ")} />
               )}
             </div>
           </main>

@@ -10,12 +10,12 @@ export default function DangerZone() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <h4 className="font-medium text-white">Delete Account</h4>
-            <p className="text-sm text-slate-400 mt-1">
+            <p className="text-sm text-[#e5e5e5]/60 mt-1">
               Permanently delete your account and all associated data. This
               action cannot be undone.
             </p>
           </div>
-          <button className="shrink-0 rounded-lg bg-red-500/10 px-4 py-2 text-sm font-medium text-red-500 transition-colors hover:bg-red-500 hover:text-white border border-red-500/20">
+          <button className="shrink-0 rounded-lg bg-red-500/10 px-4 py-2 text-sm font-medium text-red-400 transition-colors hover:bg-red-500 hover:text-white border border-red-500/20">
             Delete Account
           </button>
         </div>

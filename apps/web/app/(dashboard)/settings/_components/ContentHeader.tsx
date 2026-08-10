@@ -23,11 +23,11 @@ export default function ContentHeader({
         <button
           onClick={onSave}
           disabled={isSaving}
-          className="flex items-center gap-2 rounded-lg bg-purple-600 px-5 py-2 text-sm font-medium text-white transition-all hover:bg-purple-500 active:scale-95 disabled:opacity-70 disabled:pointer-events-none"
+          className="flex items-center gap-2 rounded-lg bg-[#fca311] px-5 py-2 text-sm font-semibold text-[#0a0916] transition-all hover:bg-[#fca311]/90 active:scale-95 disabled:opacity-70 disabled:pointer-events-none"
         >
           {isSaving ? (
             <>
-              <div className="h-4 w-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />
+              <div className="h-4 w-4 rounded-full border-2 border-[#0a0916]/30 border-t-[#0a0916] animate-spin" />
               Saving...
             </>
           ) : (
