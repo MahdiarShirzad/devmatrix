@@ -18,7 +18,6 @@ export const requireAuth = (
     (req as any).userId = payload.userId;
     next();
   } catch (error) {
-    // شامل expired token هم می‌شه — فرانت باید با /api/auth/refresh این حالت رو مدیریت کنه
     res.status(401).json({ message: "Access token نامعتبر یا منقضی شده" });
   }
 };
