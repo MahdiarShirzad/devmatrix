@@ -27,6 +27,7 @@ export async function analyzeCode(
   input: AnalyzeCodeInput,
 ): Promise<AnalyzeCodeResult> {
   const apiKey = process.env.AI_DEBUG_GROQ_API_KEY;
+  console.log(process.env.AI_DEBUG_GROQ_API_KEY);
   if (!apiKey) {
     throw new AppError("AI Debug service is not configured", 500);
   }

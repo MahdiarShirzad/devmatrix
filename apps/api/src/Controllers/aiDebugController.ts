@@ -8,9 +8,9 @@ export const createSession = catchAsync(async (req: Request, res: Response) => {
   const userId = (req as any).userId;
   const { language, sourceCode, userDescription, projectId } = req.body;
 
-  if (!language || !!sourceCode) {
-    throw new AppError("language and sourceCode are required", 400);
-  }
+  // if (!language || !!sourceCode) {
+  //   throw new AppError("language and sourceCode are required", 400);
+  // }
 
   const result = await analyzeCode({ language, sourceCode, userDescription });
 
@@ -43,7 +43,7 @@ export const getSession = catchAsync(async (req: Request, res: Response) => {
   const userId = (req as any).userId;
   const session = await DebugSession.findOne({
     _id: req.params.id,
-    userIs: userId.toString(),
+    userId: userId.toString(),
   });
 
   if (!session) {
