@@ -27,16 +27,16 @@ const dxItems = [
 
 export default function DeveloperExperienceSection() {
   return (
-    <section className="py-24 border-y border-white/5 bg-[#0d0c1b] overflow-hidden">
+    <section className="py-24 border-y border-white/5 bg-[#0D1117] overflow-hidden">
       <div className="container mx-auto px-6">
         <div className="flex flex-col lg:flex-row items-center gap-16">
           <div className="flex-1">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
               Designed for the ultimate Developer Experience
             </h2>
-            <p className="text-slate-400 mb-8 text-lg">
-              We stripped away the complexity so you can focus on what
-              matters: writing great code and shipping products.
+            <p className="text-[#e5e5e5] opacity-80 mb-8 text-lg">
+              We stripped away the complexity so you can focus on what matters:
+              writing great code and shipping products.
             </p>
 
             <ul className="space-y-6">

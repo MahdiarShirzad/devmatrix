@@ -5,28 +5,28 @@
   --font-sans: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-mono), ui-monospace, SFMono-Regular, monospace;
 
-  /* DevMatrix brand palette */
-  --color-brand-bg: #0a0916;
-  --color-brand-primary: #5e4ce6;
-  --color-brand-surface: #f3f2fd;
-  --color-brand-accent: #0077ff;
-  --color-brand-highlight: #f2ae26;
+  /* DevMatrix brand palette (Refined) */
+  --color-brand-bg: #000000;
+  --color-brand-primary: #fca311;
+  --color-brand-surface: #0d1117; /* رنگ بسیار تیره‌تر و هماهنگ‌تر جایگزین شد */
+  --color-brand-accent: #e5e5e5;
+  --color-brand-highlight: #ffffff;
 
   /* Neutral scale */
-  --color-neutral-bg: #0a0916;
-  --color-neutral-surface-1: #171625;
-  --color-neutral-surface-2: #242239;
-  --color-neutral-border: #332f4d;
-  --color-neutral-text-secondary: #8b899e;
-  --color-neutral-text-primary: #e8e7ef;
+  --color-neutral-bg: #000000;
+  --color-neutral-surface-1: #0d1117; /* پس‌زمینه کارت‌ها و سایدبار */
+  --color-neutral-surface-2: #161d29; /* یک درجه روشن‌تر برای هاور (Hover) و المان‌های رویی */
+  --color-neutral-border: rgba(229, 229, 229, 0.12);
+  --color-neutral-text-secondary: #e5e5e5;
+  --color-neutral-text-primary: #ffffff;
 
   /* Status / semantic colors (Dark Mode Optimized) */
   --color-success: #4caf50;
   --color-success-bg: rgba(76, 175, 80, 0.15);
   --color-error: #ef5350;
   --color-error-bg: rgba(239, 83, 80, 0.15);
-  --color-warning: #ff9800;
-  --color-warning-bg: rgba(255, 152, 0, 0.15);
+  --color-warning: #fca311;
+  --color-warning-bg: rgba(252, 163, 17, 0.15);
   --color-info: #0077ff;
   --color-info-bg: rgba(0, 119, 255, 0.15);
 }
