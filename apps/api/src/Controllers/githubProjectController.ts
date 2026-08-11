@@ -47,6 +47,7 @@ export const getAvailableRepos = catchAsync(
 export const listProjects = catchAsync(
   async (req: Request, res: Response): Promise<void> => {
     const userId = (req as any).userId;
+    const days = Math.min(Math.max(Number(req.query.days) || 7, 1), 365);
 
     const user = await User.findById(userId).select("+githubAccessToken");
     const githubConnected = !!user?.githubAccessToken;
@@ -69,21 +70,26 @@ export const listProjects = catchAsync(
     const projectIds = projects.map((p) => p._id);
 
     const now = new Date();
-    const oneWeekAgo = new Date(now);
-    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-    const twoWeeksAgo = new Date(now);
-    twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
-    const sevenDaysAgoStart = new Date(now);
-    sevenDaysAgoStart.setHours(0, 0, 0, 0);
-    sevenDaysAgoStart.setDate(sevenDaysAgoStart.getDate() - 6);
+    const rangeStart = new Date(now);
+    rangeStart.setDate(rangeStart.getDate() - days);
+    const prevRangeStart = new Date(now);
+    prevRangeStart.setDate(prevRangeStart.getDate() - days * 2);
 
-    const [thisWeekAgg, lastWeekAgg, mergedPrAgg, dailyAgg] = await Promise.all(
-      [
+    const activityPoints = 7;
+    const bucketSizeDays = Math.max(1, Math.ceil(days / activityPoints));
+    const activityStart = new Date(now);
+    activityStart.setHours(0, 0, 0, 0);
+    activityStart.setDate(
+      activityStart.getDate() - bucketSizeDays * activityPoints + 1,
+    );
+
+    const [thisRangeAgg, prevRangeAgg, mergedPrAgg, dailyAgg] =
+      await Promise.all([
         Commit.aggregate([
           {
             $match: {
               projectId: { $in: projectIds },
-              committedAt: { $gte: oneWeekAgo },
+              committedAt: { $gte: rangeStart },
             },
           },
           { $group: { _id: "$projectId", count: { $sum: 1 } } },
@@ -92,7 +98,7 @@ export const listProjects = catchAsync(
           {
             $match: {
               projectId: { $in: projectIds },
-              committedAt: { $gte: twoWeeksAgo, $lt: oneWeekAgo },
+              committedAt: { $gte: prevRangeStart, $lt: rangeStart },
             },
           },
           { $group: { _id: "$projectId", count: { $sum: 1 } } },
@@ -110,7 +116,7 @@ export const listProjects = catchAsync(
           {
             $match: {
               projectId: { $in: projectIds },
-              committedAt: { $gte: sevenDaysAgoStart },
+              committedAt: { $gte: activityStart },
             },
           },
           {
@@ -125,14 +131,13 @@ export const listProjects = catchAsync(
             },
           },
         ]),
-      ],
-    );
+      ]);
 
     const toMap = (agg: { _id: unknown; count: number }[]) =>
       new Map(agg.map((a) => [String(a._id), a.count]));
 
-    const thisWeekMap = toMap(thisWeekAgg);
-    const lastWeekMap = toMap(lastWeekAgg);
+    const thisRangeMap = toMap(thisRangeAgg);
+    const prevRangeMap = toMap(prevRangeAgg);
     const mergedPrMap = toMap(mergedPrAgg);
 
     const dailyMap = new Map<string, Map<string, number>>();
@@ -145,39 +150,54 @@ export const listProjects = catchAsync(
       dailyMap.get(pid)!.set(row._id.day, row.count);
     }
 
-    const last7Days: string[] = [];
-    for (let i = 6; i >= 0; i--) {
-      const d = new Date(now);
-      d.setHours(0, 0, 0, 0);
-      d.setDate(d.getDate() - i);
-      last7Days.push(d.toISOString().slice(0, 10));
+    // ساخت bucketها برای گراف (activityPoints تا نقطه)
+    const buckets: { start: string; end: string }[] = [];
+    for (let i = 0; i < activityPoints; i++) {
+      const bStart = new Date(activityStart);
+      bStart.setDate(bStart.getDate() + i * bucketSizeDays);
+      const bEnd = new Date(bStart);
+      bEnd.setDate(bEnd.getDate() + bucketSizeDays - 1);
+      buckets.push({
+        start: bStart.toISOString().slice(0, 10),
+        end: bEnd.toISOString().slice(0, 10),
+      });
     }
 
     const projectsWithStats = projects.map((project) => {
       const pid = String(project._id);
-      const commitsThisWeek = thisWeekMap.get(pid) ?? 0;
-      const commitsLastWeek = lastWeekMap.get(pid) ?? 0;
+      const commitsThisRange = thisRangeMap.get(pid) ?? 0;
+      const commitsPrevRange = prevRangeMap.get(pid) ?? 0;
       const mergedPrsCount = mergedPrMap.get(pid) ?? 0;
 
       let trendPercent = 0;
-      if (commitsLastWeek > 0) {
+      if (commitsPrevRange > 0) {
         trendPercent = Math.round(
-          ((commitsThisWeek - commitsLastWeek) / commitsLastWeek) * 100,
+          ((commitsThisRange - commitsPrevRange) / commitsPrevRange) * 100,
         );
-      } else if (commitsThisWeek > 0) {
+      } else if (commitsThisRange > 0) {
         trendPercent = 100;
       }
 
       const dayCounts = dailyMap.get(pid);
-      const rawDaily = last7Days.map((day) => dayCounts?.get(day) ?? 0);
-      const maxDaily = Math.max(...rawDaily, 1);
-      const activityData = rawDaily.map((c) =>
-        c === 0 ? 4 : Math.max(10, Math.round((c / maxDaily) * 100)),
+      const rawActivity = buckets.map((b) => {
+        let sum = 0;
+        const cursor = new Date(b.start);
+        const end = new Date(b.end);
+        while (cursor <= end) {
+          const key = cursor.toISOString().slice(0, 10);
+          sum += dayCounts?.get(key) ?? 0;
+          cursor.setDate(cursor.getDate() + 1);
+        }
+        return sum;
+      });
+      const maxActivity = Math.max(...rawActivity, 1);
+      const activityData = rawActivity.map((c) =>
+        c === 0 ? 4 : Math.max(10, Math.round((c / maxActivity) * 100)),
       );
 
       return {
         ...project.toObject(),
-        commitsThisWeek,
+        commitsThisWeek: commitsThisRange, // نام فیلد رو نگه داشتم، ولی الان معنیش «کل بازه»‌ست
         mergedPrsCount,
         trend: `${trendPercent >= 0 ? "+" : ""}${trendPercent}%`,
         trendUp: trendPercent >= 0,
@@ -376,8 +396,6 @@ export const getProjectStats = catchAsync(
 /**
  * PATCH /api/github-projects/access-token
  * Body: { token: string }
- * Lets a user manually set a GitHub personal access token (used by
- * local-auth users who didn't sign in via GitHub OAuth).
  */
 export const setAccessToken = catchAsync(
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
@@ -450,8 +468,9 @@ export const removeAccessToken = catchAsync(
  * Aggregates commits/PRs across all of the user's linked projects.
  */
 export const getOverviewStats = catchAsync(
-  async (req: Request, res: Response): Promise<void> => {
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const userId = (req as any).userId;
+    const days = Math.min(Math.max(Number(req.query.days) || 7, 1), 365);
 
     const projects = await GithubProject.find({
       userId,
@@ -475,11 +494,11 @@ export const getOverviewStats = catchAsync(
       return;
     }
 
-    const oneWeekAgo = new Date();
-    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+    const rangeStart = new Date();
+    rangeStart.setDate(rangeStart.getDate() - days);
 
-    const twoWeeksAgo = new Date();
-    twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
+    const prevRangeStart = new Date();
+    prevRangeStart.setDate(prevRangeStart.getDate() - days * 2);
 
     const [
       totalCommits,
@@ -488,33 +507,34 @@ export const getOverviewStats = catchAsync(
       mergedPrsLastWeek,
       dayOfWeekAgg,
     ] = await Promise.all([
-      Commit.countDocuments({ projectId: { $in: projectIds } }),
       Commit.countDocuments({
         projectId: { $in: projectIds },
-        committedAt: { $gte: oneWeekAgo },
+        committedAt: { $gte: rangeStart },
+      }),
+      Commit.countDocuments({
+        projectId: { $in: projectIds },
+        committedAt: { $gte: prevRangeStart, $lt: rangeStart },
       }),
       PullRequest.countDocuments({
         projectId: { $in: projectIds },
         state: "merged",
+        mergedAt: { $gte: rangeStart },
       }),
       PullRequest.countDocuments({
         projectId: { $in: projectIds },
         state: "merged",
-        mergedAt: { $gte: oneWeekAgo },
+        mergedAt: { $gte: prevRangeStart, $lt: rangeStart },
       }),
-      // Sum commits per weekday (0=Sunday..6=Saturday) over the last 90 days
       Commit.aggregate([
         {
           $match: {
             projectId: { $in: projectIds },
-            committedAt: {
-              $gte: new Date(Date.now() - 90 * 24 * 60 * 60 * 1000),
-            },
+            committedAt: { $gte: rangeStart },
           },
         },
         {
           $group: {
-            _id: { $dayOfWeek: "$committedAt" }, // 1=Sunday..7=Saturday
+            _id: { $dayOfWeek: "$committedAt" },
             count: { $sum: 1 },
           },
         },
@@ -534,15 +554,13 @@ export const getOverviewStats = catchAsync(
     ];
 
     const topDay = dayOfWeekAgg[0];
-    const mostActiveDay = topDay
-      ? WEEKDAY_NAMES[topDay._id - 1] // mongo $dayOfWeek is 1-indexed
-      : null;
+    const mostActiveDay = topDay ? WEEKDAY_NAMES[topDay._id - 1] : null;
 
     res.status(200).json({
       status: "success",
       stats: {
         totalCommits,
-        totalCommitsLastWeek,
+        totalCommitsLastWeek: totalCommitsLastWeek,
         mergedPrsCount,
         mergedPrsLastWeek,
         mostActiveDay,
