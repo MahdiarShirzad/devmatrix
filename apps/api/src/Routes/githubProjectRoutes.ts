@@ -8,6 +8,7 @@ import {
   syncProject,
   unlinkProject,
   getProjectStats,
+  getOverviewStats,
   setAccessToken,
   removeAccessToken,
 } from "../Controllers/githubProjectController.js";
@@ -17,6 +18,7 @@ const router = Router();
 router.use(requireAuth);
 
 router.get("/available-repos", getAvailableRepos);
+router.get("/overview-stats", getOverviewStats);
 
 router.patch("/access-token", setAccessToken);
 router.delete("/access-token", removeAccessToken);

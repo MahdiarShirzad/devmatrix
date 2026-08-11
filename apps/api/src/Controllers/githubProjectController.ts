@@ -296,3 +296,110 @@ export const removeAccessToken = catchAsync(
     });
   },
 );
+
+/**
+ * GET /api/github-projects/overview-stats
+ * Aggregates commits/PRs across all of the user's linked projects.
+ */
+export const getOverviewStats = catchAsync(
+  async (req: Request, res: Response): Promise<void> => {
+    const userId = (req as any).userId;
+
+    const projects = await GithubProject.find({
+      userId,
+      isActive: true,
+    }).select("_id");
+
+    const projectIds = projects.map((p) => p._id);
+
+    if (projectIds.length === 0) {
+      res.status(200).json({
+        status: "success",
+        stats: {
+          totalCommits: 0,
+          totalCommitsLastWeek: 0,
+          mergedPrsCount: 0,
+          mergedPrsLastWeek: 0,
+          mostActiveDay: null,
+          mostActiveDayCommits: 0,
+        },
+      });
+      return;
+    }
+
+    const oneWeekAgo = new Date();
+    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+
+    const twoWeeksAgo = new Date();
+    twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
+
+    const [
+      totalCommits,
+      totalCommitsLastWeek,
+      mergedPrsCount,
+      mergedPrsLastWeek,
+      dayOfWeekAgg,
+    ] = await Promise.all([
+      Commit.countDocuments({ projectId: { $in: projectIds } }),
+      Commit.countDocuments({
+        projectId: { $in: projectIds },
+        committedAt: { $gte: oneWeekAgo },
+      }),
+      PullRequest.countDocuments({
+        projectId: { $in: projectIds },
+        state: "merged",
+      }),
+      PullRequest.countDocuments({
+        projectId: { $in: projectIds },
+        state: "merged",
+        mergedAt: { $gte: oneWeekAgo },
+      }),
+      // Sum commits per weekday (0=Sunday..6=Saturday) over the last 90 days
+      Commit.aggregate([
+        {
+          $match: {
+            projectId: { $in: projectIds },
+            committedAt: {
+              $gte: new Date(Date.now() - 90 * 24 * 60 * 60 * 1000),
+            },
+          },
+        },
+        {
+          $group: {
+            _id: { $dayOfWeek: "$committedAt" }, // 1=Sunday..7=Saturday
+            count: { $sum: 1 },
+          },
+        },
+        { $sort: { count: -1 } },
+        { $limit: 1 },
+      ]),
+    ]);
+
+    const WEEKDAY_NAMES = [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+    ];
+
+    const topDay = dayOfWeekAgg[0];
+    const mostActiveDay = topDay
+      ? WEEKDAY_NAMES[topDay._id - 1] // mongo $dayOfWeek is 1-indexed
+      : null;
+
+    res.status(200).json({
+      status: "success",
+      stats: {
+        totalCommits,
+        totalCommitsLastWeek,
+        mergedPrsCount,
+        mergedPrsLastWeek,
+        mostActiveDay,
+        mostActiveDayCommits: topDay?.count ?? 0,
+      },
+    });
+  },
+);
