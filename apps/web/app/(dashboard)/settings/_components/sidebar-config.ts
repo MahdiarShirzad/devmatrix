@@ -1,21 +1,12 @@
-import {
-  User,
-  Shield,
-  Bell,
-  Briefcase,
-  Users,
-  Key,
-  Terminal,
-  Webhook,
-  type LucideIcon,
-} from "lucide-react";
-
-export type TabId = "profile" | "security" | "api-keys" | "appearance";
+import React from "react";
+import { User, KeyRound, Bell, Shield, Palette } from "lucide-react";
+import GithubIcon from "@/app/_utils/GithubIcon";
 
 export interface SidebarItem {
   id: string;
   label: string;
-  icon: LucideIcon;
+  icon: React.ElementType;
+  iconProps?: Record<string, unknown>;
 }
 
 export interface SidebarGroup {
@@ -28,23 +19,24 @@ export const SIDEBAR_GROUPS: SidebarGroup[] = [
     label: "Account",
     items: [
       { id: "profile", label: "Profile", icon: User },
-      { id: "security", label: "Security", icon: Shield },
       { id: "notifications", label: "Notifications", icon: Bell },
+      { id: "security", label: "Security", icon: Shield },
     ],
   },
   {
-    label: "Workspace",
+    label: "Developer",
     items: [
-      { id: "general", label: "General", icon: Briefcase },
-      { id: "members", label: "Members", icon: Users },
-      { id: "roles", label: "Roles & Permissions", icon: Key },
+      { id: "api-keys", label: "API Keys", icon: KeyRound },
+      {
+        id: "github",
+        label: "GitHub",
+        icon: GithubIcon,
+        iconProps: { width: 30, height: 30, className: "text-black" },
+      },
     ],
   },
   {
-    label: "Advanced",
-    items: [
-      { id: "api-keys", label: "API Keys", icon: Terminal },
-      { id: "webhooks", label: "Webhooks", icon: Webhook },
-    ],
+    label: "Preferences",
+    items: [{ id: "appearance", label: "Appearance", icon: Palette }],
   },
 ];

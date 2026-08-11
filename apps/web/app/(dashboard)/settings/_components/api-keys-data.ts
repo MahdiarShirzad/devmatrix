@@ -1,21 +1,21 @@
-export interface ApiKeyItem {
+export interface ApiKey {
   id: string;
   name: string;
   token: string;
   date: string;
 }
 
-export const API_KEYS: ApiKeyItem[] = [
+export const API_KEYS: ApiKey[] = [
   {
     id: "1",
-    name: "Production Key",
-    token: "sk_live_9f8d...a2b4",
-    date: "Oct 24, 2025",
+    name: "Production",
+    token: "sk_live_••••••••••••4f2a",
+    date: "Aug 1, 2026",
   },
   {
     id: "2",
-    name: "Development Env",
-    token: "sk_test_4c2a...f9e1",
-    date: "Feb 12, 2026",
+    name: "Development",
+    token: "sk_test_••••••••••••9c3d",
+    date: "Jul 15, 2026",
   },
 ];

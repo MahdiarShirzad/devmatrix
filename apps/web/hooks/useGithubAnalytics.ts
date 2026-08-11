@@ -133,3 +133,30 @@ export function useSyncGithubProject(id: string) {
     },
   });
 }
+
+export function useSetGithubAccessToken() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (token: string) =>
+      api.patch<{ githubConnected: boolean; message: string }>(
+        "/github-projects/access-token",
+        { token },
+      ),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: KEYS.list });
+    },
+  });
+}
+
+export function useRemoveGithubAccessToken() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: () =>
+      api.delete<{ githubConnected: boolean; message: string }>(
+        "/github-projects/access-token",
+      ),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: KEYS.list });
+    },
+  });
+}

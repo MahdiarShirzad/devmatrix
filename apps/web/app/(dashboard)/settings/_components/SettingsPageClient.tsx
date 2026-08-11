@@ -6,7 +6,10 @@ import SettingsSidebar from "./SettingsSidebar";
 import ContentHeader from "./ContentHeader";
 import ProfileSettingsPanel from "./ProfileSettingsPanel";
 import ApiKeysPanel from "./ApiKeysPanel";
+import GithubSettingsPanel from "./GithubSettingsPanel";
 import ComingSoonPlaceholder from "./ComingSoonPlaceholder";
+
+const KNOWN_TABS = ["profile", "api-keys", "github"];
 
 export default function SettingsPageClient() {
   const [activeTab, setActiveTab] = useState<string>("profile");
@@ -48,8 +51,9 @@ export default function SettingsPageClient() {
             <div className="max-w-4xl">
               {activeTab === "profile" && <ProfileSettingsPanel />}
               {activeTab === "api-keys" && <ApiKeysPanel />}
+              {activeTab === "github" && <GithubSettingsPanel />}
 
-              {activeTab !== "profile" && activeTab !== "api-keys" && (
+              {!KNOWN_TABS.includes(activeTab) && (
                 <ComingSoonPlaceholder tabLabel={activeTab.replace("-", " ")} />
               )}
             </div>

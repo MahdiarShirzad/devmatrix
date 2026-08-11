@@ -1,11 +1,19 @@
 import type { SVGProps } from "react";
 
-export default function GithubIcon(props: SVGProps<SVGSVGElement>) {
+export default function GithubIcon({
+  width = 24,
+  height = 24,
+  className = "",
+  ...props
+}: SVGProps<SVGSVGElement>) {
   return (
     <svg
       viewBox="0 0 73 73"
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
+      width={width}
+      height={height}
+      className={className}
       {...props}
     >
       <rect x={1} y={1} width="71" height="71" rx="14" fill="currentColor" />
