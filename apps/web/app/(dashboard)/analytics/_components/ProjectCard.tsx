@@ -1,6 +1,9 @@
+"use client";
+
 import Link from "next/link";
-import { GitCommit, Activity, MoreVertical } from "lucide-react";
+import { GitCommit, Activity, MoreVertical, RefreshCw } from "lucide-react";
 import GithubIcon from "@/app/_utils/GithubIcon";
+import { useSyncGithubProject } from "@/hooks/useGithubAnalytics";
 
 export interface Project {
   id: string;
@@ -19,6 +22,17 @@ interface ProjectCardProps {
 }
 
 export default function ProjectCard({ project }: ProjectCardProps) {
+  const { mutate: syncProject, isPending: isSyncing } = useSyncGithubProject(
+    project.id,
+  );
+
+  const handleSync = (e: React.MouseEvent) => {
+    // جلوگیری از navigate شدن به صفحه‌ی پروژه چون کارت داخل <Link> هست
+    e.preventDefault();
+    e.stopPropagation();
+    syncProject();
+  };
+
   return (
     <Link
       href={`/analytics/${project.id}`}
@@ -53,9 +67,25 @@ export default function ProjectCard({ project }: ProjectCardProps) {
           </div>
         </div>
 
-        <button className="rounded-md p-1.5 text-neutral-text-secondary opacity-0 transition-all hover:bg-neutral-surface-2 hover:text-neutral-text-primary group-hover:opacity-100">
-          <MoreVertical size={16} />
-        </button>
+        <div className="flex items-center gap-1">
+          <button
+            onClick={handleSync}
+            disabled={isSyncing}
+            title="Sync now"
+            className="rounded-md p-1.5 text-neutral-text-secondary opacity-0 transition-all hover:bg-neutral-surface-2 hover:text-neutral-text-primary group-hover:opacity-100 disabled:cursor-not-allowed disabled:opacity-100"
+          >
+            <RefreshCw size={16} className={isSyncing ? "animate-spin" : ""} />
+          </button>
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+            }}
+            className="rounded-md p-1.5 text-neutral-text-secondary opacity-0 transition-all hover:bg-neutral-surface-2 hover:text-neutral-text-primary group-hover:opacity-100"
+          >
+            <MoreVertical size={16} />
+          </button>
+        </div>
       </div>
 
       <div className="mt-6 grid grid-cols-2 items-end gap-4 border-t border-neutral-border pt-5">

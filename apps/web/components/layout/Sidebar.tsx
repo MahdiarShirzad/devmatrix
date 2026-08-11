@@ -15,7 +15,6 @@ import {
   Folder,
 } from "lucide-react";
 
-// فرض می‌کنیم این لیست پروژه‌های کاربره
 const PROJECTS = [
   { id: "1", name: "my-trip" },
   { id: "2", name: "devmatrix" },
@@ -26,7 +25,7 @@ const NAV_ITEMS = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/api-playground", label: "API Playground", icon: Terminal },
   { href: "/ai-debug", label: "AI Debugging", icon: Bug },
-  { href: "/analytics", label: "Analytics", icon: BarChart3 },
+  { href: "/analytics", label: "Analytics Platform", icon: BarChart3 },
   { href: "/saas-validator", label: "Idea Validator", icon: Rocket },
 ];
 
@@ -38,12 +37,10 @@ interface SidebarProps {
 export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
   const pathname = usePathname();
 
-  // State های مربوط به سوئیچر پروژه
   const [activeProject, setActiveProject] = useState(PROJECTS[0]);
   const [isProjectMenuOpen, setIsProjectMenuOpen] = useState(false);
   const projectMenuRef = useRef<HTMLDivElement>(null);
 
-  // بستن منوی پروژه‌ها با کلیک بیرون
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -78,7 +75,6 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
         </Link>
       </div>
 
-      {/* انتخابگر پروژه (Project Switcher) */}
       <div className="px-3 pt-4 pb-2 relative" ref={projectMenuRef}>
         <button
           onClick={() => setIsProjectMenuOpen(!isProjectMenuOpen)}
@@ -95,7 +91,6 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
           <ChevronsUpDown size={16} className="text-neutral-text-secondary" />
         </button>
 
-        {/* منوی بازشوی پروژه‌ها */}
         {isProjectMenuOpen && (
           <div className="absolute top-full left-3 right-3 mt-1 rounded-lg border border-neutral-border bg-neutral-surface-1 p-1 shadow-lg z-50">
             {PROJECTS.map((project) => (
@@ -115,7 +110,6 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
         )}
       </div>
 
-      {/* منوی اصلی */}
       <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-2">
         {NAV_ITEMS.map((item) => {
           const isActive =

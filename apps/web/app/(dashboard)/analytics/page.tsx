@@ -16,7 +16,7 @@ function toUiProject(dto: GithubProject): Project {
     id: dto._id,
     name: dto.name,
     provider: dto.provider === "github" ? "GitHub" : "GitLab",
-    commitsThisWeek: 0,
+    commitsThisWeek: dto.commitsThisWeek ?? 0,
     lastActivity: dto.lastSyncedAt
       ? new Date(dto.lastSyncedAt).toLocaleDateString("en-US", {
           month: "short",
@@ -24,10 +24,10 @@ function toUiProject(dto: GithubProject): Project {
           year: "numeric",
         })
       : "Not synced yet",
-    trend: "0%",
-    trendUp: true,
+    trend: dto.trend ?? "0%",
+    trendUp: dto.trendUp ?? true,
     tags: [],
-    activityData: [0, 0, 0, 0, 0, 0, 0],
+    activityData: dto.activityData ?? [0, 0, 0, 0, 0, 0, 0],
   };
 }
 
