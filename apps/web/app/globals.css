@@ -8,14 +8,14 @@
   /* DevMatrix brand palette (Refined) */
   --color-brand-bg: #000000;
   --color-brand-primary: #fca311;
-  --color-brand-surface: #0d1117; /* رنگ بسیار تیره‌تر و هماهنگ‌تر جایگزین شد */
+  --color-brand-surface: #0d1117;
   --color-brand-accent: #e5e5e5;
   --color-brand-highlight: #ffffff;
 
   /* Neutral scale */
   --color-neutral-bg: #000000;
-  --color-neutral-surface-1: #0d1117; /* پس‌زمینه کارت‌ها و سایدبار */
-  --color-neutral-surface-2: #161d29; /* یک درجه روشن‌تر برای هاور (Hover) و المان‌های رویی */
+  --color-neutral-surface-1: #0d1117;
+  --color-neutral-surface-2: #161d29;
   --color-neutral-border: rgba(229, 229, 229, 0.12);
   --color-neutral-text-secondary: #e5e5e5;
   --color-neutral-text-primary: #ffffff;
