@@ -9,21 +9,31 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-
-interface CommitDataPoint {
-  day: string;
-  commits: number;
-}
+import type { CommitsByDay } from "@/types/githubAnalytics.types";
 
 interface CommitsLineChartProps {
-  data: CommitDataPoint[];
+  data: CommitsByDay[];
+}
+
+function formatDayLabel(dateStr: string): string {
+  const d = new Date(dateStr);
+  if (isNaN(d.getTime())) return dateStr;
+  return d.toLocaleDateString("en-US", { weekday: "short" });
 }
 
 export default function CommitsLineChart({ data }: CommitsLineChartProps) {
+  const chartData = data.map((d) => ({
+    day: formatDayLabel(d.date),
+    commits: d.commits,
+  }));
+
   return (
     <div className="h-[250px] w-full">
       <ResponsiveContainer width="100%" height="100%">
-        <LineChart data={data} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
+        <LineChart
+          data={chartData}
+          margin={{ top: 5, right: 10, left: -20, bottom: 0 }}
+        >
           <CartesianGrid
             strokeDasharray="3 3"
             stroke="#2d3748"
@@ -42,6 +52,7 @@ export default function CommitsLineChart({ data }: CommitsLineChartProps) {
             fontSize={12}
             tickLine={false}
             axisLine={false}
+            allowDecimals={false}
           />
           <Tooltip
             cursor={{
@@ -57,15 +68,15 @@ export default function CommitsLineChart({ data }: CommitsLineChartProps) {
               fontSize: "12px",
               boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
             }}
-            itemStyle={{ color: "#8b5cf6" }}
+            itemStyle={{ color: "#fca311" }}
           />
           <Line
             type="monotone"
             dataKey="commits"
-            stroke="var(--brand-primary, #8b5cf6)"
+            stroke="var(--brand-primary, #fca311)"
             strokeWidth={3}
             dot={{
-              fill: "var(--brand-primary, #8b5cf6)",
+              fill: "var(--brand-primary, #fca311)",
               r: 4,
               strokeWidth: 2,
               stroke: "#161b22",

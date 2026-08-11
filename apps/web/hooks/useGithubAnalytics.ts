@@ -43,9 +43,9 @@ export function useProjectStats(id: string) {
   });
 }
 
-export function useCommitsByDay(id: string, days = 7) {
+export function useCommitsByDay(id: string, days: number = 7) {
   return useQuery({
-    queryKey: KEYS.commits(id, days),
+    queryKey: KEYS.commits(id, days) as unknown as readonly unknown[],
     queryFn: () =>
       api.get<{ data: CommitsByDay[] }>(
         `/github-projects/${id}/commits?days=${days}`,

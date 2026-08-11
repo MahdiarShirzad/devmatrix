@@ -78,11 +78,9 @@ export interface GithubProject {
   name: string;
   fullName: string;
   lastSyncedAt: string | null;
-  // --- فیلدهای جدید که از listProjects به‌همراه هر پروژه میان ---
   commitsThisWeek?: number;
   mergedPrsCount?: number;
-  trend?: string; // مثلاً "+25%" یا "-10%"
+  trend?: string;
   trendUp?: boolean;
-  activityData?: number[]; // آرایه‌ی ۷ عضوی، درصد ارتفاع برای mini chart
-  // ... بقیه‌ی فیلدهای موجودت (githubRepoId, ownerLogin, defaultBranch, isPrivate, ...)
+  activityData?: number[];
 }
