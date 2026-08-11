@@ -5,6 +5,20 @@ import PullRequest from "../Models/PullRequest.js";
 import catchAsync from "../utils/catchAsync.js";
 import AppError from "../utils/appError.js";
 
+const parseDaysParam = (
+  rawDays: unknown,
+): { isAllTime: boolean; rangeStart: Date | null; days: number | null } => {
+  if (rawDays === "all") {
+    return { isAllTime: true, rangeStart: null, days: null };
+  }
+
+  const days = Math.min(Math.max(Number(rawDays) || 7, 1), 3650);
+  const rangeStart = new Date();
+  rangeStart.setDate(rangeStart.getDate() - days);
+
+  return { isAllTime: false, rangeStart, days };
+};
+
 const findOwnedProject = async (projectId: string, userId: string) => {
   const project = await GithubProject.findOne({ _id: projectId, userId });
   return project;
@@ -13,28 +27,27 @@ const findOwnedProject = async (projectId: string, userId: string) => {
 /**
  * GET /api/github-projects/:id/commits?days=7
  */
+/**
+ * GET /api/github-projects/:id/commits?days=7|30|90|all
+ */
 export const getCommitsByDay = catchAsync(
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const userId = (req as any).userId;
     const { id } = req.params as { id: string };
-    const days = Math.min(Number(req.query.days) || 7, 90);
+    const { isAllTime, rangeStart, days } = parseDaysParam(req.query.days);
 
     const project = await findOwnedProject(id, userId);
     if (!project) {
       return next(new AppError("Project not found.", 404));
     }
 
-    const startDate = new Date();
-    startDate.setDate(startDate.getDate() - (days - 1));
-    startDate.setHours(0, 0, 0, 0);
+    const match: Record<string, unknown> = { projectId: project._id };
+    if (!isAllTime && rangeStart) {
+      match.committedAt = { $gte: rangeStart };
+    }
 
     const results = await Commit.aggregate([
-      {
-        $match: {
-          projectId: project._id,
-          committedAt: { $gte: startDate },
-        },
-      },
+      { $match: match },
       {
         $group: {
           _id: {
@@ -46,12 +59,23 @@ export const getCommitsByDay = catchAsync(
       { $sort: { _id: 1 } },
     ]);
 
+    if (isAllTime) {
+      // No fixed range to fill zeros across — just return the days that
+      // actually have commits, sorted chronologically.
+      res.status(200).json({
+        status: "success",
+        data: results.map((r) => ({ date: r._id, commits: r.commits })),
+      });
+      return;
+    }
+
     // Fill days that have no commits with 0 (to keep continuous graph data)
     const resultMap = new Map(results.map((r) => [r._id, r.commits]));
     const filledData: { date: string; commits: number }[] = [];
+    const start = rangeStart as Date;
 
-    for (let i = 0; i < days; i++) {
-      const d = new Date(startDate);
+    for (let i = 0; i < (days as number); i++) {
+      const d = new Date(start);
       d.setDate(d.getDate() + i);
       const key = d.toISOString().split("T")[0];
       filledData.push({
@@ -69,7 +93,6 @@ export const getCommitsByDay = catchAsync(
 
 /**
  * GET /api/github-projects/:id/heatmap?weeks=24
- * شبکه‌ی هفته×روز برای ActivityHeatmap (شبیه GitHub contribution graph)
  */
 export const getHeatmap = catchAsync(
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
@@ -140,7 +163,6 @@ export const getHeatmap = catchAsync(
 
 /**
  * GET /api/github-projects/:id/contributors
- * آمار به‌ازای هر contributor — برای ContributorsTable
  */
 export const getContributors = catchAsync(
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
