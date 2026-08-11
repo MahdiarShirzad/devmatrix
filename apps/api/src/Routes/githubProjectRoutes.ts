@@ -8,7 +8,7 @@ import {
   syncProject,
   unlinkProject,
   getProjectStats,
-} from "../Controllers/githubProjectContrller.js";
+} from "../Controllers/githubProjectController.js";
 
 const router = Router();
 

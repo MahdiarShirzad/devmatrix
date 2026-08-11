@@ -15,7 +15,7 @@ export const getAvailableRepos = catchAsync(
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const userId = (req as any).userId;
 
-    const user = await User.findById(userId);
+    const user = await User.findById(userId).select("+githubAccessToken");
     if (!user || !user.githubAccessToken) {
       return next(
         new AppError(
@@ -48,6 +48,9 @@ export const listProjects = catchAsync(
   async (req: Request, res: Response): Promise<void> => {
     const userId = (req as any).userId;
 
+    const user = await User.findById(userId).select("+githubAccessToken");
+    const githubConnected = !!user?.githubAccessToken;
+
     const projects = await GithubProject.find({
       userId,
       isActive: true,
@@ -56,6 +59,7 @@ export const listProjects = catchAsync(
     res.status(200).json({
       status: "success",
       results: projects.length,
+      githubConnected,
       projects,
     });
   },
@@ -75,7 +79,7 @@ export const linkProject = catchAsync(
       );
     }
 
-    const user = await User.findById(userId);
+    const user = await User.findById(userId).select("+githubAccessToken");
     if (!user || !user.githubAccessToken) {
       return next(
         new AppError(

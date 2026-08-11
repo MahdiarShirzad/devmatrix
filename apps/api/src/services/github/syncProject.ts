@@ -6,7 +6,6 @@ import User from "../../Models/User.js";
 import AppError from "../../utils/appError.js";
 import { listCommits, listPullRequests } from "./githubClient.js";
 import { mapCommits, mapPullRequests } from "./githubMapper.js";
-// import { mapCommits, mapPullRequests } from "./githubMapper.js";
 
 export interface SyncResult {
   commitsUpserted: number;
@@ -27,7 +26,7 @@ export const syncProjectData = async (
     throw new AppError("پروژه پیدا نشد یا متعلق به شما نیست", 404);
   }
 
-  const user = await User.findById(userId);
+  const user = await User.findById(userId).select("+githubAccessToken");
   if (!user || !user.githubAccessToken) {
     throw new AppError(
       "حساب گیت‌هاب متصل نیست یا access token موجود نیست",
@@ -85,8 +84,6 @@ const upsertCommits = async (
   return result.upsertedCount + result.modifiedCount;
 };
 
-/**
- */
 const upsertPullRequests = async (
   prs: ReturnType<typeof mapPullRequests>,
 ): Promise<number> => {
