@@ -8,6 +8,8 @@ import {
   syncProject,
   unlinkProject,
   getProjectStats,
+  setAccessToken,
+  removeAccessToken,
 } from "../Controllers/githubProjectController.js";
 
 const router = Router();
@@ -15,6 +17,9 @@ const router = Router();
 router.use(requireAuth);
 
 router.get("/available-repos", getAvailableRepos);
+
+router.patch("/access-token", setAccessToken);
+router.delete("/access-token", removeAccessToken);
 
 router.get("/", listProjects);
 router.post("/", linkProject);

@@ -224,3 +224,75 @@ export const getProjectStats = catchAsync(
     });
   },
 );
+
+/**
+ * PATCH /api/github-projects/access-token
+ * Body: { token: string }
+ * Lets a user manually set a GitHub personal access token (used by
+ * local-auth users who didn't sign in via GitHub OAuth).
+ */
+export const setAccessToken = catchAsync(
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const userId = (req as any).userId;
+    const { token } = req.body;
+
+    if (!token || typeof token !== "string" || token.trim().length === 0) {
+      return next(new AppError("GitHub access token is required.", 400));
+    }
+
+    // Validate the token actually works before saving it, so we don't
+    // store garbage and silently break the analytics page.
+    try {
+      await listUserRepos(token.trim());
+    } catch {
+      return next(
+        new AppError(
+          "This GitHub access token is invalid or lacks the required permissions.",
+          400,
+        ),
+      );
+    }
+
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { githubAccessToken: token.trim() },
+      { new: true },
+    ).select("+githubAccessToken");
+
+    if (!user) {
+      return next(new AppError("User not found.", 404));
+    }
+
+    res.status(200).json({
+      status: "success",
+      message: "GitHub access token saved successfully.",
+      githubConnected: true,
+    });
+  },
+);
+
+/**
+ * DELETE /api/github-projects/access-token
+ * Removes a manually-set GitHub access token.
+ */
+export const removeAccessToken = catchAsync(
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const userId = (req as any).userId;
+
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { $unset: { githubAccessToken: "" } },
+      { new: true },
+    );
+
+    if (!user) {
+      return next(new AppError("User not found.", 404));
+    }
+
+    res.status(200).json({
+      status: "success",
+      message: "GitHub access token removed.",
+      githubConnected: false,
+    });
+  },
+);
