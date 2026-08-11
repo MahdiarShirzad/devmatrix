@@ -2,9 +2,11 @@
 
 import { GitCommit, GitPullRequest, Activity, TrendingUp } from "lucide-react";
 import { useOverviewStats } from "@/hooks/useGithubAnalytics";
+import { useAnalyticsRange } from "@/src/context/AnalyticsRangeContext";
 
 export default function OverviewStats() {
-  const { data, isLoading } = useOverviewStats();
+  const { range } = useAnalyticsRange();
+  const { data, isLoading } = useOverviewStats(range);
   const stats = data?.stats;
 
   return (

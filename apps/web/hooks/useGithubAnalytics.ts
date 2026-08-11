@@ -25,16 +25,6 @@ const KEYS = {
   availableRepos: ["github-projects", "available-repos"] as const,
 };
 
-export function useGithubProjects() {
-  return useQuery({
-    queryKey: KEYS.list,
-    queryFn: () =>
-      api.get<{ projects: GithubProject[]; githubConnected: boolean }>(
-        "/github-projects",
-      ),
-  });
-}
-
 export function useGithubProject(id: string) {
   return useQuery({
     queryKey: KEYS.detail(id),
@@ -162,10 +152,24 @@ export function useRemoveGithubAccessToken() {
   });
 }
 
-export function useOverviewStats() {
+export function useGithubProjects(days: string) {
   return useQuery({
-    queryKey: ["github-projects", "overview-stats"] as const,
+    queryKey: ["github-projects", "list", days],
     queryFn: () =>
-      api.get<{ stats: OverviewStats }>("/github-projects/overview-stats"),
+      api.get<{
+        results: number;
+        githubConnected: boolean;
+        projects: GithubProject[];
+      }>(`/github-projects?days=${days}`),
+  });
+}
+
+export function useOverviewStats(days: string) {
+  return useQuery({
+    queryKey: ["overview-stats", days],
+    queryFn: () =>
+      api.get<{ stats: OverviewStats }>(
+        `/github-projects/overview-stats?days=${days}`,
+      ),
   });
 }

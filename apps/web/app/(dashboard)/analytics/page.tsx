@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { AlertCircle, RefreshCw, Key } from "lucide-react";
 import { useGithubProjects } from "@/hooks/useGithubAnalytics";
+import { useAnalyticsRange } from "@/src/context/AnalyticsRangeContext";
 import type { GithubProject } from "@/types/githubAnalytics.types";
 import { Project } from "./_components/ProjectCard";
 import AnalyticsHeader from "./_components/AnalyticsHeader";
@@ -32,7 +33,8 @@ function toUiProject(dto: GithubProject): Project {
 }
 
 export default function AnalyticsPage() {
-  const { data, isLoading, isError, error, refetch } = useGithubProjects();
+  const { range } = useAnalyticsRange();
+  const { data, isLoading, isError, error, refetch } = useGithubProjects(range);
 
   const rawProjects = data?.projects ?? [];
   const projects = rawProjects.map(toUiProject);
@@ -42,7 +44,6 @@ export default function AnalyticsPage() {
     <div className="flex h-full flex-col space-y-8 pb-12 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8">
       <AnalyticsHeader />
       <OverviewStats />
-
       {/* GitHub Authentication Warning */}
       {!isLoading && !isError && !githubConnected && (
         <div className="flex flex-col items-center justify-center gap-3 rounded-xl border border-neutral-border bg-neutral-surface-1 py-12 px-4 text-center shadow-sm">
