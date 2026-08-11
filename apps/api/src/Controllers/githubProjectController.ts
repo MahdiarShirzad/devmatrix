@@ -56,11 +56,140 @@ export const listProjects = catchAsync(
       isActive: true,
     }).sort({ createdAt: -1 });
 
+    if (projects.length === 0) {
+      res.status(200).json({
+        status: "success",
+        results: 0,
+        githubConnected,
+        projects: [],
+      });
+      return;
+    }
+
+    const projectIds = projects.map((p) => p._id);
+
+    const now = new Date();
+    const oneWeekAgo = new Date(now);
+    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+    const twoWeeksAgo = new Date(now);
+    twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
+    const sevenDaysAgoStart = new Date(now);
+    sevenDaysAgoStart.setHours(0, 0, 0, 0);
+    sevenDaysAgoStart.setDate(sevenDaysAgoStart.getDate() - 6);
+
+    const [thisWeekAgg, lastWeekAgg, mergedPrAgg, dailyAgg] = await Promise.all(
+      [
+        Commit.aggregate([
+          {
+            $match: {
+              projectId: { $in: projectIds },
+              committedAt: { $gte: oneWeekAgo },
+            },
+          },
+          { $group: { _id: "$projectId", count: { $sum: 1 } } },
+        ]),
+        Commit.aggregate([
+          {
+            $match: {
+              projectId: { $in: projectIds },
+              committedAt: { $gte: twoWeeksAgo, $lt: oneWeekAgo },
+            },
+          },
+          { $group: { _id: "$projectId", count: { $sum: 1 } } },
+        ]),
+        PullRequest.aggregate([
+          {
+            $match: {
+              projectId: { $in: projectIds },
+              state: "merged",
+            },
+          },
+          { $group: { _id: "$projectId", count: { $sum: 1 } } },
+        ]),
+        Commit.aggregate([
+          {
+            $match: {
+              projectId: { $in: projectIds },
+              committedAt: { $gte: sevenDaysAgoStart },
+            },
+          },
+          {
+            $group: {
+              _id: {
+                projectId: "$projectId",
+                day: {
+                  $dateToString: { format: "%Y-%m-%d", date: "$committedAt" },
+                },
+              },
+              count: { $sum: 1 },
+            },
+          },
+        ]),
+      ],
+    );
+
+    const toMap = (agg: { _id: unknown; count: number }[]) =>
+      new Map(agg.map((a) => [String(a._id), a.count]));
+
+    const thisWeekMap = toMap(thisWeekAgg);
+    const lastWeekMap = toMap(lastWeekAgg);
+    const mergedPrMap = toMap(mergedPrAgg);
+
+    const dailyMap = new Map<string, Map<string, number>>();
+    for (const row of dailyAgg as {
+      _id: { projectId: unknown; day: string };
+      count: number;
+    }[]) {
+      const pid = String(row._id.projectId);
+      if (!dailyMap.has(pid)) dailyMap.set(pid, new Map());
+      dailyMap.get(pid)!.set(row._id.day, row.count);
+    }
+
+    const last7Days: string[] = [];
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date(now);
+      d.setHours(0, 0, 0, 0);
+      d.setDate(d.getDate() - i);
+      last7Days.push(d.toISOString().slice(0, 10));
+    }
+
+    const projectsWithStats = projects.map((project) => {
+      const pid = String(project._id);
+      const commitsThisWeek = thisWeekMap.get(pid) ?? 0;
+      const commitsLastWeek = lastWeekMap.get(pid) ?? 0;
+      const mergedPrsCount = mergedPrMap.get(pid) ?? 0;
+
+      let trendPercent = 0;
+      if (commitsLastWeek > 0) {
+        trendPercent = Math.round(
+          ((commitsThisWeek - commitsLastWeek) / commitsLastWeek) * 100,
+        );
+      } else if (commitsThisWeek > 0) {
+        trendPercent = 100;
+      }
+
+      const dayCounts = dailyMap.get(pid);
+      const rawDaily = last7Days.map((day) => dayCounts?.get(day) ?? 0);
+      const maxDaily = Math.max(...rawDaily, 1);
+      const activityData = rawDaily.map((c) =>
+        c === 0 ? 4 : Math.max(10, Math.round((c / maxDaily) * 100)),
+      );
+
+      return {
+        ...project.toObject(),
+        commitsThisWeek,
+        mergedPrsCount,
+        trend: `${trendPercent >= 0 ? "+" : ""}${trendPercent}%`,
+        trendUp: trendPercent >= 0,
+        activityData,
+      };
+    });
+
     res.status(200).json({
       status: "success",
-      results: projects.length,
+      results: projectsWithStats.length,
       githubConnected,
-      projects,
+      projects: projectsWithStats,
     });
   },
 );
@@ -114,9 +243,28 @@ export const linkProject = catchAsync(
       isPrivate: repoData.private,
     });
 
+    // سینک اولیه‌ی synchronous: منتظر می‌مونیم تا کامیت‌ها/PRها بیان،
+    // اگه سینک شکست بخوره پروژه رو حذف نمی‌کنیم (خودش لینک شده)،
+    // فقط خطا رو لاگ می‌کنیم تا کاربر بعداً دستی سینک کنه.
+    let syncFailed = false;
+    try {
+      await syncProjectData((project._id as any).toString(), userId);
+    } catch (err) {
+      syncFailed = true;
+      console.error(
+        `Initial sync failed for project ${project._id} (${fullName}):`,
+        err,
+      );
+    }
+
+    // پروژه رو با آخرین نسخه از دیتابیس برمی‌گردونیم چون syncProjectData
+    // احتمالاً فیلدهایی مثل lastSyncedAt رو آپدیت کرده.
+    const freshProject = await GithubProject.findById(project._id);
+
     res.status(201).json({
       status: "success",
-      project,
+      project: freshProject ?? project,
+      syncFailed,
     });
   },
 );
