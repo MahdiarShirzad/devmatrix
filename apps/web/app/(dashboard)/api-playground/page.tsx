@@ -1,8 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { RefreshCw, FolderPlus, AlertTriangle } from "lucide-react";
 import PlaygroundHeader from "./_components/PlaygroundHeader";
-import CollectionSearchToolbar from "./_components/CollectionSearchToolbar";
+import CollectionSearchToolbar, {
+  EnvFilter,
+} from "./_components/CollectionSearchToolbar";
 import CollectionsGrid from "./_components/CollectionsGrid";
 import NewCollectionModal from "./_components/NewCollectionModal";
 import QuickRequestModal from "./_components/QuickRequestModal";
@@ -12,8 +15,27 @@ export default function ApiPlaygroundPage() {
   const [isNewCollectionModalOpen, setIsNewCollectionModalOpen] =
     useState(false);
   const [isQuickRequestModalOpen, setIsQuickRequestModalOpen] = useState(false);
+  const [search, setSearch] = useState("");
+  const [envFilter, setEnvFilter] = useState<EnvFilter>("All");
 
-  const { data: collections, isLoading, isError } = useCollections();
+  const { data: collections, isLoading, isError, refetch, isRefetching } =
+    useCollections();
+
+  const filteredCollections = useMemo(() => {
+    if (!collections) return collections;
+
+    return collections.filter((c) => {
+      const matchesSearch = c.name
+        .toLowerCase()
+        .includes(search.trim().toLowerCase());
+      const matchesEnv = envFilter === "All" || c.env === envFilter;
+      return matchesSearch && matchesEnv;
+    });
+  }, [collections, search, envFilter]);
+
+  const hasCollections = (collections?.length ?? 0) > 0;
+  const hasResults = (filteredCollections?.length ?? 0) > 0;
+  const isSearchOrFilterActive = search.trim() !== "" || envFilter !== "All";
 
   return (
     <div className="flex h-full flex-col">
@@ -22,114 +44,130 @@ export default function ApiPlaygroundPage() {
         onNewCollectionClick={() => setIsNewCollectionModalOpen(true)}
       />
 
-      <CollectionSearchToolbar collectionCount={collections?.length ?? 0} />
-
-      {/* Content Container */}
-      <div className="flex flex-1 flex-col p-4 sm:p-6">
-        {/* 1. Loading State */}
-        {isLoading && (
-          <div className="flex flex-1 flex-col items-center justify-center py-16">
-            <div className="relative mb-4 h-12 w-12">
-              <div className="absolute inset-0 rounded-full border-4 border-neutral-surface-2"></div>
-              <div className="absolute inset-0 animate-spin rounded-full border-4 border-brand-accent border-t-transparent"></div>
-            </div>
-            <p className="animate-pulse text-sm font-medium text-neutral-text-secondary">
-              Loading collections...
-            </p>
-          </div>
-        )}
-
-        {/* 2. Error State */}
-        {isError && (
-          <div className="flex flex-1 flex-col items-center justify-center py-16">
-            <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-error/10">
-              <svg
-                className="h-8 w-8 text-error"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={1.5}
-                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-                />
-              </svg>
-            </div>
-            <h3 className="mb-2 text-lg font-medium text-error">
-              Couldn&apos;t load collections
-            </h3>
-            <p className="mb-6 text-sm text-neutral-text-secondary">
-              Something went wrong. Please try refreshing the page.
-            </p>
-            <button
-              onClick={() => window.location.reload()}
-              className="rounded-lg border border-neutral-border px-4 py-2 text-sm font-medium transition-colors hover:bg-neutral-surface-2"
-            >
-              Refresh Page
-            </button>
-          </div>
-        )}
-
-        {/* 3. Empty State */}
-        {collections && collections.length === 0 && (
-          <div className="mx-auto flex w-full max-w-2xl flex-1 flex-col items-center justify-center rounded-2xl border border-dashed border-neutral-border bg-neutral-surface-2/30 py-20 px-4 text-center">
-            <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-neutral-surface-2">
-              <svg
-                className="h-8 w-8 text-neutral-text-secondary"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={1.5}
-                  d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"
-                />
-              </svg>
-            </div>
-            <h3 className="mb-2 text-lg font-medium">No collections yet</h3>
-            <p className="mb-8 max-w-sm text-sm text-neutral-text-secondary">
-              Create your first collection to start organizing and managing your
-              API requests.
-            </p>
-            <button
-              onClick={() => setIsNewCollectionModalOpen(true)}
-              className="flex items-center gap-2 rounded-lg bg-brand-accent px-5 py-2.5 text-sm font-medium text-white shadow-sm transition-opacity hover:opacity-90"
-            >
-              <svg
-                className="h-5 w-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 4v16m8-8H4"
-                />
-              </svg>
-              Create Collection
-            </button>
-          </div>
-        )}
-
-        {/* 4. Loaded Data (Grid) */}
-        {collections && collections.length > 0 && (
-          <CollectionsGrid
-            collections={collections.map((c) => ({
-              id: c._id,
-              name: c.name,
-              requestCount: c.requestCount,
-              lastUsed: new Date(c.updatedAt).toLocaleDateString(),
-              env: c.env,
-              envColor: ENV_COLORS[c.env],
-            }))}
+      <div className="flex flex-1 flex-col">
+        {/* Toolbar only makes sense once we actually have collections to search/filter */}
+        {hasCollections && (
+          <CollectionSearchToolbar
+            collectionCount={filteredCollections?.length ?? 0}
+            totalCount={collections?.length ?? 0}
+            searchValue={search}
+            onSearchChange={setSearch}
+            activeFilter={envFilter}
+            onFilterChange={setEnvFilter}
           />
         )}
+
+        <div className="mx-auto w-full max-w-6xl flex-1">
+          {/* 1. Loading State */}
+          {isLoading && (
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="animate-pulse rounded-lg border border-neutral-border bg-neutral-surface-1 p-4"
+                >
+                  <div className="flex items-start gap-2.5">
+                    <div className="h-8 w-8 shrink-0 rounded-md bg-neutral-surface-2" />
+                    <div className="flex-1 space-y-2 pt-0.5">
+                      <div className="h-3.5 w-2/3 rounded bg-neutral-surface-2" />
+                      <div className="h-2.5 w-1/2 rounded bg-neutral-surface-2" />
+                    </div>
+                  </div>
+                  <div className="mt-4 border-t border-neutral-border pt-3">
+                    <div className="h-4 w-14 rounded bg-neutral-surface-2" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* 2. Error State */}
+          {!isLoading && isError && (
+            <div className="flex flex-col items-center justify-center py-20 text-center">
+              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-error-bg">
+                <AlertTriangle size={22} className="text-error" />
+              </div>
+              <h3 className="mb-1.5 text-sm font-semibold text-neutral-text-primary">
+                Unable to load collections
+              </h3>
+              <p className="mb-5 max-w-sm text-sm text-neutral-text-secondary">
+                Something went wrong while fetching your workspace data.
+              </p>
+              <button
+                onClick={() => refetch()}
+                disabled={isRefetching}
+                className="flex items-center gap-2 rounded-lg border border-neutral-border px-4 py-2 text-sm font-medium text-neutral-text-primary transition-colors hover:bg-neutral-surface-2 disabled:opacity-50"
+              >
+                <RefreshCw
+                  size={14}
+                  className={isRefetching ? "animate-spin" : ""}
+                />
+                {isRefetching ? "Retrying..." : "Retry"}
+              </button>
+            </div>
+          )}
+
+          {/* 3. Empty State (no collections at all) */}
+          {!isLoading && !isError && !hasCollections && (
+            <div className="flex flex-col items-center justify-center rounded-lg border border-dashed border-neutral-border py-20 text-center">
+              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-neutral-surface-2">
+                <FolderPlus size={20} className="text-neutral-text-secondary" />
+              </div>
+              <h3 className="mb-1.5 text-sm font-semibold text-neutral-text-primary">
+                No collections yet
+              </h3>
+              <p className="mb-5 max-w-sm text-sm text-neutral-text-secondary">
+                Create your first collection to organize your API requests.
+              </p>
+              <button
+                onClick={() => setIsNewCollectionModalOpen(true)}
+                className="flex items-center gap-2 rounded-lg bg-brand-primary px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-brand-primary/90"
+              >
+                <FolderPlus size={15} />
+                New Collection
+              </button>
+            </div>
+          )}
+
+          {/* 4. No results for current search/filter, but collections exist */}
+          {!isLoading &&
+            !isError &&
+            hasCollections &&
+            !hasResults &&
+            isSearchOrFilterActive && (
+              <div className="flex flex-col items-center justify-center py-20 text-center">
+                <h3 className="mb-1.5 text-sm font-semibold text-neutral-text-primary">
+                  No matching collections
+                </h3>
+                <p className="mb-5 max-w-sm text-sm text-neutral-text-secondary">
+                  Try a different search term or clear the active filter.
+                </p>
+                <button
+                  onClick={() => {
+                    setSearch("");
+                    setEnvFilter("All");
+                  }}
+                  className="rounded-lg border border-neutral-border px-4 py-2 text-sm font-medium text-neutral-text-primary transition-colors hover:bg-neutral-surface-2"
+                >
+                  Clear search &amp; filters
+                </button>
+              </div>
+            )}
+
+          {/* 5. Loaded Data (Grid) */}
+          {!isLoading && !isError && hasResults && (
+            <CollectionsGrid
+              collections={(filteredCollections ?? []).map((c) => ({
+                id: c._id,
+                name: c.name,
+                requestCount: c.requestCount,
+                lastUsed: new Date(c.updatedAt).toLocaleDateString(),
+                env: c.env,
+                envColor: ENV_COLORS[c.env],
+              }))}
+            />
+          )}
+        </div>
       </div>
 
       <NewCollectionModal

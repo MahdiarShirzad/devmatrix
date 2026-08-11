@@ -17,23 +17,27 @@ interface CollectionCardProps {
 
 export default function CollectionCard({ collection }: CollectionCardProps) {
   return (
-    <div className="group relative flex flex-col justify-between rounded-xl border border-neutral-border bg-neutral-surface-1 p-5 transition-all duration-300 hover:-translate-y-1 hover:border-brand-primary hover:shadow-lg hover:shadow-brand-primary/5">
-      <div className="flex items-start justify-between">
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-brand-primary/10 text-brand-primary transition-colors group-hover:bg-brand-primary group-hover:text-white">
-            <Folder size={20} strokeWidth={2} />
+    <div className="group relative flex flex-col justify-between rounded-lg border border-neutral-border bg-neutral-surface-1 p-4 transition-colors hover:border-neutral-text-secondary/30 hover:bg-neutral-surface-2/40">
+      <div className="flex items-start justify-between gap-2">
+        <div className="flex min-w-0 items-start gap-2.5">
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-neutral-surface-2 text-neutral-text-secondary transition-colors group-hover:text-brand-primary">
+            <Folder size={16} strokeWidth={2} />
           </div>
-          <div>
+          <div className="min-w-0">
             <Link
               href={`/api-playground/${collection.id}`}
-              className="text-base font-semibold text-neutral-text-primary before:absolute before:inset-0 focus:outline-none"
+              className="block truncate text-sm font-semibold text-neutral-text-primary before:absolute before:inset-0 focus:outline-none"
+              title={collection.name}
             >
               {collection.name}
             </Link>
-            <div className="mt-1 flex items-center gap-2 text-[11px] font-mono text-neutral-text-secondary">
-              <span>{collection.requestCount} requests</span>
-              <span>•</span>
-              <span>{collection.lastUsed}</span>
+            <div className="mt-1 flex items-center gap-1.5 text-[11px] text-neutral-text-secondary">
+              <span>
+                {collection.requestCount}{" "}
+                {collection.requestCount === 1 ? "request" : "requests"}
+              </span>
+              <span className="text-neutral-border">•</span>
+              <span>Updated {collection.lastUsed}</span>
             </div>
           </div>
         </div>
@@ -41,9 +45,9 @@ export default function CollectionCard({ collection }: CollectionCardProps) {
         <CollectionMenu collectionId={collection.id} />
       </div>
 
-      <div className="mt-5 flex items-center border-t border-neutral-border pt-4">
+      <div className="mt-4 flex items-center justify-between border-t border-neutral-border pt-3">
         <span
-          className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${collection.envColor}`}
+          className={`inline-flex items-center rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${collection.envColor}`}
         >
           {collection.env}
         </span>
