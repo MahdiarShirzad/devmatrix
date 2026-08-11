@@ -5,6 +5,7 @@ import passport from "./config/passport.js";
 import authRoutes from "./Routes/authRoutes.js";
 import playgroundRoutes from "./Routes/playgroundRoutes.js";
 import aiDebugRoutes from "./Routes/aiDebugRoutes.js";
+import githubProjectRoutes from "./Routes/githubProjectRoutes.js";
 import cors from "cors";
 
 import type { Request, Response } from "express";
@@ -29,5 +30,6 @@ app.get("/", (req: Request, res: Response) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/playground", playgroundRoutes);
 app.use("/api/ai-debug", aiDebugRoutes);
+app.use("/api/github-projects", githubProjectRoutes);
 
 export default app;

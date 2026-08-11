@@ -1,81 +1,80 @@
 import mongoose, { Schema, Document, Model, Types } from "mongoose";
 
-export interface ICommit extends Document {
-  projectId: Types.ObjectId;
-  sha: string;
-  authorGithubLogin: string | null;
-  authorName: string;
-  authorEmail: string;
-  authorAvatarUrl: string | null;
-  message: string;
-  additions: number;
-  deletions: number;
-  totalChanges: number;
-  committedAt: Date;
+export type GithubProjectProvider = "github" | "gitlab";
+
+export interface IGithubProject extends Document {
+  userId: Types.ObjectId;
+  provider: GithubProjectProvider;
+  githubRepoId: number;
+  fullName: string;
+  name: string;
+  ownerLogin: string;
+  defaultBranch: string;
+  isPrivate: boolean;
+  isActive: boolean;
+  lastSyncedAt: Date | null;
   createdAt: Date;
+  updatedAt: Date;
 }
 
-const CommitSchema = new Schema<ICommit>(
+const GithubProjectSchema = new Schema<IGithubProject>(
   {
-    projectId: {
+    userId: {
       type: Schema.Types.ObjectId,
-      ref: "GithubProject",
+      ref: "User",
       required: true,
       index: true,
     },
-    sha: {
+    provider: {
+      type: String,
+      enum: ["github", "gitlab"],
+      required: true,
+      default: "github",
+    },
+    githubRepoId: {
+      type: Number,
+      required: true,
+    },
+    fullName: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    name: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    ownerLogin: {
       type: String,
       required: true,
     },
-    authorGithubLogin: {
+    defaultBranch: {
       type: String,
-      default: null,
-      index: true,
+      default: "main",
     },
-    authorName: {
-      type: String,
-      required: true,
+    isPrivate: {
+      type: Boolean,
+      default: false,
     },
-    authorEmail: {
-      type: String,
-      default: "",
+    isActive: {
+      type: Boolean,
+      default: true,
     },
-    authorAvatarUrl: {
-      type: String,
-      default: null,
-    },
-    message: {
-      type: String,
-      required: true,
-    },
-    additions: {
-      type: Number,
-      default: 0,
-    },
-    deletions: {
-      type: Number,
-      default: 0,
-    },
-    totalChanges: {
-      type: Number,
-      default: 0,
-    },
-    committedAt: {
+    lastSyncedAt: {
       type: Date,
-      required: true,
-      index: true,
+      default: null,
     },
   },
   {
-    timestamps: { createdAt: true, updatedAt: false },
+    timestamps: true,
   },
 );
 
-CommitSchema.index({ projectId: 1, sha: 1 }, { unique: true });
+GithubProjectSchema.index({ userId: 1, githubRepoId: 1 }, { unique: true });
 
-CommitSchema.index({ projectId: 1, committedAt: -1 });
+const GithubProject: Model<IGithubProject> =
+  mongoose.models.GithubProject ||
+  mongoose.model<IGithubProject>("GithubProject", GithubProjectSchema);
 
-const Commit: Model<ICommit> =
-  mongoose.models.Commit || mongoose.model<ICommit>("Commit", CommitSchema);
-
-export default Commit;
+export default GithubProject;

@@ -1,10 +1,10 @@
 import mongoose, { Schema, Document, Model, Types } from "mongoose";
 
-export type ProjectProvider = "github" | "gitlab";
+export type GithubProjectProvider = "github" | "gitlab";
 
 export interface IGithubProject extends Document {
   userId: Types.ObjectId;
-  provider: ProjectProvider;
+  provider: GithubProjectProvider;
   githubRepoId: number;
   fullName: string;
   name: string;
@@ -73,8 +73,8 @@ const GithubProjectSchema = new Schema<IGithubProject>(
 
 GithubProjectSchema.index({ userId: 1, githubRepoId: 1 }, { unique: true });
 
-const Project: Model<IGithubProject> =
-  mongoose.models.Project ||
-  mongoose.model<IGithubProject>("Project", GithubProjectSchema);
+const GithubProject: Model<IGithubProject> =
+  mongoose.models.GithubProject ||
+  mongoose.model<IGithubProject>("GithubProject", GithubProjectSchema);
 
-export default Project;
+export default GithubProject;
