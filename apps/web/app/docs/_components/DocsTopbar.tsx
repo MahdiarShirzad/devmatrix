@@ -1,18 +1,33 @@
 // DocsTopbar.tsx
 import Link from "next/link";
 import { Search } from "lucide-react";
+import Image from "next/image";
 
 export default function DocsTopbar() {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-[#000000]/80 backdrop-blur-xl">
       <div className="container mx-auto px-6 h-16 flex items-center justify-between gap-4">
-        <div className="flex items-center gap-8">
+        {/* <div className="flex items-center gap-8">
           <Link
             href="/docs/introduction"
             className="font-bold text-white text-lg tracking-tight"
           >
             DevMatrix{" "}
             <span className="text-[#e5e5e5]/50 font-normal">Docs</span>
+          </Link>
+        </div> */}
+        <div className="flex h-14 shrink-0 items-center gap-3  px-5">
+          <Link href="/" className="flex items-center gap-2">
+            <Image
+              src="/logo.png"
+              alt="DevMatrix"
+              width={24}
+              height={24}
+              className="rounded"
+            />
+            <span className="font-mono text-sm font-bold tracking-tight text-neutral-text-primary">
+              DevMatrix
+            </span>
           </Link>
         </div>
 
