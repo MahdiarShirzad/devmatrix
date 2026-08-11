@@ -62,3 +62,12 @@ export interface GithubProjectsListResponse {
   githubConnected: boolean;
   projects: GithubProject[];
 }
+
+export interface OverviewStats {
+  totalCommits: number;
+  totalCommitsLastWeek: number;
+  mergedPrsCount: number;
+  mergedPrsLastWeek: number;
+  mostActiveDay: string | null;
+  mostActiveDayCommits: number;
+}

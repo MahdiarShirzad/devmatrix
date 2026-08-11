@@ -9,6 +9,7 @@ import type {
   AvailableRepo,
   SyncResult,
   LinkProjectInput,
+  OverviewStats,
 } from "@/types/githubAnalytics.types";
 
 const KEYS = {
@@ -158,5 +159,13 @@ export function useRemoveGithubAccessToken() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: KEYS.list });
     },
+  });
+}
+
+export function useOverviewStats() {
+  return useQuery({
+    queryKey: ["github-projects", "overview-stats"] as const,
+    queryFn: () =>
+      api.get<{ stats: OverviewStats }>("/github-projects/overview-stats"),
   });
 }

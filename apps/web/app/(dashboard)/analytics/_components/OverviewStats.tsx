@@ -1,6 +1,12 @@
+"use client";
+
 import { GitCommit, GitPullRequest, Activity, TrendingUp } from "lucide-react";
+import { useOverviewStats } from "@/hooks/useGithubAnalytics";
 
 export default function OverviewStats() {
+  const { data, isLoading } = useOverviewStats();
+  const stats = data?.stats;
+
   return (
     <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
       <div className="rounded-xl border border-neutral-border bg-neutral-surface-1 p-5 shadow-sm">
@@ -10,11 +16,14 @@ export default function OverviewStats() {
         </div>
         <div className="mt-3 flex items-end justify-between">
           <span className="text-3xl font-bold text-neutral-text-primary">
-            93
+            {isLoading ? "—" : (stats?.totalCommits ?? 0)}
           </span>
-          <span className="flex items-center text-xs font-medium text-success">
-            <TrendingUp size={14} className="mr-1" /> +14%
-          </span>
+          {!isLoading && (stats?.totalCommitsLastWeek ?? 0) > 0 && (
+            <span className="flex items-center text-xs font-medium text-success">
+              <TrendingUp size={14} className="mr-1" />+
+              {stats?.totalCommitsLastWeek} this week
+            </span>
+          )}
         </div>
       </div>
 
@@ -25,11 +34,14 @@ export default function OverviewStats() {
         </div>
         <div className="mt-3 flex items-end justify-between">
           <span className="text-3xl font-bold text-neutral-text-primary">
-            12
+            {isLoading ? "—" : (stats?.mergedPrsCount ?? 0)}
           </span>
-          <span className="flex items-center text-xs font-medium text-success">
-            <TrendingUp size={14} className="mr-1" /> +2
-          </span>
+          {!isLoading && (stats?.mergedPrsLastWeek ?? 0) > 0 && (
+            <span className="flex items-center text-xs font-medium text-success">
+              <TrendingUp size={14} className="mr-1" />+
+              {stats?.mergedPrsLastWeek} this week
+            </span>
+          )}
         </div>
       </div>
 
@@ -40,11 +52,13 @@ export default function OverviewStats() {
         </div>
         <div className="mt-3 flex items-end justify-between">
           <span className="text-xl font-bold text-neutral-text-primary mt-2">
-            Wednesday
+            {isLoading ? "—" : (stats?.mostActiveDay ?? "No data yet")}
           </span>
-          <span className="text-xs text-neutral-text-secondary">
-            38 commits
-          </span>
+          {!isLoading && stats?.mostActiveDay && (
+            <span className="text-xs text-neutral-text-secondary">
+              {stats.mostActiveDayCommits} commits
+            </span>
+          )}
         </div>
       </div>
     </div>
