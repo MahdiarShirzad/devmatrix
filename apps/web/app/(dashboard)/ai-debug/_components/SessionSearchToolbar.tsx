@@ -1,7 +1,7 @@
 import { Search } from "lucide-react";
 import SessionFilters, { StatusFilter } from "./SessionFilters";
 
-interface SessionSearchToolbarProps {
+export interface SessionSearchToolbarProps {
   sessionCount: number;
   filteredCount: number;
   searchValue: string;
