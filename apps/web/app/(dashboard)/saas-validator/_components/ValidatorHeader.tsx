@@ -15,13 +15,13 @@ export default function ValidatorHeader() {
       </div>
 
       <div className="flex items-center gap-3">
-        <Link
+        {/* <Link
           href="/saas-validator/settings"
           aria-label="Validator settings"
           className="flex h-10 w-10 items-center justify-center rounded-lg border border-neutral-border bg-neutral-surface-1 text-neutral-text-secondary transition-all hover:bg-neutral-surface-2 hover:text-neutral-text-primary active:scale-95"
         >
           <Settings size={18} />
-        </Link>
+        </Link> */}
         <Link
           href="/saas-validator/new"
           className="flex h-10 items-center gap-2 rounded-lg bg-brand-primary px-4 font-medium text-white shadow-lg shadow-brand-primary/20 transition-all hover:bg-brand-primary/90 focus:ring-2 focus:ring-brand-accent focus:ring-offset-2 focus:ring-offset-neutral-bg active:scale-95"

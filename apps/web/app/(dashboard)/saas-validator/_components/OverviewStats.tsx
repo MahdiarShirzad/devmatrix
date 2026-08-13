@@ -1,6 +1,12 @@
+"use client";
+
 import { Lightbulb, CheckCircle2, Target } from "lucide-react";
+import { useOverviewStats } from "@/hooks/useIdea";
 
 export default function OverviewStats() {
+  const { data, isLoading } = useOverviewStats();
+  const stats = data?.stats;
+
   return (
     <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
       <div className="rounded-xl border border-neutral-border bg-neutral-surface-1 p-5 shadow-sm">
@@ -10,10 +16,7 @@ export default function OverviewStats() {
         </div>
         <div className="mt-3 flex items-end justify-between">
           <span className="text-3xl font-bold text-neutral-text-primary">
-            24
-          </span>
-          <span className="text-xs text-neutral-text-secondary">
-            +3 this month
+            {isLoading ? "—" : (stats?.totalIdeas ?? 0)}
           </span>
         </div>
       </div>
@@ -25,10 +28,12 @@ export default function OverviewStats() {
         </div>
         <div className="mt-3 flex items-end justify-between">
           <span className="text-3xl font-bold text-neutral-text-primary">
-            6
+            {isLoading ? "—" : (stats?.validatedCount ?? 0)}
           </span>
           <span className="text-xs text-neutral-text-secondary">
-            25% win rate
+            {!isLoading && stats && stats.totalIdeas > 0
+              ? `${Math.round((stats.validatedCount / stats.totalIdeas) * 100)}% win rate`
+              : null}
           </span>
         </div>
       </div>
@@ -40,7 +45,7 @@ export default function OverviewStats() {
         </div>
         <div className="mt-3 flex items-end justify-between">
           <span className="text-3xl font-bold text-neutral-text-primary">
-            54.3
+            {isLoading ? "—" : (stats?.avgScore ?? 0)}
           </span>
           <span className="text-xs text-neutral-text-secondary">
             Out of 100

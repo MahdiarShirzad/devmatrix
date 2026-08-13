@@ -1,50 +1,41 @@
+"use client";
+
+import { Loader2, Lightbulb } from "lucide-react";
 import ValidatorHeader from "./_components/ValidatorHeader";
 import OverviewStats from "./_components/OverviewStats";
 import IdeaSearchToolbar from "./_components/IdeaSearchToolbar";
 import IdeasGrid from "./_components/IdeasGrid";
-import { Idea } from "./_components/IdeaCard";
-
-// داده‌های غنی‌تر برای نمایش بهتر UI
-const IDEAS: Idea[] = [
-  {
-    id: "idea_1",
-    title: "AI-powered changelog generator",
-    description:
-      "Automatically generate release notes from git commits using LLMs.",
-    category: "DevTools",
-    score: 78,
-    status: "validated",
-    time: "2d ago",
-  },
-  {
-    id: "idea_2",
-    title: "Async standup bot for remote teams",
-    description:
-      "Slack integration to replace daily syncs with smart async updates.",
-    category: "Productivity",
-    score: 54,
-    status: "needs review",
-    time: "5d ago",
-  },
-  {
-    id: "idea_3",
-    title: "Invoice reconciliation for freelancers",
-    description:
-      "Connect bank accounts to match incoming payments with sent invoices.",
-    category: "Fintech",
-    score: 31,
-    status: "high risk",
-    time: "1w ago",
-  },
-];
+import { useIdeas } from "@/hooks/useIdea";
 
 export default function SaasValidatorPage() {
+  const { data, isLoading, isError } = useIdeas();
+  const ideas = data?.ideas ?? [];
+
   return (
     <div className="flex h-full flex-col pb-8">
       <ValidatorHeader />
       <OverviewStats />
       <IdeaSearchToolbar />
-      <IdeasGrid ideas={IDEAS} />
+
+      {isLoading ? (
+        <div className="flex flex-1 items-center justify-center py-16 text-neutral-text-secondary">
+          <Loader2 size={20} className="mr-2 animate-spin" />
+          Loading ideas...
+        </div>
+      ) : isError ? (
+        <div className="flex flex-1 items-center justify-center py-16 text-error">
+          Failed to load ideas. Please try again.
+        </div>
+      ) : ideas.length === 0 ? (
+        <div className="flex flex-1 flex-col items-center justify-center gap-3 py-16 text-center text-neutral-text-secondary">
+          <Lightbulb size={28} className="text-neutral-text-secondary" />
+          <p className="text-sm">
+            No ideas yet. Validate your first SaaS idea to get started.
+          </p>
+        </div>
+      ) : (
+        <IdeasGrid ideas={ideas} />
+      )}
     </div>
   );
 }
