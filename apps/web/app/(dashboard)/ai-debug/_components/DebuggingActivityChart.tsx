@@ -1,5 +1,6 @@
 "use client";
 
+import { DayActivity } from "@/hooks/useDebugAnalytics";
 import {
   AreaChart,
   Area,
@@ -9,7 +10,6 @@ import {
   ResponsiveContainer,
   CartesianGrid,
 } from "recharts";
-import { DayActivity } from "../_hooks/useDebugAnalytics";
 
 interface DebuggingActivityChartProps {
   data: DayActivity[];
@@ -47,9 +47,7 @@ export default function DebuggingActivityChart({
         <h3 className="text-sm font-semibold text-neutral-text-primary">
           Debugging Activity
         </h3>
-        <span className="text-xs text-neutral-text-secondary">
-          Last 7 days
-        </span>
+        <span className="text-xs text-neutral-text-secondary">Last 7 days</span>
       </div>
 
       {!hasActivity ? (
@@ -86,14 +84,20 @@ export default function DebuggingActivityChart({
                 dataKey="label"
                 axisLine={false}
                 tickLine={false}
-                tick={{ fill: "var(--color-neutral-text-secondary)", fontSize: 11 }}
+                tick={{
+                  fill: "var(--color-neutral-text-secondary)",
+                  fontSize: 11,
+                }}
               />
               <YAxis
                 allowDecimals={false}
                 axisLine={false}
                 tickLine={false}
                 width={24}
-                tick={{ fill: "var(--color-neutral-text-secondary)", fontSize: 11 }}
+                tick={{
+                  fill: "var(--color-neutral-text-secondary)",
+                  fontSize: 11,
+                }}
               />
               <Tooltip
                 content={<ActivityTooltip />}

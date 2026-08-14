@@ -152,15 +152,15 @@ export function useRemoveGithubAccessToken() {
   });
 }
 
-export function useGithubProjects(days: string) {
+export function useGithubProjects(days?: string) {
   return useQuery({
-    queryKey: ["github-projects", "list", days],
+    queryKey: ["github-projects", "list", days ?? "all"],
     queryFn: () =>
       api.get<{
         results: number;
         githubConnected: boolean;
         projects: GithubProject[];
-      }>(`/github-projects?days=${days}`),
+      }>(days ? `/github-projects?days=${days}` : "/github-projects"),
   });
 }
 

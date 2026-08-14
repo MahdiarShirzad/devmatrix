@@ -1,4 +1,4 @@
-import { LanguageSlice } from "../_hooks/useDebugAnalytics";
+import { LanguageSlice } from "@/hooks/useDebugAnalytics";
 
 interface LanguageBreakdownProps {
   languages: LanguageSlice[];

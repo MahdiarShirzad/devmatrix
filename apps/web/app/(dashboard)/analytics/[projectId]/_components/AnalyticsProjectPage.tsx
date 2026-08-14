@@ -1,12 +1,6 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import BackToAnalyticsLink from "./_components/BackToAnalyticsLink";
-import ProjectHeaderBar from "./_components/ProjectHeaderBar";
-import StatsGrid from "./_components/StatsGrid";
-import CommitsLineChart from "./_components/CommitsLineChart";
-import ActivityHeatmap from "./_components/ActivityHeatmap";
-import ContributorsTable from "./_components/ContributorsTable";
 import {
   useGithubProject,
   useProjectStats,
@@ -14,6 +8,12 @@ import {
   useHeatmap,
   useContributors,
 } from "@/hooks/useGithubAnalytics";
+import BackToAnalyticsLink from "./BackToAnalyticsLink";
+import ProjectHeaderBar from "./ProjectHeaderBar";
+import StatsGrid from "./StatsGrid";
+import CommitsLineChart from "./CommitsLineChart";
+import ActivityHeatmap from "./ActivityHeatmap";
+import ContributorsTable from "./ContributorsTable";
 
 export default function AnalyticsProjectPage() {
   const params = useParams<{ projectId: string }>();
@@ -23,8 +23,10 @@ export default function AnalyticsProjectPage() {
     useGithubProject(projectId);
   const { data: statsData, isLoading: isStatsLoading } =
     useProjectStats(projectId);
-  const { data: commitsData, isLoading: isCommitsLoading } =
-    useCommitsByDay(projectId, 7);
+  const { data: commitsData, isLoading: isCommitsLoading } = useCommitsByDay(
+    projectId,
+    7,
+  );
   const { data: heatmapData, isLoading: isHeatmapLoading } = useHeatmap(
     projectId,
     24,
