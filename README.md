@@ -1,338 +1,436 @@
 # DevMatrix
 
-> **An AI-powered developer intelligence platform for building, debugging, validating, and understanding software projects.**
+> **An AI-powered developer intelligence platform for building, testing, debugging, validating, and understanding software.**
 
-DevMatrix is a developer-focused platform designed to bring multiple aspects of the software development lifecycle into a single workspace.
+DevMatrix is a developer-focused platform that brings essential software development workflows into one connected workspace.
 
-Instead of switching between GitHub analytics, debugging tools, project documentation, idea evaluation systems, and development insights, DevMatrix turns them into connected experiences around the developer and their projects.
+From understanding development activity and experimenting with APIs to debugging code with AI and validating new product ideas, DevMatrix is designed to reduce context switching and turn everyday development data into actionable insight.
 
-The core idea is simple:
+The platform is built around a simple idea:
 
-**Understand your development activity. Improve your code. Validate your ideas. Build better projects.**
+> **Build better software by understanding how you build it.**
 
 ---
 
 ## ✨ What is DevMatrix?
 
-Modern developers use dozens of tools throughout the development process.
+Modern software development is distributed across many different tools.
 
-GitHub is used for source control and collaboration.
-AI assistants are used for debugging and development.
-Analytics tools are used to understand activity and productivity.
-Separate platforms are used to validate product ideas.
+Developers use GitHub for source control and collaboration, API clients for testing services, AI tools for debugging, analytics platforms for understanding activity, and separate tools for evaluating product ideas.
 
 DevMatrix brings these workflows together.
 
-It provides a centralized environment where developers can:
+With DevMatrix, developers can:
 
-* 📊 Analyze their development activity
-* 🐛 Debug code with AI assistance
+* 📊 Analyze development activity
+* 🐛 Debug code with AI
+* 🧪 Test and experiment with APIs
 * 💡 Validate software and product ideas
-* 🚀 Connect and manage development projects
-* 🧠 Turn raw development data into useful insights
+* 🚀 Organize development around projects
+* 🧠 Turn development data into actionable insights
 
-DevMatrix is not intended to replace the tools developers already use.
-
-Instead, it acts as an **intelligence layer around the development workflow**.
+Rather than replacing the tools developers already use, DevMatrix acts as an **intelligence and productivity layer around the development workflow**.
 
 ---
 
-## 🧩 Core Modules
+# 🧩 Core Modules
 
-### 📊 Platform Analytics
+## 📊 Platform Analytics
 
-Understand your development activity through data collected from your development ecosystem.
+Platform Analytics provides an overview of a developer's activity across their GitHub ecosystem.
 
-Analytics can help answer questions such as:
+It transforms raw development activity into meaningful metrics and visualizations.
 
-* How active am I as a developer?
-* How consistent is my contribution history?
-* What repositories do I work on the most?
-* What languages and technologies do I use?
-* How has my activity changed over time?
-* Which projects receive the most attention?
+Developers can explore information such as:
 
-The goal is not to simply display numbers, but to transform activity into meaningful developer insights.
+* Commit activity
+* Contribution trends
+* Repository activity
+* Programming languages
+* Project distribution
+* Development consistency
+* Activity over time
+* Repository-level insights
+
+The goal is not simply to count commits.
+
+The goal is to help developers understand **how they spend their development time and what their activity says about their projects and workflow**.
 
 ---
 
-### 🐛 AI Debugging
+## 🐛 AI Debugging
 
-A debugging workspace powered by AI.
+AI Debugging provides an environment for analyzing problematic code with the help of AI.
 
-Developers can provide problematic code and receive structured analysis designed to help identify:
+Developers can submit code and receive structured analysis covering:
 
-* Bugs and logical errors
-* Potential causes
+* Potential bugs
+* Logical errors
+* Root causes
 * Risky patterns
-* Suggested fixes
-* Explanations of why the issue occurs
+* Possible fixes
+* Explanations of the problem
 
-Instead of only generating a corrected version of the code, the system focuses on helping developers **understand the problem**.
+The focus is not only on producing corrected code.
+
+DevMatrix aims to explain **why the problem happens**, helping developers learn from the debugging process rather than blindly applying a generated solution.
+
+### Debugging Flow
+
+```text
+Code
+  │
+  ▼
+AI Analysis
+  │
+  ├── Detect Issue
+  ├── Identify Cause
+  ├── Analyze Impact
+  └── Suggest Fix
+  │
+  ▼
+Structured Result
+```
 
 ---
 
-### 💡 Idea Validator
+## 🧪 API Playground
 
-A structured environment for evaluating software and product ideas before investing significant development time.
+API Playground is a dedicated environment for interacting with and testing HTTP APIs directly inside DevMatrix.
 
-Developers can submit an idea and receive an analysis based on factors such as:
+Instead of switching between development tools whenever an endpoint needs to be tested, developers can construct and execute requests from a single workspace.
+
+The playground supports the common building blocks of API testing, including:
+
+* HTTP methods
+* Request URLs
+* Query parameters
+* Headers
+* Request bodies
+* JSON payloads
+* Response status
+* Response headers
+* Response body
+* Response timing
+
+### API Request Flow
+
+```text
+Create Request
+      │
+      ▼
+Choose HTTP Method
+      │
+      ▼
+Configure Endpoint
+      │
+      ├── Query Parameters
+      ├── Headers
+      └── Request Body
+      │
+      ▼
+     Send
+      │
+      ▼
+Inspect Response
+      │
+      ├── Status Code
+      ├── Headers
+      ├── Body
+      └── Response Time
+```
+
+API Playground is designed to make API experimentation, debugging, and integration testing faster and more convenient.
+
+---
+
+## 💡 Idea Validator
+
+Idea Validator helps developers evaluate software and product ideas before committing significant time and resources to implementation.
+
+An idea can be analyzed across multiple dimensions, such as:
 
 * Problem clarity
 * Target audience
-* Market potential
-* Technical complexity
+* Market opportunity
 * Competition
 * Differentiation
-* Overall feasibility
+* Technical complexity
+* Feasibility
+* Overall potential
 
-The purpose is not to decide whether an idea is objectively "good" or "bad".
+The purpose is not to give an absolute answer about whether an idea will succeed.
 
-Instead, DevMatrix provides a structured perspective that helps developers make better decisions before they build.
+Instead, DevMatrix provides structured feedback that helps developers **think critically about what they are about to build**.
+
+### Idea Validation Flow
+
+```text
+Idea
+ │
+ ▼
+AI Analysis
+ │
+ ├── Problem
+ ├── Audience
+ ├── Competition
+ ├── Differentiation
+ ├── Complexity
+ └── Feasibility
+ │
+ ▼
+Validation Result
+```
 
 ---
 
-### 🚀 Projects
+## 🚀 Projects
 
-Projects act as the central unit connecting the different parts of DevMatrix.
+Projects are the central context within DevMatrix.
 
-A project can represent a real software product and serve as a shared context for its related development activity.
+A project represents a real software product or development effort and provides a common context for the different DevMatrix modules.
 
-This allows DevMatrix to move beyond isolated tools and create a connected workspace around the project itself.
+Projects can connect development activity with the tools used to build and evaluate them.
+
+This allows DevMatrix to move from a collection of independent utilities toward a connected developer workspace.
+
+Conceptually:
+
+```text
+                         Project
+                            │
+         ┌──────────────────┼──────────────────┐
+         │                  │                  │
+         ▼                  ▼                  ▼
+     Analytics        AI Debugging      Idea Validation
+         │                  │                  │
+         └──────────────────┼──────────────────┘
+                            │
+                            ▼
+                      API Playground
+```
 
 ---
 
-## 🏗️ Product Philosophy
+# 🧠 Product Philosophy
 
-DevMatrix is built around three principles:
+DevMatrix is built around three core principles.
 
-### 1. Developer-Centric
+## Developer-Centric
 
-The platform is designed around the actual workflow of developers rather than around isolated features.
+The platform is designed around the actual development workflow.
 
-### 2. Data-Driven
+Every feature should reduce friction, provide useful context, or help developers make better decisions.
 
-Development activity contains valuable information.
+## Data-Driven
 
-DevMatrix transforms that raw information into insights that can help developers understand their work and make better decisions.
+Development produces a huge amount of information.
 
-### 3. AI as an Intelligence Layer
+Commits, repositories, APIs, errors, projects, experiments, and ideas all contain valuable signals.
 
-AI is not treated as a separate feature.
+DevMatrix turns these signals into information developers can actually use.
+
+## AI as an Intelligence Layer
+
+AI is not treated as an isolated feature.
 
 It is integrated into workflows where reasoning, analysis, and contextual assistance can provide real value.
 
 ---
 
-## 🧠 How DevMatrix Fits Together
+# 🏗️ Architecture
+
+DevMatrix uses a modular architecture where shared platform infrastructure supports multiple independent product modules.
+
+At a high level:
 
 ```text
-                    ┌─────────────────────┐
-                    │      DevMatrix      │
-                    │  Developer Platform │
-                    └──────────┬──────────┘
-                               │
-        ┌──────────────────────┼──────────────────────┐
-        │                      │                      │
-        ▼                      ▼                      ▼
-┌───────────────┐      ┌────────────────┐      ┌────────────────┐
-│   Analytics   │      │  AI Debugging  │      │ Idea Validator │
-└───────┬───────┘      └────────┬───────┘      └────────┬───────┘
-        │                       │                       │
-        └───────────────────────┼───────────────────────┘
-                                │
-                                ▼
-                       ┌─────────────────┐
-                       │    Projects     │
-                       │ Shared Context  │
-                       └─────────────────┘
+                         ┌────────────────────┐
+                         │      DevMatrix     │
+                         │ Developer Platform │
+                         └─────────┬──────────┘
+                                   │
+             ┌─────────────────────┼─────────────────────┐
+             │                     │                     │
+             ▼                     ▼                     ▼
+        User / Auth             Projects            Integrations
+             │                     │                     │
+             │          ┌──────────┼──────────┐          │
+             │          │          │          │          │
+             ▼          ▼          ▼          ▼          ▼
+        Sessions    Analytics   Debugging   Ideas     GitHub
+                                      │
+                                      ▼
+                               API Playground
 ```
 
-The goal is to create a platform where these capabilities become more useful together than they would be as isolated applications.
+The architecture is designed so that new capabilities can be added without coupling every module to the implementation details of another module.
 
 ---
 
-## ⚙️ Tech Stack
+# 🔗 GitHub Integration
 
-### Frontend
+GitHub is one of the primary external integrations in DevMatrix.
+
+GitHub data can provide the foundation for developer analytics and project-related insights.
+
+Depending on the connected account and enabled features, DevMatrix can work with information such as:
+
+* Repositories
+* Commits
+* Contribution activity
+* Programming languages
+* Repository metadata
+* Development trends
+
+This data can then be transformed into analytics and higher-level insights.
+
+---
+
+# 🤖 AI Layer
+
+AI-powered capabilities follow a structured request and analysis workflow rather than simply displaying raw model output.
+
+A generic AI flow looks like this:
+
+```text
+User Input
+    │
+    ▼
+Validation
+    │
+    ▼
+Context Preparation
+    │
+    ▼
+AI Processing
+    │
+    ▼
+Structured Output
+    │
+    ▼
+Presentation
+```
+
+This approach allows AI responses to become part of the product experience and makes them easier to consume, display, and extend.
+
+---
+
+# 🔐 Authentication
+
+DevMatrix includes a centralized authentication and session layer shared across platform features.
+
+Authentication is intentionally separated from business modules so that Analytics, AI Debugging, API Playground, Idea Validator, and Projects can operate on a common user identity and authorization model.
+
+External authentication providers such as GitHub can also be integrated into the platform.
+
+---
+
+# 🛠️ Tech Stack
+
+## Frontend
 
 * Next.js
 * React
 * TypeScript
 * Tailwind CSS
-* Modern component-driven architecture
+* Component-driven architecture
 
-### Backend
+## Backend
 
 * Node.js
 * Express.js
 * TypeScript
-* RESTful APIs
-* Authentication & session management
+* REST APIs
+* Authentication and session management
 
-### Database
+## Database
 
 * MongoDB
 * MongoDB Atlas
 
-### AI
+## AI
 
 * Groq API
 * AI-powered analysis workflows
 
-### Integrations
+## Integrations
 
 * GitHub
 * GitHub OAuth
 * GitHub API
 
-### Infrastructure
+## Infrastructure
 
-* Linux-based deployment
+* Linux
 * Nginx
 * HTTPS / SSL
 * Cloudflare DNS
 
 ---
 
-## 🏛️ Architecture
+# 📁 Project Structure
 
-DevMatrix follows a modular architecture designed to keep product modules independent while allowing them to share core resources.
+DevMatrix follows a full-stack, modular repository structure.
 
-At the center of the system are common concepts such as:
-
-```text
-User
- │
- ├── Authentication
- │
- ├── Projects
- │     │
- │     ├── Analytics
- │     ├── AI Debugging
- │     └── Idea Validation
- │
- └── External Integrations
-       └── GitHub
-```
-
-This structure allows new modules to be introduced without rebuilding the entire platform around each new feature.
-
----
-
-## 🔐 Authentication
-
-DevMatrix includes an authentication layer responsible for handling user identity and sessions.
-
-The platform can also integrate with GitHub to connect a developer's account and retrieve development-related information.
-
-Authentication is intentionally separated from product modules so that features can operate on a shared user and session model.
-
----
-
-## 🔗 GitHub Integration
-
-GitHub is one of the primary sources of development activity for DevMatrix.
-
-The integration can be used to retrieve information such as:
-
-* Repositories
-* Commits
-* Contributions
-* Languages
-* Repository activity
-* Developer-related GitHub data
-
-This information becomes the foundation for the analytics experience.
-
----
-
-## 🤖 AI Architecture
-
-AI-powered features are designed around a request → analysis → structured response workflow.
-
-For example, the debugging flow can be represented as:
-
-```text
-Developer
-   │
-   ▼
-Submit Code
-   │
-   ▼
-AI Analysis
-   │
-   ├── Identify Problem
-   ├── Explain Cause
-   ├── Evaluate Risk
-   └── Suggest Fix
-   │
-   ▼
-Structured Result
-```
-
-This approach allows AI responses to become part of the product experience rather than simply displaying raw model output.
-
----
-
-## 📁 Project Structure
-
-The repository is organized as a modern full-stack application with separate frontend and backend responsibilities.
-
-A simplified view:
+A simplified example:
 
 ```text
 devmatrix/
 │
 ├── apps/
-│   ├── web/          # Next.js frontend
-│   └── api/          # Express backend
+│   ├── web/                 # Next.js application
+│   └── api/                 # Express API
 │
 ├── packages/
-│   └── ...            # Shared modules and utilities
+│   └── ...                  # Shared packages and utilities
 │
 ├── package.json
 ├── tsconfig.json
 └── README.md
 ```
 
-> The exact structure may evolve as the platform grows.
+The exact directory structure may evolve as the project grows.
 
 ---
 
-## 🚀 Getting Started
+# 🚀 Getting Started
 
-### Prerequisites
+## Prerequisites
 
-Make sure you have the following installed:
+Make sure you have:
 
 * Node.js
 * npm
 * Git
-* MongoDB / MongoDB Atlas account
+* MongoDB or MongoDB Atlas
 
-You will also need credentials for the external services used by your local environment.
+Depending on the enabled features, you may also need credentials for:
+
+* GitHub OAuth
+* GitHub API
+* Groq
 
 ---
 
-### 1. Clone the repository
+## 1. Clone the repository
 
 ```bash
 git clone https://github.com/MahdiarShirzad/devmatrix.git
 cd devmatrix
 ```
 
-### 2. Install dependencies
+## 2. Install dependencies
 
 ```bash
 npm install
 ```
 
-### 3. Configure environment variables
+## 3. Configure environment variables
 
-Create the required environment files for the frontend and backend.
+Create the required environment files for the applications.
 
-Typical configuration includes:
+A typical configuration may look like:
 
 ```env
 MONGODB_URI=
@@ -342,169 +440,183 @@ GITHUB_CLIENT_SECRET=
 GROQ_API_KEY=
 ```
 
-Use your own local credentials and never commit secrets to version control.
+Never commit real credentials or secrets to the repository.
 
-### 4. Start the development environment
+## 4. Start the development environment
 
 ```bash
 npm run dev
 ```
 
-The exact scripts may vary depending on the current workspace configuration.
+The available scripts may change as the monorepo evolves.
 
 ---
 
-## 🌍 Environment Configuration
+# 🌍 Deployment
 
-DevMatrix separates environment-specific configuration from application code.
+DevMatrix is designed to support a production environment with separated application services and a reverse proxy.
 
-A typical setup includes:
+A simplified production setup can look like:
 
 ```text
-Development
-    │
-    ├── Local Frontend
-    ├── Local API
-    └── Development Database
-
-Production
-    │
-    ├── Production Frontend
-    ├── Production API
-    ├── Production Database
-    └── HTTPS / Reverse Proxy
+                        Internet
+                            │
+                            ▼
+                         Nginx
+                            │
+               ┌────────────┴────────────┐
+               │                         │
+               ▼                         ▼
+         Next.js App                Express API
+                                         │
+                                         ▼
+                                    MongoDB Atlas
 ```
 
-Sensitive credentials should always be provided through environment variables.
+HTTPS protects communication between clients and the production environment.
 
 ---
 
-## 🔒 Security
+# 🔒 Security Principles
 
-Security is treated as a core part of the platform architecture.
+Security is treated as a fundamental part of the platform architecture.
 
 Important practices include:
 
-* Never committing secrets to Git
+* Keeping secrets outside source control
 * Using environment variables for credentials
-* Protecting authenticated routes
-* Validating incoming API data
-* Managing sessions securely
-* Using HTTPS in production
+* Protecting authenticated endpoints
+* Validating API input
+* Using secure session management
 * Restricting access to protected resources
+* Using HTTPS in production
+* Separating public and private configuration
 
 ---
 
-## 🧪 Development
+# 🧪 Development Principles
 
-When contributing to DevMatrix, keep the architecture modular and maintainable.
+DevMatrix is intended to evolve into a larger developer platform, so maintainability is a major architectural concern.
 
-Prefer:
+Development should favor:
 
-* Small, focused modules
-* Reusable components
-* Strong TypeScript types
+* Strong TypeScript typing
+* Small and focused modules
 * Clear API boundaries
-* Separation of business logic and presentation
+* Reusable components
+* Separation of concerns
 * Predictable error handling
 * Minimal duplication
+* Explicit business logic
+* Maintainable abstractions
 
-The project is intended to grow into a larger developer platform, so maintainability is more important than short-term implementation speed.
+Features should be designed so they can evolve independently without creating unnecessary coupling throughout the system.
 
 ---
 
-## 🗺️ Roadmap
+# 🗺️ Roadmap
 
-DevMatrix is continuously evolving.
+DevMatrix is actively evolving.
 
-Potential directions include:
+Potential future directions include:
 
 * [ ] More advanced developer analytics
 * [ ] Deeper GitHub insights
 * [ ] More powerful AI debugging workflows
+* [ ] Saved API requests and collections
+* [ ] API request history
+* [ ] Advanced API environment management
 * [ ] Improved idea validation models
-* [ ] Project-level intelligence
-* [ ] Developer productivity trends
-* [ ] More external integrations
-* [ ] AI-generated project insights
-* [ ] Advanced project health scoring
+* [ ] Project health scoring
 * [ ] Cross-project analytics
+* [ ] AI-generated project insights
 * [ ] Personalized developer recommendations
+* [ ] Additional external integrations
 
-The roadmap is intentionally flexible as the platform evolves.
+The roadmap may change as the platform develops and new requirements emerge.
 
 ---
 
-## 🎯 Vision
+# 🎯 Vision
 
 The long-term vision of DevMatrix is to become a **developer intelligence platform**.
 
-A place where a developer can understand:
+A platform that helps developers understand not only what they build, but how they build it and how they can improve.
 
 ```text
 What am I building?
-        ↓
+        │
+        ▼
 How am I building it?
-        ↓
-How well am I building it?
-        ↓
+        │
+        ▼
+How is it performing?
+        │
+        ▼
 What problems am I facing?
-        ↓
+        │
+        ▼
 What should I improve?
-        ↓
+        │
+        ▼
 What should I build next?
 ```
 
-DevMatrix aims to turn the development process into something that can be **observed, analyzed, understood, and improved**.
+DevMatrix aims to connect these questions into one continuous development experience.
 
 ---
 
-## 📌 Why DevMatrix?
+# 🔥 Why DevMatrix?
 
-Developers already generate an enormous amount of data through their daily work.
+Developers generate a massive amount of information every day.
 
-Commits.
+**Commits.
 Repositories.
 Code.
-Issues.
+APIs.
+Errors.
 Experiments.
 Projects.
 Ideas.
-Failures.
-Solutions.
+Solutions.**
 
-Most of this information remains fragmented across different tools.
+Most of that information remains fragmented across different tools.
 
-DevMatrix's purpose is to connect that information and turn it into something useful.
+DevMatrix brings these pieces together and turns them into a connected developer experience.
+
+The goal is not to build another collection of disconnected developer utilities.
+
+The goal is to build a system that understands the **context around development**.
 
 > **Your code tells you what you built.
 > Your activity tells you how you built it.
-> DevMatrix helps you understand both.**
+> Your projects tell you what you're building toward.
+> DevMatrix helps you understand the bigger picture.**
 
 ---
 
-## 📜 License
+# 📌 Project Status
 
-This project is currently under development.
+DevMatrix is currently under active development.
 
-License information will be added as the project reaches its public release stage.
+Core platform capabilities are being implemented incrementally, with the architecture designed to support additional developer-focused modules over time.
 
 ---
 
-## 👨‍💻 Author
+# 👨‍💻 Author
 
 **Mahdyar Shirzad**
 
-Computer Engineering Student & Full-Stack Developer
+Full-Stack Developer & Computer Engineering Student
 
-Focused on building modern web applications, developer tools, and AI-powered software experiences.
+Interested in building modern web applications, developer tools, and AI-powered software systems.
 
 ---
 
 <p align="center">
-  Built with ❤️ for developers.
+  Built for developers who want to build better.
 </p>
 
 <p align="center">
-  <strong>DevMatrix — Build. Debug. Analyze. Validate.</strong>
+  <strong>DevMatrix — Analyze. Debug. Test. Validate. Build.</strong>
 </p>
