@@ -4,6 +4,11 @@ on:
   push:
     branches:
       - main
+    paths:
+      - "apps/api/**"
+      - "package.json"
+      - "package-lock.json"
+      - "turbo.json"
 
 jobs:
   deploy:
@@ -24,11 +29,12 @@ jobs:
             echo "Pulling latest changes..."
             git pull origin main
 
-            echo "Installing dependencies..."
+            echo "Installing API dependencies..."
+            cd apps/api
             npm install
 
             echo "Building API..."
-            npm run build --workspace=apps/api
+            npm run build
 
             echo "Restarting API..."
             pm2 restart devmatrix-api --update-env
