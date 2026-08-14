@@ -4,11 +4,6 @@ on:
   push:
     branches:
       - main
-    paths:
-      - "apps/api/**"
-      - "package.json"
-      - "package-lock.json"
-      - "turbo.json"
 
 jobs:
   deploy:
