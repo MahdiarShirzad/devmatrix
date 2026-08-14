@@ -12,16 +12,19 @@ export interface GithubProject {
   updated_at: string;
 }
 
+// 1. Update the response interface to reflect what useDashboardData expects
 interface GithubProjectsResponse {
-  data: GithubProject[];
+  projects: GithubProject[];
+  githubConnected?: boolean;
 }
 
 export function useGithubProjects(days: string) {
   return useQuery({
     queryKey: ["github-projects", days],
-    queryFn: () =>
-      api
-        .get<GithubProjectsResponse>(`/api/github-projects?days=${days}`)
-        .then((r) => r.data),
+    queryFn: async () => {
+      return api.get<GithubProjectsResponse>(
+        `/api/github-projects?days=${days}`,
+      );
+    },
   });
 }
