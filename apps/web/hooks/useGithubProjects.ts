@@ -1,18 +1,9 @@
 import { api } from "@/lib/apiClient";
 import { useQuery } from "@tanstack/react-query";
+import type { GithubProject } from "@/types/githubAnalytics.types";
 
-export interface GithubProject {
-  id: number;
-  name: string;
-  description: string | null;
-  html_url: string;
-  stargazers_count: number;
-  forks_count: number;
-  language: string | null;
-  updated_at: string;
-}
+export type { GithubProject };
 
-// 1. Update the response interface to reflect what useDashboardData expects
 interface GithubProjectsResponse {
   projects: GithubProject[];
   githubConnected?: boolean;
