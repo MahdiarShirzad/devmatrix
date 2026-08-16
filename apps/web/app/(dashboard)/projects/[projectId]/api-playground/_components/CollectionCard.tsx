@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Folder } from "lucide-react";
 import CollectionMenu from "./CollectionMenu";
+import { useParams } from "next/navigation";
 
 export interface Collection {
   id: string;
@@ -16,6 +17,8 @@ interface CollectionCardProps {
 }
 
 export default function CollectionCard({ collection }: CollectionCardProps) {
+  const { projectId } = useParams<{ projectId: string }>();
+
   return (
     <div className="group relative flex flex-col justify-between rounded-lg border border-neutral-border bg-neutral-surface-1 p-4 transition-colors hover:border-neutral-text-secondary/30 hover:bg-neutral-surface-2/40">
       <div className="flex items-start justify-between gap-2">
@@ -25,7 +28,7 @@ export default function CollectionCard({ collection }: CollectionCardProps) {
           </div>
           <div className="min-w-0">
             <Link
-              href={`/api-playground/${collection.id}`}
+              href={`/projects/${projectId}/api-playground/${collection.id}`}
               className="block truncate text-sm font-semibold text-neutral-text-primary before:absolute before:inset-0 focus:outline-none"
               title={collection.name}
             >

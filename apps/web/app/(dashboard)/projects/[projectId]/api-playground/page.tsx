@@ -1,7 +1,9 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { RefreshCw, FolderPlus, AlertTriangle } from "lucide-react";
+import Link from "next/link";
+import { useParams } from "next/navigation";
+import { RefreshCw, FolderPlus, AlertTriangle, FolderGit2 } from "lucide-react";
 import PlaygroundHeader from "./_components/PlaygroundHeader";
 import CollectionSearchToolbar, {
   EnvFilter,
@@ -12,14 +14,21 @@ import QuickRequestModal from "./_components/QuickRequestModal";
 import { useCollections } from "@/hooks/usePlayground";
 
 export default function ApiPlaygroundPage() {
+  const { projectId } = useParams<{ projectId: string }>();
+
   const [isNewCollectionModalOpen, setIsNewCollectionModalOpen] =
     useState(false);
   const [isQuickRequestModalOpen, setIsQuickRequestModalOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [envFilter, setEnvFilter] = useState<EnvFilter>("All");
 
-  const { data: collections, isLoading, isError, refetch, isRefetching } =
-    useCollections();
+  const {
+    data: collections,
+    isLoading,
+    isError,
+    refetch,
+    isRefetching,
+  } = useCollections(projectId);
 
   const filteredCollections = useMemo(() => {
     if (!collections) return collections;
@@ -36,6 +45,36 @@ export default function ApiPlaygroundPage() {
   const hasCollections = (collections?.length ?? 0) > 0;
   const hasResults = (filteredCollections?.length ?? 0) > 0;
   const isSearchOrFilterActive = search.trim() !== "" || envFilter !== "All";
+
+  // No project linked/selected at all — guide the user to Analytics
+  if (projectId === "none") {
+    return (
+      <div className="flex h-full flex-col">
+        <PlaygroundHeader
+          onQuickRequestClick={() => {}}
+          onNewCollectionClick={() => {}}
+        />
+        <div className="flex flex-1 flex-col items-center justify-center py-20 text-center">
+          <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-neutral-surface-2 text-neutral-text-secondary ring-1 ring-neutral-border">
+            <FolderGit2 className="h-7 w-7" />
+          </div>
+          <h3 className="mb-1.5 text-sm font-semibold text-neutral-text-primary">
+            No project linked yet
+          </h3>
+          <p className="mb-5 max-w-sm text-sm text-neutral-text-secondary">
+            Collections belong to a project. Link a GitHub repository from
+            Analytics Platform first, then come back here.
+          </p>
+          <Link
+            href="/analytics"
+            className="inline-flex items-center gap-2 rounded-lg bg-brand-primary px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-brand-primary/90"
+          >
+            Go to Analytics Platform
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-full flex-col">

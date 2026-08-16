@@ -9,36 +9,39 @@ import type {
 import { api } from "@/lib/apiClient";
 
 const playgroundKeys = {
-  collections: ["playground", "collections"] as const,
-  collection: (id: string) => ["playground", "collections", id] as const,
+  collections: (projectId: string) =>
+    ["playground", "collections", projectId] as const,
+  collection: (projectId: string, id: string) =>
+    ["playground", "collections", projectId, id] as const,
 };
 
 // ---- Collections ----
 
-export function useCollections() {
+export function useCollections(projectId: string) {
   return useQuery({
-    queryKey: playgroundKeys.collections,
+    queryKey: playgroundKeys.collections(projectId),
     queryFn: () =>
       api.get<{ data: { collections: Collection[] } }>(
-        "/playground/collections",
+        `/projects/${projectId}/playground/collections`,
       ),
     select: (res) => res.data.collections,
+    enabled: !!projectId,
   });
 }
 
-export function useCollection(id: string) {
+export function useCollection(projectId: string, id: string) {
   return useQuery({
-    queryKey: playgroundKeys.collection(id),
+    queryKey: playgroundKeys.collection(projectId, id),
     queryFn: () =>
       api.get<{ data: { collection: Collection; requests: SavedRequest[] } }>(
-        `/playground/collections/${id}`,
+        `/projects/${projectId}/playground/collections/${id}`,
       ),
     select: (res) => res.data,
-    enabled: !!id,
+    enabled: !!projectId && !!id,
   });
 }
 
-export function useCreateCollection() {
+export function useCreateCollection(projectId: string) {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -48,70 +51,76 @@ export function useCreateCollection() {
       baseUrl?: string;
     }) =>
       api.post<{ data: { collection: Collection } }>(
-        "/playground/collections",
+        `/projects/${projectId}/playground/collections`,
         payload,
       ),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: playgroundKeys.collections });
+      queryClient.invalidateQueries({
+        queryKey: playgroundKeys.collections(projectId),
+      });
     },
   });
 }
 
-export function useDeleteCollection() {
+export function useDeleteCollection(projectId: string) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (id: string) => api.delete(`/playground/collections/${id}`),
+    mutationFn: (id: string) =>
+      api.delete(`/projects/${projectId}/playground/collections/${id}`),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: playgroundKeys.collections });
+      queryClient.invalidateQueries({
+        queryKey: playgroundKeys.collections(projectId),
+      });
     },
   });
 }
 
 // ---- Requests ----
 
-export function useCreateRequest(collectionId: string) {
+export function useCreateRequest(projectId: string, collectionId: string) {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: (payload: Partial<SavedRequest>) =>
       api.post<{ data: { request: SavedRequest } }>(
-        `/playground/collections/${collectionId}/requests`,
+        `/projects/${projectId}/playground/collections/${collectionId}/requests`,
         payload,
       ),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: playgroundKeys.collection(collectionId),
+        queryKey: playgroundKeys.collection(projectId, collectionId),
       });
     },
   });
 }
 
-export function useUpdateRequest(collectionId: string) {
+export function useUpdateRequest(projectId: string, collectionId: string) {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: ({ id, ...payload }: Partial<SavedRequest> & { id: string }) =>
       api.patch<{ data: { request: SavedRequest } }>(
-        `/playground/requests/${id}`,
+        `/projects/${projectId}/playground/requests/${id}`,
         payload,
       ),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: playgroundKeys.collection(collectionId),
+        queryKey: playgroundKeys.collection(projectId, collectionId),
       });
     },
   });
 }
 
-export function useDeleteRequest(collectionId: string) {
+export function useDeleteRequest(projectId: string, collectionId: string) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (id: string) => api.delete(`/playground/requests/${id}`),
+    mutationFn: (id: string) =>
+      api.delete(`/projects/${projectId}/playground/requests/${id}`),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: playgroundKeys.collection(collectionId),
+        queryKey: playgroundKeys.collection(projectId, collectionId),
       });
     },
   });
@@ -119,18 +128,21 @@ export function useDeleteRequest(collectionId: string) {
 
 // ---- Execute ----
 
-export function useExecuteRequest(collectionId?: string) {
+export function useExecuteRequest(projectId: string, collectionId?: string) {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: (params: ExecuteParams) =>
-      api.post<{ data: ExecuteResult }>("/playground/execute", params),
+      api.post<{ data: ExecuteResult }>(
+        `/projects/${projectId}/playground/execute`,
+        params,
+      ),
     onSuccess: () => {
       // The server may have persisted this onto a SavedRequest —
       // refetch so lastResponse shows up after switching requests.
       if (collectionId) {
         queryClient.invalidateQueries({
-          queryKey: playgroundKeys.collection(collectionId),
+          queryKey: playgroundKeys.collection(projectId, collectionId),
         });
       }
     },

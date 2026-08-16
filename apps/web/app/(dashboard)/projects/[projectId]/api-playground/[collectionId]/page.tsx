@@ -13,7 +13,7 @@ import { usePlaygroundWorkspace } from "./_components/usePlaygroundWorkspace";
 import { ApiError } from "@/lib/apiClient";
 
 export default function PlaygroundCollectionPage() {
-  const params = useParams<{ collectionId: string }>();
+  const params = useParams<{ projectId: string; collectionId: string }>();
 
   const {
     isLoading,
@@ -50,7 +50,7 @@ export default function PlaygroundCollectionPage() {
     setDeletingRequest,
     handleConfirmDelete,
     deleteRequest,
-  } = usePlaygroundWorkspace(params.collectionId);
+  } = usePlaygroundWorkspace(params.projectId, params.collectionId);
 
   if (isLoading) {
     return (

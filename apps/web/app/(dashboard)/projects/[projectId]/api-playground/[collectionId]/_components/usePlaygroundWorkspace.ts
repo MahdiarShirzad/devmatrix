@@ -11,12 +11,15 @@ import {
 import type { HttpMethod, SavedRequest } from "@/types/playground.types";
 import type { RequestTab } from "./constants";
 
-export function usePlaygroundWorkspace(collectionId: string) {
-  const { data, isLoading, isError } = useCollection(collectionId);
-  const executeRequest = useExecuteRequest(collectionId);
-  const updateRequest = useUpdateRequest(collectionId);
-  const createRequest = useCreateRequest(collectionId);
-  const deleteRequest = useDeleteRequest(collectionId);
+export function usePlaygroundWorkspace(
+  projectId: string,
+  collectionId: string,
+) {
+  const { data, isLoading, isError } = useCollection(projectId, collectionId);
+  const executeRequest = useExecuteRequest(projectId, collectionId);
+  const updateRequest = useUpdateRequest(projectId, collectionId);
+  const createRequest = useCreateRequest(projectId, collectionId);
+  const deleteRequest = useDeleteRequest(projectId, collectionId);
 
   const [selectedRequestId, setSelectedRequestId] = useState<string | null>(
     null,
