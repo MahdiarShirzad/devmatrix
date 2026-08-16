@@ -3,8 +3,12 @@
 import { Lightbulb, CheckCircle2, Target } from "lucide-react";
 import { useOverviewStats } from "@/hooks/useIdea";
 
-export default function OverviewStats() {
-  const { data, isLoading } = useOverviewStats();
+interface OverviewStatsProps {
+  projectId: string;
+}
+
+export default function OverviewStats({ projectId }: OverviewStatsProps) {
+  const { data, isLoading } = useOverviewStats(projectId);
   const stats = data?.stats;
 
   return (
