@@ -2,7 +2,7 @@ import { Schema, model, Types } from "mongoose";
 
 interface IDebugSession {
   userId: Types.ObjectId;
-  projectId?: Types.ObjectId;
+  projectId: Types.ObjectId;
   title: string;
   language: string;
   sourceCode: string;
@@ -22,7 +22,12 @@ const debugSessionSchema = new Schema<IDebugSession>(
       required: true,
       index: true,
     },
-    projectId: { type: Schema.Types.ObjectId, ref: "Project" },
+    projectId: {
+      type: Schema.Types.ObjectId,
+      ref: "GithubProject",
+      required: true,
+      index: true,
+    },
     title: { type: String, required: true, trim: true, maxlength: 200 },
     language: { type: String, required: true },
     sourceCode: { type: String, required: true, maxlength: 20000 },
@@ -40,6 +45,8 @@ const debugSessionSchema = new Schema<IDebugSession>(
   },
   { timestamps: true },
 );
+
+debugSessionSchema.index({ userId: 1, projectId: 1, createdAt: -1 });
 
 export const DebugSession = model<IDebugSession>(
   "DebugSession",

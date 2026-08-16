@@ -1,9 +1,9 @@
 import mongoose, { Document, Schema, Types } from "mongoose";
-import { create } from "node:domain";
 
 export interface ICollection extends Document {
   name: string;
   userId: Types.ObjectId;
+  projectId: Types.ObjectId;
   env: "Local" | "Development" | "Production";
   baseUrl?: string;
   createdAt: Date;
@@ -22,6 +22,12 @@ const collectionSchema = new Schema<ICollection>(
       ref: "User",
       required: true,
     },
+    projectId: {
+      type: Schema.Types.ObjectId,
+      ref: "GithubProject",
+      required: true,
+      index: true,
+    },
     env: {
       type: String,
       enum: ["Local", "Development", "Production"],
@@ -37,6 +43,9 @@ const collectionSchema = new Schema<ICollection>(
   },
 );
 
+// Collections are always listed scoped to a project.
+collectionSchema.index({ projectId: 1, createdAt: -1 });
+// Kept for any remaining userId-only lookups (e.g. ownership checks).
 collectionSchema.index({ userId: 1, createdAt: -1 });
 
 export default mongoose.model<ICollection>("Collection", collectionSchema);

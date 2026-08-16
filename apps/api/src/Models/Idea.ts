@@ -2,7 +2,7 @@ import { model, Schema, Types } from "mongoose";
 
 interface Idea {
   userId: Types.ObjectId;
-  projectId?: Types.ObjectId;
+  projectId: Types.ObjectId;
   title: string;
   description: string;
   status: "pending" | "completed" | "failed";
@@ -28,7 +28,9 @@ const ideaSchema = new Schema<Idea>(
     },
     projectId: {
       type: Types.ObjectId,
-      ref: "Project",
+      ref: "GithubProject",
+      required: true,
+      index: true,
     },
     title: {
       type: String,
@@ -63,5 +65,7 @@ const ideaSchema = new Schema<Idea>(
     timestamps: true,
   },
 );
+
+ideaSchema.index({ userId: 1, projectId: 1, createdAt: -1 });
 
 export const Idea = model<Idea>("Idea", ideaSchema);
