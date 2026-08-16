@@ -15,7 +15,9 @@ interface ProjectContextValue {
   isError: boolean;
   githubConnected: boolean;
   /**
-   * Navigates to the same tool for a different project.
+   * Navigates to the same tool (ai-debug / api-playground / saas-validator)
+   * for a different project. No-ops if we're not currently inside a
+   * /projects/[projectId]/... route.
    */
   switchProject: (nextProjectId: string) => void;
 }
@@ -27,6 +29,8 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
 
+  // "all" is a safe/cheap query — days filter doesn't matter here, we just
+  // want the full linked-projects list for the switcher and lookups.
   const { data, isLoading, isError } = useGithubProjects("all");
   const projects = useMemo(() => data?.projects ?? [], [data]);
 
@@ -56,12 +60,15 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <ProjectContext.Provider value={value}>
-      {children}
-    </ProjectContext.Provider>
+    <ProjectContext.Provider value={value}>{children}</ProjectContext.Provider>
   );
 }
 
+/**
+ * Reads the current project context. Safe to call from anywhere under
+ * app/(dashboard) — returns projectId: undefined on global pages
+ * (Dashboard, Analytics) since those aren't nested under /projects/[projectId].
+ */
 export function useProjectContext() {
   const ctx = useContext(ProjectContext);
   if (!ctx) {

@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { useParams } from "next/navigation";
 import { MoreVertical, Trash2, Loader2 } from "lucide-react";
-import { useDeleteSession } from "@/hooks/useAiDebug";
+import { useDeleteDebugSession } from "@/hooks/useAiDebug";
 
 interface SessionActionsMenuProps {
   sessionId: string;
@@ -11,10 +12,11 @@ interface SessionActionsMenuProps {
 export default function SessionActionsMenu({
   sessionId,
 }: SessionActionsMenuProps) {
+  const { projectId } = useParams<{ projectId: string }>();
   const [isOpen, setIsOpen] = useState(false);
   const [confirming, setConfirming] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
-  const deleteSession = useDeleteSession();
+  const deleteSession = useDeleteDebugSession(projectId);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {

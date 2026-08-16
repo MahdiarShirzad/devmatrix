@@ -1,57 +1,75 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/lib/apiClient";
-import { DebugSession, CreateDebugSessionInput } from "@/types/aiDebug.types";
+import type {
+  DebugSession,
+  CreateDebugSessionInput,
+} from "@/types/aiDebug.types";
 
 const KEYS = {
-  list: ["ai-debug", "sessions"] as const,
-  detail: (id: string) => ["ai-debug", "sessions", id] as const,
+  list: (projectId: string) => ["debug-sessions", "list", projectId] as const,
+  detail: (projectId: string, id: string) =>
+    ["debug-sessions", "detail", projectId, id] as const,
 };
 
-export function useDebugSessions() {
+export function useDebugSessions(projectId: string) {
   return useQuery({
-    queryKey: KEYS.list,
-    queryFn: () => api.get<{ sessions: DebugSession[] }>("/ai-debug/sessions"),
-  });
-}
-
-export function useDebugSession(id: string) {
-  return useQuery({
-    queryKey: KEYS.detail(id),
+    queryKey: KEYS.list(projectId),
     queryFn: () =>
-      api.get<{ session: DebugSession }>(`/ai-debug/sessions/${id}`),
-    enabled: !!id,
+      api.get<{ sessions: DebugSession[] }>(
+        `/projects/${projectId}/ai-debug/sessions`,
+      ),
+    enabled: !!projectId,
   });
 }
 
-export function useCreateDebugSession() {
+export function useDebugSession(projectId: string, id: string) {
+  return useQuery({
+    queryKey: KEYS.detail(projectId, id),
+    queryFn: () =>
+      api.get<{ session: DebugSession }>(
+        `/projects/${projectId}/ai-debug/sessions/${id}`,
+      ),
+    enabled: !!projectId && !!id,
+  });
+}
+
+export function useCreateDebugSession(projectId: string) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (input: CreateDebugSessionInput) =>
-      api.post<{ session: DebugSession }>("/ai-debug/sessions", input),
+      api.post<{ session: DebugSession }>(
+        `/projects/${projectId}/ai-debug/sessions`,
+        input,
+      ),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: KEYS.list });
+      queryClient.invalidateQueries({ queryKey: KEYS.list(projectId) });
     },
   });
 }
 
-export function useReanalyzeSession(id: string) {
+export function useReanalyzeDebugSession(projectId: string, id: string) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: () =>
-      api.post<{ session: DebugSession }>(`/ai-debug/sessions/${id}/reanalyze`),
+      api.post<{ session: DebugSession }>(
+        `/projects/${projectId}/ai-debug/sessions/${id}/reanalyze`,
+      ),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: KEYS.detail(id) });
-      queryClient.invalidateQueries({ queryKey: KEYS.list });
+      queryClient.invalidateQueries({
+        queryKey: KEYS.detail(projectId, id),
+      });
+      queryClient.invalidateQueries({ queryKey: KEYS.list(projectId) });
     },
   });
 }
 
-export function useDeleteSession() {
+export function useDeleteDebugSession(projectId: string) {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => api.delete<void>(`/ai-debug/sessions/${id}`),
+    mutationFn: (id: string) =>
+      api.delete<void>(`/projects/${projectId}/ai-debug/sessions/${id}`),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: KEYS.list });
+      queryClient.invalidateQueries({ queryKey: KEYS.list(projectId) });
     },
   });
 }

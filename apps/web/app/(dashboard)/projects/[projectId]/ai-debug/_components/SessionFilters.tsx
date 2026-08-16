@@ -60,7 +60,7 @@ export default function SessionFilters({
         ))}
       </select>
 
-      {projectIds.length > 0 && (
+      {projectIds?.length > 0 && (
         <select
           value={projectId}
           onChange={(e) => onProjectIdChange(e.target.value)}

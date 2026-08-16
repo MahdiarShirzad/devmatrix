@@ -8,6 +8,16 @@ function ProjectGate({ children }: { children: React.ReactNode }) {
   const { projectId } = useParams<{ projectId: string }>();
   const { project, projects, isLoading, isError } = useProjectContext();
 
+  // TEMP DEBUG — remove after diagnosing
+  console.log("[ProjectGate]", {
+    projectId,
+    projectsCount: projects.length,
+    projectIds: projects.map((p) => p._id),
+    foundProject: project,
+    isLoading,
+    isError,
+  });
+
   if (isLoading) {
     return (
       <div className="flex h-full min-h-[50vh] flex-col items-center justify-center gap-4">
@@ -36,6 +46,8 @@ function ProjectGate({ children }: { children: React.ReactNode }) {
     );
   }
 
+  // No projects linked at all — let the page render its own empty state
+  // (each tool page is responsible for showing "link a project" guidance).
   return <>{children}</>;
 }
 
