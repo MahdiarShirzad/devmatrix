@@ -3,6 +3,7 @@ import { Bug, Clock, CheckCircle2, Loader2, XCircle } from "lucide-react";
 import SessionActionsMenu from "./SessionActionsMenu";
 
 import { DebugSession } from "@/types/aiDebug.types";
+import { useParams } from "next/navigation";
 
 interface SessionRowProps {
   session: DebugSession;
@@ -54,19 +55,23 @@ const STATUS_CONFIG: Record<
 };
 
 export default function SessionRow({ session, isLast }: SessionRowProps) {
+  const { projectId } = useParams<{ projectId: string }>();
+
   const config = STATUS_CONFIG[session.status] ?? STATUS_CONFIG.in_progress;
   const StatusIcon = config.icon;
 
   return (
     <Link
-      href={`/ai-debug/${session._id}`}
+      href={`/projects/${projectId}/ai-debug/${session._id}`}
       className={`group flex flex-col items-start gap-4 p-4 transition-colors hover:bg-neutral-surface-2/50 sm:flex-row sm:items-center sm:justify-between ${
         !isLast ? "border-b border-neutral-border" : ""
       }`}
     >
       {/* Left side: Icon & Info */}
       <div className="flex min-w-0 items-start gap-4">
-        <div className={`mt-1 shrink-0 rounded-lg p-2.5 transition-colors ${config.iconClass}`}>
+        <div
+          className={`mt-1 shrink-0 rounded-lg p-2.5 transition-colors ${config.iconClass}`}
+        >
           <Bug size={18} strokeWidth={2} />
         </div>
 
@@ -94,7 +99,10 @@ export default function SessionRow({ session, isLast }: SessionRowProps) {
           <span
             className={`flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider ${config.badgeClass}`}
           >
-            <StatusIcon size={12} className={config.spin ? "animate-spin" : ""} />
+            <StatusIcon
+              size={12}
+              className={config.spin ? "animate-spin" : ""}
+            />
             {config.label}
           </span>
           <span className="flex items-center gap-1.5 text-xs text-neutral-text-secondary">

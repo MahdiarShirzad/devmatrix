@@ -2,7 +2,8 @@
 
 import { Sparkles, FileCode2, Loader2 } from "lucide-react";
 import { DebugSession } from "@/types/aiDebug.types";
-import { useReanalyzeSession } from "@/hooks/useAiDebug";
+import { useReanalyzeDebugSession } from "@/hooks/useAiDebug";
+import { useParams } from "next/navigation";
 
 const STATUS_STYLES: Record<DebugSession["status"], string> = {
   resolved: "border-success/20 bg-success-bg text-success",
@@ -25,7 +26,9 @@ interface SessionHeaderBarProps {
 }
 
 export default function SessionHeaderBar({ session }: SessionHeaderBarProps) {
-  const reanalyze = useReanalyzeSession(session._id);
+  const { projectId } = useParams<{ projectId: string }>();
+
+  const reanalyze = useReanalyzeDebugSession(projectId, session._id);
 
   return (
     <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">

@@ -11,11 +11,16 @@ import { useDebugSession } from "@/hooks/useAiDebug";
 import { Loader2, ServerCrash, FileQuestion } from "lucide-react";
 
 export default function DebugSessionPage() {
+  const { projectId } = useParams<{ projectId: string }>();
+
   const router = useRouter();
   const params = useParams<{ sessionId: string }>();
   const [activeTab, setActiveTab] = useState<Tab>("Explanation");
 
-  const { data, isLoading, isError } = useDebugSession(params.sessionId);
+  const { data, isLoading, isError } = useDebugSession(
+    projectId,
+    params.sessionId,
+  );
   const session = data?.session;
 
   return (
