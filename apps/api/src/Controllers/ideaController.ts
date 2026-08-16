@@ -3,6 +3,7 @@ import catchAsync from "../utils/catchAsync.js";
 import AppError from "../utils/appError.js";
 import { validateIdea } from "../services/ideaValidatorService.js";
 import { Idea } from "../Models/Idea.js";
+import mongoose from "mongoose";
 
 /**
  * POST /api/ideas
@@ -77,7 +78,7 @@ export const getOverviewStats = catchAsync(
     const userId = (req as any).userId;
 
     const stats = await Idea.aggregate([
-      { $match: { userId } },
+      { $match: { userId: new mongoose.Types.ObjectId(userId) } },
       {
         $group: {
           _id: null,
