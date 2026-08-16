@@ -1,64 +1,105 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import catchAsync from "../utils/catchAsync.js";
 import AppError from "../utils/appError.js";
 import { analyzeCode } from "../services/aiDebudService.js";
 import { DebugSession } from "../Models/DebugSession.js";
+import GithubProject from "../Models/GithubProject.js";
 
-export const createSession = catchAsync(async (req: Request, res: Response) => {
-  const userId = (req as any).userId;
-  const { language, sourceCode, userDescription, projectId } = req.body;
+const findOwnedProject = async (projectId: string, userId: string) => {
+  return GithubProject.findOne({ _id: projectId, userId });
+};
 
-  // if (!language || !!sourceCode) {
-  //   throw new AppError("language and sourceCode are required", 400);
-  // }
+/**
+ * POST /api/projects/:projectId/ai-debug/sessions
+ */
+export const createSession = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const userId = (req as any).userId;
+    const projectId = req.params.projectId as string;
+    const { language, sourceCode, userDescription } = req.body;
 
-  const result = await analyzeCode({ language, sourceCode, userDescription });
+    const project = await findOwnedProject(projectId, userId);
+    if (!project) {
+      return next(new AppError("Project not found", 404));
+    }
 
-  const session = await DebugSession.create({
-    userId: userId.toString(),
-    projectId: projectId ? projectId.toString() : undefined,
-    title: result.title,
-    language,
-    sourceCode,
-    userDescription,
-    status: "resolved",
-    explanation: result.explanation,
-    fixedCode: result.fixedCode,
-    resolvedAt: new Date(),
-  });
+    const result = await analyzeCode({ language, sourceCode, userDescription });
 
-  res.status(201).json({ session });
-});
+    const session = await DebugSession.create({
+      userId: userId.toString(),
+      projectId,
+      title: result.title,
+      language,
+      sourceCode,
+      userDescription,
+      status: "resolved",
+      explanation: result.explanation,
+      fixedCode: result.fixedCode,
+      resolvedAt: new Date(),
+    });
 
-export const listSessions = catchAsync(async (req: Request, res: Response) => {
-  const userId = (req as any).userId;
-  const sessions = await DebugSession.find({ userId: userId.toString() })
-    .sort({ createdAt: -1 })
-    .select("title language status createdAt projectId");
+    res.status(201).json({ session });
+  },
+);
 
-  res.status(200).json({ sessions });
-});
+/**
+ * GET /api/projects/:projectId/ai-debug/sessions
+ */
+export const listSessions = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const userId = (req as any).userId;
+    const projectId = req.params.projectId as string;
 
+    const project = await findOwnedProject(projectId, userId);
+    if (!project) {
+      return next(new AppError("Project not found", 404));
+    }
+
+    const sessions = await DebugSession.find({
+      userId: userId.toString(),
+      projectId,
+    })
+      .sort({ createdAt: -1 })
+      .select("title language status createdAt projectId");
+
+    res.status(200).json({ sessions });
+  },
+);
+
+/**
+ * GET /api/projects/:projectId/ai-debug/sessions/:id
+ */
 export const getSession = catchAsync(async (req: Request, res: Response) => {
   const userId = (req as any).userId;
+  const projectId = req.params.projectId as string;
+  const id = req.params.id as string;
+
   const session = await DebugSession.findOne({
-    _id: req.params.id,
+    _id: id,
     userId: userId.toString(),
+    projectId,
   });
 
   if (!session) {
-    throw new AppError("Sesion not found", 404);
+    throw new AppError("Session not found", 404);
   }
 
   res.status(200).json({ session });
 });
 
+/**
+ * POST /api/projects/:projectId/ai-debug/sessions/:id/reanalyze
+ */
 export const reanalyzeSession = catchAsync(
   async (req: Request, res: Response) => {
     const userId = (req as any).userId;
+    const projectId = req.params.projectId as string;
+    const id = req.params.id as string;
+
     const session = await DebugSession.findOne({
-      _id: req.params.id,
+      _id: id,
       userId: userId.toString(),
+      projectId,
     });
 
     if (!session) {
@@ -94,11 +135,18 @@ export const reanalyzeSession = catchAsync(
   },
 );
 
+/**
+ * DELETE /api/projects/:projectId/ai-debug/sessions/:id
+ */
 export const deleteSession = catchAsync(async (req: Request, res: Response) => {
   const userId = (req as any).userId;
+  const projectId = req.params.projectId as string;
+  const id = req.params.id as string;
+
   const session = await DebugSession.findOneAndDelete({
-    _id: req.params.id,
+    _id: id,
     userId: userId.toString(),
+    projectId,
   });
 
   if (!session) {

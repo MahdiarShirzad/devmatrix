@@ -3,10 +3,8 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import passport from "./config/passport.js";
 import authRoutes from "./Routes/authRoutes.js";
-import playgroundRoutes from "./Routes/playgroundRoutes.js";
-import aiDebugRoutes from "./Routes/aiDebugRoutes.js";
+import projectScopedRoutes from "./Routes/projectScopedRoutes.js";
 import githubProjectRoutes from "./Routes/githubProjectRoutes.js";
-import ideaRoutes from "./Routes/ideaRoutes.js";
 import cors from "cors";
 
 import type { Request, Response } from "express";
@@ -39,9 +37,7 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 app.use("/api/auth", authRoutes);
-app.use("/api/playground", playgroundRoutes);
-app.use("/api/ai-debug", aiDebugRoutes);
 app.use("/api/github-projects", githubProjectRoutes);
-app.use("/api/ideas", ideaRoutes);
+app.use("/api/projects/:projectId", projectScopedRoutes);
 
 export default app;

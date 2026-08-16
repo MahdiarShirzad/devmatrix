@@ -1,32 +1,53 @@
 import type { Request, Response, NextFunction } from "express";
 import Collection from "../Models/Collection.js";
 import SavedRequest from "../Models/SavedRequest.js";
+import GithubProject from "../Models/GithubProject.js";
 import catchAsync from "../utils/catchAsync.js";
 import AppError from "../utils/appError.js";
 import { runExecuteRequest } from "../services/playgroundService.js";
 
-// POST /api/playground/collections
+const findOwnedProject = async (projectId: string, userId: string) => {
+  return GithubProject.findOne({ _id: projectId, userId });
+};
+
+// POST /api/projects/:projectId/playground/collections
 export const createCollection = catchAsync(
-  async (req: Request, res: Response): Promise<void> => {
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { name, env, baseUrl } = req.body;
     const userId = (req as any).userId;
+    const projectId = req.params.projectId as string;
+
+    const project = await findOwnedProject(projectId, userId);
+    if (!project) {
+      return next(new AppError("Project not found", 404));
+    }
 
     const collection = await Collection.create({
       name,
       env,
       baseUrl,
       userId,
+      projectId,
     });
 
     res.status(201).json({ status: "success", data: { collection } });
   },
 );
 
-// GET /api/playground/collections
+// GET /api/projects/:projectId/playground/collections
 export const getCollections = catchAsync(
-  async (req: Request, res: Response): Promise<void> => {
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const userId = (req as any).userId;
-    const collections = await Collection.find({ userId }).sort("-updatedAt");
+    const projectId = req.params.projectId as string;
+
+    const project = await findOwnedProject(projectId, userId);
+    if (!project) {
+      return next(new AppError("Project not found", 404));
+    }
+
+    const collections = await Collection.find({ userId, projectId }).sort(
+      "-updatedAt",
+    );
 
     // requestCount is derived, not stored — attach it per collection
     const withCounts = await Promise.all(
@@ -46,14 +67,17 @@ export const getCollections = catchAsync(
   },
 );
 
-// GET /api/playground/collections/:id
+// GET /api/projects/:projectId/playground/collections/:id
 export const getCollection = catchAsync(
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const userId = (req as any).userId;
+    const projectId = req.params.projectId as string;
+    const id = req.params.id as string;
 
     const collection = await Collection.findOne({
-      _id: req.params.id,
+      _id: id,
       userId,
+      projectId,
     });
 
     if (!collection) {
@@ -71,14 +95,17 @@ export const getCollection = catchAsync(
   },
 );
 
-// DELETE /api/playground/collections/:id
+// DELETE /api/projects/:projectId/playground/collections/:id
 export const deleteCollection = catchAsync(
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const userId = (req as any).userId;
+    const projectId = req.params.projectId as string;
+    const id = req.params.id as string;
 
     const collection = await Collection.findOneAndDelete({
-      _id: req.params.id,
+      _id: id,
       userId,
+      projectId,
     });
 
     if (!collection) {
@@ -94,14 +121,17 @@ export const deleteCollection = catchAsync(
   },
 );
 
-// POST /api/playground/collections/:id/requests
+// POST /api/projects/:projectId/playground/collections/:id/requests
 export const createRequest = catchAsync(
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const userId = (req as any).userId;
+    const projectId = req.params.projectId as string;
+    const id = req.params.id as string;
 
     const collection = await Collection.findOne({
-      _id: req.params.id,
+      _id: id,
       userId,
+      projectId,
     });
 
     if (!collection) {
@@ -126,21 +156,24 @@ export const createRequest = catchAsync(
   },
 );
 
-// PATCH /api/playground/requests/:id
+// PATCH /api/projects/:projectId/playground/requests/:id
 export const updateRequest = catchAsync(
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const userId = (req as any).userId;
+    const projectId = req.params.projectId as string;
+    const id = req.params.id as string;
 
-    const savedRequest = await SavedRequest.findById(req.params.id);
+    const savedRequest = await SavedRequest.findById(id);
 
     if (!savedRequest) {
       return next(new AppError("Request not found", 404));
     }
 
-    // Ownership check goes through the parent collection
+    // Ownership check goes through the parent collection, scoped to project
     const collection = await Collection.findOne({
       _id: savedRequest.collectionId.toString(),
       userId,
+      projectId,
     });
 
     if (!collection) {
@@ -164,12 +197,14 @@ export const updateRequest = catchAsync(
   },
 );
 
-// DELETE /api/playground/requests/:id
+// DELETE /api/projects/:projectId/playground/requests/:id
 export const deleteRequest = catchAsync(
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const userId = (req as any).userId;
+    const projectId = req.params.projectId as string;
+    const id = req.params.id as string;
 
-    const savedRequest = await SavedRequest.findById(req.params.id);
+    const savedRequest = await SavedRequest.findById(id);
 
     if (!savedRequest) {
       return next(new AppError("Request not found", 404));
@@ -178,6 +213,7 @@ export const deleteRequest = catchAsync(
     const collection = await Collection.findOne({
       _id: savedRequest.collectionId.toString(),
       userId,
+      projectId,
     });
 
     if (!collection) {
@@ -190,11 +226,11 @@ export const deleteRequest = catchAsync(
   },
 );
 
-// POST /api/playground/execute
-// POST /api/playground/execute
+// POST /api/projects/:projectId/playground/execute
 export const executeRequest = catchAsync(
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const userId = (req as any).userId;
+    const projectId = req.params.projectId as string;
     const { method, url, headers, body, requestId } = req.body;
 
     // All the tricky logic (SSRF guard, timeout, size limit) lives in the service
@@ -209,10 +245,11 @@ export const executeRequest = catchAsync(
         const collection = await Collection.findOne({
           _id: savedRequest.collectionId.toString(),
           userId,
+          projectId,
         });
 
-        // Only persist if the request still belongs to this user — otherwise
-        // silently skip persistence but still return the result below.
+        // Only persist if the request still belongs to this user/project —
+        // otherwise silently skip persistence but still return the result.
         if (collection) {
           savedRequest.lastResponse = {
             status: result.status,
