@@ -5,6 +5,7 @@ import { X, Zap, Loader2 } from "lucide-react";
 import { useExecuteRequest } from "@/hooks/usePlayground";
 import { ApiError } from "@/lib/apiClient";
 import type { HttpMethod } from "@/types/playground.types";
+import { useParams } from "next/navigation";
 
 interface QuickRequestModalProps {
   open: boolean;
@@ -15,9 +16,11 @@ export default function QuickRequestModal({
   open,
   onClose,
 }: QuickRequestModalProps) {
+  const { projectId } = useParams<{ projectId: string }>();
+
   const [method, setMethod] = useState<HttpMethod>("GET");
   const [url, setUrl] = useState("");
-  const executeRequest = useExecuteRequest();
+  const executeRequest = useExecuteRequest(projectId);
 
   if (!open) return null;
 

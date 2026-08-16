@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useCreateDebugSession } from "@/hooks/useAiDebug";
@@ -12,8 +12,10 @@ import {
 } from "@/lib/ai-debug.schemas";
 
 export function useNewDebugForm() {
+  const { projectId } = useParams<{ projectId: string }>();
+
   const router = useRouter();
-  const createSession = useCreateDebugSession();
+  const createSession = useCreateDebugSession(projectId);
 
   const {
     register,

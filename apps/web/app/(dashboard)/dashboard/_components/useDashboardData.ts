@@ -1,5 +1,4 @@
 import { useMemo } from "react";
-
 import { useDebugSessions } from "@/hooks/useAiDebug";
 import { useDebugAnalytics } from "@/hooks/useDebugAnalytics";
 import type { DebugSession } from "@/types/aiDebug.types";
@@ -12,33 +11,23 @@ import {
   useProjectStats,
 } from "@/hooks/useGithubAnalytics";
 
-/**
- * Orchestrates the existing domain hooks for the Dashboard page only.
- * Owns no fetch/query logic itself — every field here is a pass-through
- * or a light client-side derivation (filtering, day-bucketing) of data
- * the underlying hooks already returned. Each slice keeps its own
- * loading/error/refetch so one failing endpoint never blanks the page.
- */
 export function useDashboardData(projectId: string | null, days: string) {
-  // Workspace-level
-  const projectsQuery = useGithubProjects(days);
-  const ideasQuery = useIdeas();
-  const ideasStatsQuery = useOverviewStats();
-
-  // Project-scoped (selected project from sidebar context)
   const pid = projectId ?? "";
+
+  const projectsQuery = useGithubProjects(days);
+  const ideasQuery = useIdeas(pid);
+  const ideasStatsQuery = useOverviewStats(pid);
   const projectQuery = useGithubProject(pid);
   const projectStatsQuery = useProjectStats(pid);
   const commitsQuery = useCommitsByDay(pid, Number(days));
   const contributorsQuery = useContributors(pid);
+  const debugSessionsQuery = useDebugSessions(pid);
 
-  // Debug sessions: workspace fetch (no project-scoped endpoint exists),
-  // filtered client-side by DebugSession.projectId when a project is selected.
-  const debugSessionsQuery = useDebugSessions();
   const allSessions = useMemo<DebugSession[]>(
     () => debugSessionsQuery.data?.sessions ?? [],
     [debugSessionsQuery.data],
   );
+
   const projectSessions = useMemo<DebugSession[]>(
     () =>
       projectId
@@ -46,6 +35,7 @@ export function useDashboardData(projectId: string | null, days: string) {
         : allSessions,
     [allSessions, projectId],
   );
+
   const debugAnalytics = useDebugAnalytics(projectSessions);
 
   return {

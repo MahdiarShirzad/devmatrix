@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import {
   Sparkles,
   Lightbulb,
@@ -13,10 +13,12 @@ import { useCreateIdea } from "@/hooks/useIdea";
 import { ApiError } from "@/lib/apiClient";
 
 export default function NewIdeaForm() {
+  const { projectId } = useParams<{ projectId: string }>();
+
   const router = useRouter();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const { mutate: createIdea, isPending, error } = useCreateIdea();
+  const { mutate: createIdea, isPending, error } = useCreateIdea(projectId);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

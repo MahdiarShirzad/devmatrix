@@ -1,4 +1,4 @@
-import { LANGUAGES } from "@/app/(dashboard)/ai-debug/new/_components/constants";
+import { LANGUAGES } from "@/app/(dashboard)/projects/[projectId]/ai-debug/new/_components/constants";
 import { z } from "zod";
 
 export const createDebugSessionSchema = z.object({

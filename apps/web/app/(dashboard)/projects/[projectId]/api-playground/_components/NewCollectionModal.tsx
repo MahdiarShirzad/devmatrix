@@ -4,6 +4,7 @@ import { useState } from "react";
 import { X } from "lucide-react";
 import type { PlaygroundEnv } from "@/types/playground.types";
 import { useCreateCollection } from "@/hooks/usePlayground";
+import { useParams } from "next/navigation";
 
 interface NewCollectionModalProps {
   open: boolean;
@@ -14,9 +15,11 @@ export default function NewCollectionModal({
   open,
   onClose,
 }: NewCollectionModalProps) {
+  const { projectId } = useParams<{ projectId: string }>();
+
   const [name, setName] = useState("");
   const [env, setEnv] = useState<PlaygroundEnv>("Local");
-  const createCollection = useCreateCollection();
+  const createCollection = useCreateCollection(projectId);
 
   if (!open) return null;
 
