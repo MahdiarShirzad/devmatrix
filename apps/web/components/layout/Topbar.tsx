@@ -44,6 +44,11 @@ export default function Topbar({ onMenuClick }: TopbarProps) {
         .toUpperCase()
     : "";
 
+  const closeAllDropdowns = () => {
+    setIsProfileOpen(false);
+    setIsNotifOpen(false);
+  };
+
   const handleLogout = () => {
     logout.mutate(undefined, {
       onSuccess: () => {
@@ -52,14 +57,23 @@ export default function Topbar({ onMenuClick }: TopbarProps) {
     });
   };
 
-  // هندل کردن شورت‌کات Cmd+K یا Ctrl+K و دکمه Escape
+  const handleNavigation = (href: string) => {
+    closeAllDropdowns();
+    setIsSearchActive(false);
+    router.push(href);
+  };
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
         setIsSearchActive(true);
-        searchInputRef.current?.focus();
+
+        setTimeout(() => {
+          searchInputRef.current?.focus();
+        }, 50);
       }
+
       if (e.key === "Escape") {
         setIsSearchActive(false);
         setIsProfileOpen(false);
@@ -67,39 +81,44 @@ export default function Topbar({ onMenuClick }: TopbarProps) {
         searchInputRef.current?.blur();
       }
     };
+
     document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
   }, []);
 
-  // بستن دراپ‌داون‌ها و سرچ هنگام کلیک بیرون
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (
-        profileRef.current &&
-        !profileRef.current.contains(event.target as Node)
-      ) {
+      const target = event.target as Node;
+
+      if (profileRef.current && !profileRef.current.contains(target)) {
         setIsProfileOpen(false);
       }
-      if (
-        notifRef.current &&
-        !notifRef.current.contains(event.target as Node)
-      ) {
+
+      if (notifRef.current && !notifRef.current.contains(target)) {
         setIsNotifOpen(false);
       }
+
       if (
         searchContainerRef.current &&
-        !searchContainerRef.current.contains(event.target as Node)
+        !searchContainerRef.current.contains(target)
       ) {
         setIsSearchActive(false);
       }
     };
+
     document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
   }, []);
 
   return (
-    <header className="flex h-14 shrink-0 items-center justify-between gap-4 border-b border-neutral-border bg-neutral-bg px-4 md:px-6 relative z-40">
-      {/* Overlay تیره پشت سرچ باز، برای جدا کردن هدر از محتوای پشت صفحه */}
+    <header className="relative z-40 flex h-14 shrink-0 items-center justify-between gap-4 border-b border-neutral-border bg-neutral-bg px-4 md:px-6">
+      {/* Search Overlay */}
       {isSearchActive && (
         <div
           className="fixed inset-0 top-14 z-40 bg-black/60 backdrop-blur-sm"
@@ -107,26 +126,28 @@ export default function Topbar({ onMenuClick }: TopbarProps) {
         />
       )}
 
-      <div className="flex items-center gap-2 flex-1">
-        {/* دکمه منوی موبایل */}
+      {/* Left Side */}
+      <div className="flex flex-1 items-center gap-2">
+        {/* Mobile Menu */}
         <button
           onClick={onMenuClick}
-          className="rounded-md p-2 text-neutral-text-secondary hover:bg-neutral-surface-1 hover:text-neutral-text-primary md:hidden"
+          className="rounded-md p-2 text-neutral-text-secondary transition-colors hover:bg-neutral-surface-1 hover:text-neutral-text-primary md:hidden"
+          aria-label="Open menu"
         >
           <Menu size={20} />
         </button>
 
-        {/* کانتینر جستجو - یکپارچه در هدر */}
+        {/* Desktop Search */}
         <div
           ref={searchContainerRef}
-          className={`relative hidden sm:flex items-center transition-all duration-200 ease-in-out ${
-            isSearchActive ? "w-full max-w-lg z-50" : "w-full max-w-xs"
+          className={`relative hidden items-center transition-all duration-200 ease-in-out sm:flex ${
+            isSearchActive ? "z-50 w-full max-w-lg" : "w-full max-w-xs"
           }`}
         >
           <div
             className={`flex w-full items-center gap-2 rounded-lg border bg-neutral-surface-1 px-3 py-1.5 text-sm transition-all ${
               isSearchActive
-                ? "border-brand-primary ring-1 ring-brand-primary/20 bg-neutral-surface-1 text-neutral-text-primary shadow-lg"
+                ? "border-brand-primary bg-neutral-surface-1 text-neutral-text-primary shadow-lg ring-1 ring-brand-primary/20"
                 : "border-neutral-border text-neutral-text-secondary hover:border-brand-primary/50 hover:bg-neutral-surface-2"
             }`}
             onClick={() => {
@@ -136,7 +157,9 @@ export default function Topbar({ onMenuClick }: TopbarProps) {
           >
             <Search
               size={16}
-              className={`shrink-0 ${isSearchActive ? "text-brand-primary" : ""}`}
+              className={`shrink-0 ${
+                isSearchActive ? "text-brand-primary" : ""
+              }`}
             />
 
             <input
@@ -145,7 +168,7 @@ export default function Topbar({ onMenuClick }: TopbarProps) {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search commands, projects..."
-              className="flex-1 bg-transparent outline-none placeholder:text-neutral-text-secondary w-full"
+              className="w-full flex-1 bg-transparent outline-none placeholder:text-neutral-text-secondary"
               onFocus={() => setIsSearchActive(true)}
             />
 
@@ -157,7 +180,7 @@ export default function Topbar({ onMenuClick }: TopbarProps) {
 
             {isSearchActive && (
               <kbd
-                className="hidden h-5 items-center justify-center rounded border border-neutral-border bg-neutral-bg px-1.5 font-mono text-[10px] font-medium text-neutral-text-secondary sm:flex cursor-pointer hover:bg-neutral-surface-2"
+                className="hidden h-5 cursor-pointer items-center justify-center rounded border border-neutral-border bg-neutral-bg px-1.5 font-mono text-[10px] font-medium text-neutral-text-secondary hover:bg-neutral-surface-2 sm:flex"
                 onClick={(e) => {
                   e.stopPropagation();
                   setIsSearchActive(false);
@@ -168,35 +191,52 @@ export default function Topbar({ onMenuClick }: TopbarProps) {
             )}
           </div>
 
-          {/* دراپ‌داون نتایج جستجو - باز شدن دقیقا زیر اینپوت */}
+          {/* Desktop Search Dropdown */}
           {isSearchActive && (
-            <div className="absolute left-0 right-0 top-full mt-2 rounded-lg border border-neutral-border bg-neutral-surface-1 shadow-2xl ring-1 ring-black/5 z-50 max-h-80 overflow-y-auto">
-              <div className="p-2 flex flex-col gap-1">
+            <div className="absolute left-0 right-0 top-full z-50 mt-2 max-h-80 overflow-y-auto rounded-lg border border-neutral-border bg-neutral-surface-1 shadow-2xl ring-1 ring-black/5">
+              <div className="flex flex-col gap-1 p-2">
                 {searchQuery.length > 0 ? (
                   <div className="px-3 py-2 text-sm text-neutral-text-secondary">
-                    Search results for &ldquo;{searchQuery}&ldquo;...
+                    Search results for &ldquo;
+                    {searchQuery}
+                    &rdquo;...
                   </div>
                 ) : (
                   <>
                     <div className="px-2 pb-1 pt-2 text-[10px] font-semibold uppercase tracking-wider text-neutral-text-secondary">
                       Quick Links
                     </div>
-                    <button className="flex w-full items-center gap-2 rounded-md px-2 py-2 text-sm text-neutral-text-secondary hover:bg-neutral-surface-2 hover:text-neutral-text-primary transition-colors text-left">
+
+                    <Link
+                      href="/dashboard"
+                      onClick={() => setIsSearchActive(false)}
+                      className="flex w-full items-center gap-2 rounded-md px-2 py-2 text-left text-sm text-neutral-text-secondary transition-colors hover:bg-neutral-surface-2 hover:text-neutral-text-primary"
+                    >
                       <LayoutDashboard size={16} />
                       Go to Dashboard
-                    </button>
+                    </Link>
 
                     <div className="px-2 pb-1 pt-3 text-[10px] font-semibold uppercase tracking-wider text-neutral-text-secondary">
                       Projects
                     </div>
-                    <button className="flex w-full items-center gap-2 rounded-md px-2 py-2 text-sm text-neutral-text-secondary hover:bg-neutral-surface-2 hover:text-neutral-text-primary transition-colors text-left">
+
+                    <Link
+                      href="/projects/my-trip"
+                      onClick={() => setIsSearchActive(false)}
+                      className="flex w-full items-center gap-2 rounded-md px-2 py-2 text-left text-sm text-neutral-text-secondary transition-colors hover:bg-neutral-surface-2 hover:text-neutral-text-primary"
+                    >
                       <Folder size={16} />
                       my-trip
-                    </button>
-                    <button className="flex w-full items-center gap-2 rounded-md px-2 py-2 text-sm text-neutral-text-secondary hover:bg-neutral-surface-2 hover:text-neutral-text-primary transition-colors text-left">
+                    </Link>
+
+                    <Link
+                      href="/projects/devmatrix"
+                      onClick={() => setIsSearchActive(false)}
+                      className="flex w-full items-center gap-2 rounded-md px-2 py-2 text-left text-sm text-neutral-text-secondary transition-colors hover:bg-neutral-surface-2 hover:text-neutral-text-primary"
+                    >
                       <Folder size={16} />
                       devmatrix
-                    </button>
+                    </Link>
                   </>
                 )}
               </div>
@@ -204,41 +244,56 @@ export default function Topbar({ onMenuClick }: TopbarProps) {
           )}
         </div>
 
-        {/* دکمه سرچ موبایل (جایگزین اینپوت کامل در صفحه‌های کوچک) */}
+        {/* Mobile Search Button */}
         <button
-          className="sm:hidden rounded-md p-2 text-neutral-text-secondary hover:bg-neutral-surface-1 hover:text-neutral-text-primary"
+          className="rounded-md p-2 text-neutral-text-secondary transition-colors hover:bg-neutral-surface-1 hover:text-neutral-text-primary sm:hidden"
           onClick={() => {
             setIsSearchActive(true);
-            setTimeout(() => searchInputRef.current?.focus(), 50);
+
+            setTimeout(() => {
+              searchInputRef.current?.focus();
+            }, 50);
           }}
+          aria-label="Search"
         >
           <Search size={18} />
         </button>
       </div>
 
+      {/* Right Side */}
       <div className="flex items-center gap-3 sm:gap-5">
-        {/* نوتیفیکیشن‌ها */}
+        {/* Notifications */}
         <div className="relative" ref={notifRef}>
           <button
-            onClick={() => setIsNotifOpen(!isNotifOpen)}
-            className={`relative rounded-full p-1.5 transition-colors hover:bg-neutral-surface-1 ${isNotifOpen ? "text-brand-primary bg-neutral-surface-1" : "text-neutral-text-secondary"}`}
+            onClick={() => {
+              setIsNotifOpen((prev) => !prev);
+              setIsProfileOpen(false);
+            }}
+            className={`relative rounded-full p-1.5 transition-colors hover:bg-neutral-surface-1 ${
+              isNotifOpen
+                ? "bg-neutral-surface-1 text-brand-primary"
+                : "text-neutral-text-secondary"
+            }`}
+            aria-label="Notifications"
           >
             <Bell size={18} />
-            <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-brand-highlight ring-2 ring-neutral-bg"></span>
+
+            <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-brand-highlight ring-2 ring-neutral-bg" />
           </button>
 
-          {/* دراپ‌داون نوتیفیکیشن */}
           {isNotifOpen && (
-            <div className="absolute right-0 mt-2 w-72 origin-top-right rounded-lg border border-neutral-border bg-neutral-surface-1 p-2 shadow-2xl ring-1 ring-black/5 z-50">
-              <div className="mb-2 border-b border-neutral-border pb-2 px-2 text-sm font-semibold text-neutral-text-primary">
+            <div className="absolute right-0 z-50 mt-2 w-72 origin-top-right rounded-lg border border-neutral-border bg-neutral-surface-1 p-2 shadow-2xl ring-1 ring-black/5">
+              <div className="mb-2 border-b border-neutral-border px-2 pb-2 text-sm font-semibold text-neutral-text-primary">
                 Notifications
               </div>
+
               <div className="flex flex-col gap-1">
-                <div className="rounded-md p-2 text-sm hover:bg-neutral-surface-2 cursor-pointer transition-colors">
-                  <p className="text-neutral-text-primary font-medium">
+                <div className="cursor-pointer rounded-md p-2 transition-colors hover:bg-neutral-surface-2">
+                  <p className="font-medium text-neutral-text-primary">
                     Build successful
                   </p>
-                  <p className="text-neutral-text-secondary text-xs">
+
+                  <p className="text-xs text-neutral-text-secondary">
                     my-trip deployed to production.
                   </p>
                 </div>
@@ -247,38 +302,61 @@ export default function Topbar({ onMenuClick }: TopbarProps) {
           )}
         </div>
 
-        {/* پروفایل کاربر */}
+        {/* Profile */}
         <div className="relative" ref={profileRef}>
           <button
-            onClick={() => setIsProfileOpen(!isProfileOpen)}
-            className={`flex cursor-pointer items-center gap-2 rounded-full border py-1 pl-1 pr-3 transition-colors hover:border-brand-primary/50 ${isProfileOpen ? "border-brand-primary/50 bg-neutral-surface-2" : "border-neutral-border bg-neutral-surface-1"}`}
+            onClick={() => {
+              setIsProfileOpen((prev) => !prev);
+              setIsNotifOpen(false);
+            }}
+            className={`flex cursor-pointer items-center gap-2 rounded-full border py-1 pl-1 pr-3 transition-colors hover:border-brand-primary/50 ${
+              isProfileOpen
+                ? "border-brand-primary/50 bg-neutral-surface-2"
+                : "border-neutral-border bg-neutral-surface-1"
+            }`}
+            aria-label="Open profile menu"
           >
             <div className="flex h-7 w-7 items-center justify-center rounded-full bg-brand-primary/20 text-xs font-bold text-brand-primary">
               {initials}
             </div>
+
             <span className="hidden text-sm font-medium text-neutral-text-primary sm:block">
               {user?.name}
             </span>
           </button>
 
-          {/* دراپ‌داون پروفایل */}
+          {/* Profile Dropdown */}
           {isProfileOpen && (
             <div className="absolute right-0 mt-2 w-48 origin-top-right rounded-lg border border-neutral-border bg-neutral-surface-1 p-1 shadow-2xl ring-1 ring-black/5 z-50">
               <Link
-                href="/profile"
+                href="/dashboard"
+                onClick={() => setIsProfileOpen(false)}
                 className="flex items-center gap-2 rounded-md px-3 py-2 text-sm text-neutral-text-secondary hover:bg-neutral-surface-2 hover:text-neutral-text-primary"
               >
-                <User size={16} />
-                My Profile
+                <LayoutDashboard size={16} />
+                Dashboard
               </Link>
+
+              <Link
+                href="/projects"
+                onClick={() => setIsProfileOpen(false)}
+                className="flex items-center gap-2 rounded-md px-3 py-2 text-sm text-neutral-text-secondary hover:bg-neutral-surface-2 hover:text-neutral-text-primary"
+              >
+                <Folder size={16} />
+                Projects
+              </Link>
+
               <Link
                 href="/settings"
+                onClick={() => setIsProfileOpen(false)}
                 className="flex items-center gap-2 rounded-md px-3 py-2 text-sm text-neutral-text-secondary hover:bg-neutral-surface-2 hover:text-neutral-text-primary"
               >
                 <Settings size={16} />
-                Account Settings
+                Settings
               </Link>
-              <div className="my-1 border-t border-neutral-border"></div>
+
+              <div className="my-1 border-t border-neutral-border" />
+
               <button
                 onClick={handleLogout}
                 disabled={logout.isPending}
@@ -292,10 +370,10 @@ export default function Topbar({ onMenuClick }: TopbarProps) {
         </div>
       </div>
 
-      {/* مودال سرچ مخصوص موبایل (وقتی روی آیکون سرچ در موبایل کلیک میشه) */}
+      {/* Mobile Search */}
       {isSearchActive && (
-        <div className="sm:hidden absolute top-0 left-0 right-0 h-14 bg-neutral-bg border-b border-neutral-border flex items-center px-4 z-[60]">
-          <div className="flex w-full items-center gap-2 rounded-lg border border-brand-primary bg-neutral-surface-1 px-3 py-1.5 text-sm ring-1 ring-brand-primary/20 text-neutral-text-primary">
+        <div className="absolute left-0 right-0 top-0 z-[60] flex h-14 items-center border-b border-neutral-border bg-neutral-bg px-4 sm:hidden">
+          <div className="flex w-full items-center gap-2 rounded-lg border border-brand-primary bg-neutral-surface-1 px-3 py-1.5 text-sm text-neutral-text-primary ring-1 ring-brand-primary/20">
             <Search size={16} className="shrink-0 text-brand-primary" />
 
             <input
@@ -304,34 +382,62 @@ export default function Topbar({ onMenuClick }: TopbarProps) {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search..."
-              className="flex-1 bg-transparent outline-none w-full"
+              className="w-full flex-1 bg-transparent outline-none"
             />
 
             <kbd
-              className="flex h-5 items-center justify-center rounded border border-neutral-border bg-neutral-bg px-1.5 font-mono text-[10px] font-medium text-neutral-text-secondary cursor-pointer"
+              className="flex h-5 cursor-pointer items-center justify-center rounded border border-neutral-border bg-neutral-bg px-1.5 font-mono text-[10px] font-medium text-neutral-text-secondary"
               onClick={() => setIsSearchActive(false)}
             >
               ESC
             </kbd>
           </div>
 
-          {/* دراپ‌داون موبایل */}
-          <div className="absolute left-0 right-0 top-14 rounded-b-lg border-x border-b border-neutral-border bg-neutral-surface-1 shadow-2xl ring-1 ring-black/5 z-[60] max-h-80 overflow-y-auto">
-            <div className="p-2 flex flex-col gap-1">
+          {/* Mobile Search Dropdown */}
+          <div className="absolute left-0 right-0 top-14 z-[60] max-h-80 overflow-y-auto rounded-b-lg border-x border-b border-neutral-border bg-neutral-surface-1 shadow-2xl ring-1 ring-black/5">
+            <div className="flex flex-col gap-1 p-2">
               {searchQuery.length > 0 ? (
                 <div className="px-3 py-2 text-sm text-neutral-text-secondary">
-                  Search results for &ldquo;{searchQuery}&quot;...
+                  Search results for &ldquo;
+                  {searchQuery}
+                  &rdquo;...
                 </div>
               ) : (
                 <>
-                  <button className="flex w-full items-center gap-2 rounded-md px-2 py-2 text-sm text-neutral-text-secondary hover:bg-neutral-surface-2 text-left">
+                  <div className="px-2 pb-1 pt-2 text-[10px] font-semibold uppercase tracking-wider text-neutral-text-secondary">
+                    Quick Links
+                  </div>
+
+                  <Link
+                    href="/dashboard"
+                    onClick={() => setIsSearchActive(false)}
+                    className="flex w-full items-center gap-2 rounded-md px-2 py-2 text-left text-sm text-neutral-text-secondary transition-colors hover:bg-neutral-surface-2 hover:text-neutral-text-primary"
+                  >
                     <LayoutDashboard size={16} />
                     Go to Dashboard
-                  </button>
-                  <button className="flex w-full items-center gap-2 rounded-md px-2 py-2 text-sm text-neutral-text-secondary hover:bg-neutral-surface-2 text-left">
+                  </Link>
+
+                  <div className="px-2 pb-1 pt-3 text-[10px] font-semibold uppercase tracking-wider text-neutral-text-secondary">
+                    Projects
+                  </div>
+
+                  <Link
+                    href="/projects/my-trip"
+                    onClick={() => setIsSearchActive(false)}
+                    className="flex w-full items-center gap-2 rounded-md px-2 py-2 text-left text-sm text-neutral-text-secondary transition-colors hover:bg-neutral-surface-2 hover:text-neutral-text-primary"
+                  >
                     <Folder size={16} />
                     my-trip
-                  </button>
+                  </Link>
+
+                  <Link
+                    href="/projects/devmatrix"
+                    onClick={() => setIsSearchActive(false)}
+                    className="flex w-full items-center gap-2 rounded-md px-2 py-2 text-left text-sm text-neutral-text-secondary transition-colors hover:bg-neutral-surface-2 hover:text-neutral-text-primary"
+                  >
+                    <Folder size={16} />
+                    devmatrix
+                  </Link>
                 </>
               )}
             </div>
