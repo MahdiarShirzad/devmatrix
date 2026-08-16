@@ -10,11 +10,13 @@ import { statusLabel, timeAgo } from "./_components/idea-format";
 import { useIdea, useReevaluateIdea } from "@/hooks/useIdea";
 
 export default function ValidatorIdeaPage() {
+  const { projectId } = useParams<{ projectId: string }>();
+
   const params = useParams<{ ideaId: string }>();
   const id = params.ideaId;
 
-  const { data, isLoading, isError } = useIdea(id);
-  const reevaluate = useReevaluateIdea(id);
+  const { data, isLoading, isError } = useIdea(projectId, id);
+  const reevaluate = useReevaluateIdea(projectId, id);
 
   const idea = data?.idea;
 

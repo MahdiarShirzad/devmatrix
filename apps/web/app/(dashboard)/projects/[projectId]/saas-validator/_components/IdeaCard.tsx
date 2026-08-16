@@ -1,12 +1,12 @@
 import Link from "next/link";
 import { Activity } from "lucide-react";
 import type { Idea } from "@/types/ideaValidator.types";
+import { useParams } from "next/navigation";
 
 interface IdeaCardProps {
   idea: Idea;
 }
 
-// از overallScore عددی، برچسب وضعیت نمایشی رو مشتق می‌کنه
 function getDisplayStatus(idea: Idea): string {
   if (idea.status === "failed") return "failed";
   if (idea.status === "pending" || idea.overallScore === undefined)
@@ -52,11 +52,13 @@ function formatTimeAgo(dateString: string): string {
 }
 
 export default function IdeaCard({ idea }: IdeaCardProps) {
+  const { projectId } = useParams<{ projectId: string }>();
+
   const displayStatus = getDisplayStatus(idea);
 
   return (
     <Link
-      href={`/saas-validator/${idea._id}`}
+      href={`/projects/${projectId}/saas-validator/${idea._id}`}
       className="group relative flex flex-col justify-between rounded-xl border border-neutral-border bg-neutral-surface-1 p-5 transition-all duration-300 hover:-translate-y-1 hover:border-brand-primary hover:shadow-lg hover:shadow-brand-primary/5"
     >
       <div>
@@ -70,7 +72,6 @@ export default function IdeaCard({ idea }: IdeaCardProps) {
             </h3>
           </div>
 
-          {/* دایره امتیاز */}
           <div
             className={`flex h-12 w-12 shrink-0 flex-col items-center justify-center rounded-full border-2 ${getScoreStyle(idea.overallScore)}`}
           >
