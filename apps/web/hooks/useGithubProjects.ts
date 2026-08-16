@@ -13,9 +13,7 @@ export function useGithubProjects(days: string) {
   return useQuery({
     queryKey: ["github-projects", days],
     queryFn: async () => {
-      return api.get<GithubProjectsResponse>(
-        `/api/github-projects?days=${days}`,
-      );
+      return api.get<GithubProjectsResponse>(`/github-projects?days=${days}`);
     },
   });
 }

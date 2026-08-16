@@ -4,7 +4,11 @@ import { useState } from "react";
 import { useMe } from "@/hooks/useMe";
 import { useGithubProjects } from "@/hooks/useGithubProjects";
 import { useDashboardData } from "./_components/useDashboardData";
-import { DashboardHeader, TIME_RANGES, type TimeRangeValue } from "./_components/DashboardHeader";
+import {
+  DashboardHeader,
+  TIME_RANGES,
+  type TimeRangeValue,
+} from "./_components/DashboardHeader";
 import { KpiCards } from "./_components/KpiCards";
 import { DevelopmentActivityChart } from "./_components/DevelopmentActivityChart";
 import { DebugSessionsDonut } from "./_components/DebugSessionsDonut";
@@ -41,7 +45,11 @@ export default function DashboardPage() {
 
   return (
     <div className="flex flex-col gap-6 pb-8">
-      <DashboardHeader name={firstName} range={range} onRangeChange={setRange} />
+      <DashboardHeader
+        name={firstName}
+        range={range}
+        onRangeChange={setRange}
+      />
 
       <KpiCards
         projects={dashboard.projects}
@@ -97,10 +105,14 @@ export default function DashboardPage() {
           onRetry={dashboard.contributors.refetch}
         />
         <NeedsAttention
-          attentionSessions={dashboard.debugSessions.analytics.attentionSessions}
+          attentionSessions={
+            dashboard.debugSessions.analytics.attentionSessions
+          }
           ideas={dashboard.ideas.data}
           project={dashboard.project.data}
-          isLoading={dashboard.debugSessions.isLoading || dashboard.ideas.isLoading}
+          isLoading={
+            dashboard.debugSessions.isLoading || dashboard.ideas.isLoading
+          }
         />
       </div>
 
@@ -110,7 +122,9 @@ export default function DashboardPage() {
           project={dashboard.project.data}
           debugSessions={dashboard.debugSessions.data}
           ideas={dashboard.ideas.data}
-          isLoading={dashboard.commits.isLoading || dashboard.debugSessions.isLoading}
+          isLoading={
+            dashboard.commits.isLoading || dashboard.debugSessions.isLoading
+          }
         />
         <ProjectsList
           projects={dashboard.projects.data}
