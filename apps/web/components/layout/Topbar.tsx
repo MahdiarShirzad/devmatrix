@@ -11,6 +11,7 @@ import {
   LogOut,
   Folder,
   LayoutDashboard,
+  BarChart3,
 } from "lucide-react";
 import Link from "next/link";
 import { useMe } from "@/hooks/useMe";
@@ -338,12 +339,12 @@ export default function Topbar({ onMenuClick }: TopbarProps) {
               </Link>
 
               <Link
-                href="/projects"
+                href="/analytics"
                 onClick={() => setIsProfileOpen(false)}
                 className="flex items-center gap-2 rounded-md px-3 py-2 text-sm text-neutral-text-secondary hover:bg-neutral-surface-2 hover:text-neutral-text-primary"
               >
-                <Folder size={16} />
-                Projects
+                <BarChart3 size={16} />
+                Analytics Platform
               </Link>
 
               <Link

@@ -23,9 +23,9 @@ const PROJECTS = [
 
 const NAV_ITEMS = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/analytics", label: "Analytics Platform", icon: BarChart3 },
   { href: "/api-playground", label: "API Playground", icon: Terminal },
   { href: "/ai-debug", label: "AI Debugging", icon: Bug },
-  { href: "/analytics", label: "Analytics Platform", icon: BarChart3 },
   { href: "/saas-validator", label: "Idea Validator", icon: Rocket },
 ];
 
