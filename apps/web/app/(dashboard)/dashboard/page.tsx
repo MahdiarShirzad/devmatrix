@@ -24,22 +24,14 @@ export default function DashboardPage() {
   const [range, setRange] = useState<TimeRangeValue>(TIME_RANGES[0].value);
   const { data: user } = useMe();
 
-  // No shared/global "selected project" state exists in the app yet (no
-  // project management or sidebar selector wired up). Until that lands,
-  // the Dashboard owns its own local selection: fetch the project list,
-  // default to the first one, and let the user override within this page.
-  // This is intentionally page-local — swap it out once real project
-  // selection state exists elsewhere in the app.
   const { data: projectsData } = useGithubProjects(range);
   const [manualProjectId, setManualProjectId] = useState<string | null>(null);
 
-  // Derived during render rather than synced via an effect: the "selected"
-  // project is either whatever the user explicitly picked, or the first
-  // project once the list has loaded. No effect/setState needed for this.
   const selectedProjectId =
     manualProjectId ?? projectsData?.projects?.[0]?._id ?? null;
 
   const dashboard = useDashboardData(selectedProjectId, range);
+  const dashboardAllProjects = useDashboardData(null, range);
 
   const firstName = user?.name?.split(" ")[0] ?? "there";
 
@@ -53,11 +45,11 @@ export default function DashboardPage() {
 
       <KpiCards
         projects={dashboard.projects}
-        commits={dashboard.commits}
-        debugAnalytics={dashboard.debugSessions.analytics}
-        debugLoading={dashboard.debugSessions.isLoading}
-        debugError={dashboard.debugSessions.isError}
-        ideasStats={dashboard.ideasStats}
+        commits={dashboardAllProjects.commits}
+        debugAnalytics={dashboardAllProjects.debugSessions.analytics}
+        debugLoading={dashboardAllProjects.debugSessions.isLoading}
+        debugError={dashboardAllProjects.debugSessions.isError}
+        ideasStats={dashboardAllProjects.ideasStats}
       />
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-[2fr_1fr]">
