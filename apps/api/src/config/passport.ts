@@ -7,7 +7,7 @@ const GITHUB_CLIENT_ID = process.env.GITHUB_CLIENT_ID as string;
 const GITHUB_CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET as string;
 const GITHUB_CALLBACK_URL =
   process.env.GITHUB_CALLBACK_URL ||
-  "http://localhost:3001/api/auth/github/callback";
+  "ttps://api.devmatrix.mahdyardev.ir/api/auth/github/callback";
 
 if (!GITHUB_CLIENT_ID || !GITHUB_CLIENT_SECRET) {
   console.warn(
