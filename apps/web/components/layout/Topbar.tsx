@@ -16,12 +16,14 @@ import {
 import Link from "next/link";
 import { useMe } from "@/hooks/useMe";
 import { useLogout } from "@/hooks/useAuth";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface TopbarProps {
   onMenuClick: () => void;
 }
 
 export default function Topbar({ onMenuClick }: TopbarProps) {
+  const queryClient = useQueryClient();
   const [isSearchActive, setIsSearchActive] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [isProfileOpen, setIsProfileOpen] = useState(false);
