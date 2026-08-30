@@ -9,7 +9,7 @@ import SiteFooter from "./_components/SiteFooter";
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-[#000000] text-[#e5e5e5] font-sans selection:bg-[#fca311]/30">
+    <div className="min-h-screen bg-neutral-bg text-neutral-text-primary font-sans selection:bg-brand-primary/30">
       <Header />
       <HeroSection />
       <CoreModulesSection />

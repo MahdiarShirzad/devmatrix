@@ -1,4 +1,3 @@
-// DeveloperExperienceSection.tsx
 import { Zap, Layout, Layers, Rocket } from "lucide-react";
 import DxListItem from "./DxListItem";
 import TerminalPreview from "./TerminalPreview";

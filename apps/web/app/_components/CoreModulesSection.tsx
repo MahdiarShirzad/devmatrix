@@ -28,14 +28,14 @@ export default function CoreModulesSection() {
   return (
     <section
       id="features"
-      className="py-24 border-t border-white/5 bg-[#0D1117]"
+      className="py-24 border-t border-neutral-border bg-neutral-surface-1/30"
     >
       <div className="container mx-auto px-6">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-neutral-text-primary mb-4">
             Core Modules
           </h2>
-          <p className="text-[#e5e5e5] opacity-80 max-w-xl mx-auto">
+          <p className="text-neutral-text-secondary max-w-xl mx-auto">
             Everything you need to orchestrate your entire development lifecycle
             from a single dashboard.
           </p>

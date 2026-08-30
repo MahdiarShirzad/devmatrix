@@ -1,4 +1,3 @@
-// DxListItem.tsx
 import type { LucideIcon } from "lucide-react";
 
 interface DxListItemProps {
@@ -14,12 +13,12 @@ export default function DxListItem({
 }: DxListItemProps) {
   return (
     <li className="flex gap-4">
-      <div className="mt-1 w-8 h-8 rounded-full bg-[#fca311]/10 flex items-center justify-center shrink-0">
-        {Icon && <Icon className="text-[#fca311]" size={16} />}
+      <div className="mt-1 w-8 h-8 rounded-full bg-brand-primary/10 flex items-center justify-center shrink-0">
+        {Icon && <Icon className="text-brand-primary" size={16} />}
       </div>
       <div>
-        <h4 className="text-white font-medium">{title}</h4>
-        <p className="text-sm text-[#e5e5e5]/70 mt-1">{desc}</p>
+        <h4 className="text-neutral-text-primary font-medium">{title}</h4>
+        <p className="text-sm text-neutral-text-secondary mt-1">{desc}</p>
       </div>
     </li>
   );

@@ -22,11 +22,11 @@ export default function HowItWorksSection() {
   return (
     <section className="py-24">
       <div className="container mx-auto px-6">
-        <h2 className="text-3xl md:text-4xl font-bold text-white text-center mb-16">
+        <h2 className="text-3xl md:text-4xl font-bold text-neutral-text-primary text-center mb-16">
           How It Works
         </h2>
         <div className="flex flex-col md:flex-row items-start justify-between gap-8 relative">
-          <div className="hidden md:block absolute top-8 left-[10%] right-[10%] h-[1px] bg-gradient-to-r from-transparent via-[#fca311]/30 to-transparent" />
+          <div className="hidden md:block absolute top-8 left-[10%] right-[10%] h-[1px] bg-gradient-to-r from-transparent via-brand-primary/30 to-transparent" />
 
           {steps.map((item) => (
             <StepCard key={item.step} {...item} />

@@ -22,7 +22,8 @@ export default function SettingsSidebar({
       <div className="sticky top-8 space-y-8">
         {SIDEBAR_GROUPS.map((group, idx) => (
           <div key={idx}>
-            <h4 className="text-xs font-semibold text-[#e5e5e5]/40 uppercase tracking-wider mb-3 px-3">
+            {/* Replaced hardcoded #e5e5e5/40 */}
+            <h4 className="text-xs font-semibold text-neutral-text-secondary/50 uppercase tracking-wider mb-3 px-3">
               {group.label}
             </h4>
             <nav className="space-y-1">
@@ -35,15 +36,18 @@ export default function SettingsSidebar({
                     onClick={() => onSelectTab(item.id)}
                     className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
                       isActive
-                        ? "bg-[#fca311]/10 text-[#fca311]"
-                        : "text-[#e5e5e5]/60 hover:bg-white/5 hover:text-white"
+                        ? "bg-brand-primary/10 text-brand-primary"
+                        : "text-neutral-text-secondary hover:bg-neutral-surface-2 hover:text-neutral-text-primary"
                     }`}
                   >
                     <Icon
                       size={16}
                       className={
-                        isActive ? "text-[#fca311]" : "text-[#e5e5e5]/40"
+                        isActive
+                          ? "text-brand-primary"
+                          : "text-neutral-text-secondary/60"
                       }
+                      {...(item.iconProps || {})}
                     />
                     {item.label}
                   </button>
