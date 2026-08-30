@@ -11,11 +11,16 @@ export default function ContentHeader({
   isSaving,
   onSave,
 }: ContentHeaderProps) {
+  // Format tab name for display
+  const formatTabName = (tab: string) => {
+    return tab.replace(/-/g, " ");
+  };
+
   return (
-    <header className="sticky top-0 z-10 flex items-center justify-between pb-6 mb-8 border-b border-white/10  backdrop-blur-xl pt-4 md:pt-0">
+    <header className="flex items-center justify-between pb-6 mb-8 border-b border-white/10 pt-4 md:pt-0">
       <div>
         <h2 className="text-2xl font-bold text-white tracking-tight capitalize">
-          {activeTab.replace("-", " ")}
+          {formatTabName(activeTab)}
         </h2>
       </div>
 
@@ -23,7 +28,7 @@ export default function ContentHeader({
         <button
           onClick={onSave}
           disabled={isSaving}
-          className="flex items-center gap-2 rounded-lg bg-[#fca311] px-5 py-2 text-sm font-semibold text-[#0a0916] transition-all hover:bg-[#fca311]/90 active:scale-95 disabled:opacity-70 disabled:pointer-events-none"
+          className="flex items-center gap-2 rounded-lg bg-[#fca311] px-5 py-2 text-sm font-semibold text-[#0a0916] transition-all hover:bg-[#fca311]/90 active:scale-95 disabled:opacity-70 disabled:pointer-events-none whitespace-nowrap"
         >
           {isSaving ? (
             <>

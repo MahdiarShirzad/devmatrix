@@ -1,62 +1,78 @@
-import { User } from "@/types/user";
-import { CheckCircle2 } from "lucide-react";
-// import { User } from "@/types/user";
+import { CheckCircle2, Lock } from "lucide-react";
 
 interface ProfileFieldsProps {
-  displayName?: string;
-  email?: string;
-  currentUser?: User;
+  displayName: string;
+  email: string;
+  onDisplayNameChange: (value: string) => void;
 }
 
+const MAX_DISPLAY_NAME = 32;
+
 export default function ProfileFields({
-  displayName = "Mahdiar Shirzad",
-  email = "mahdiar@example.com",
-  currentUser,
+  displayName,
+  email,
+  onDisplayNameChange,
 }: ProfileFieldsProps) {
   return (
-    <div className="grid gap-6 max-w-2xl">
-      <div className="grid gap-2">
-        <label className="text-sm font-medium text-[#e5e5e5]/80">
+    <div className="space-y-6">
+      {/* Display Name */}
+      <div className="space-y-2">
+        <label
+          htmlFor="displayName"
+          className="block text-sm font-medium text-[#e5e5e5]/80"
+        >
           Display Name
         </label>
-        <input
-          type="text"
-          defaultValue={currentUser?.name || displayName}
-          className="w-full rounded-lg border border-white/10 bg-[#0D1117] px-4 py-2.5 text-white placeholder:text-[#e5e5e5]/30 focus:border-[#fca311] focus:outline-none focus:ring-1 focus:ring-[#fca311]"
-        />
-        <p className="text-xs text-[#e5e5e5]/40">
-          Please use 32 characters at maximum.
-        </p>
+        <div className="relative">
+          <input
+            id="displayName"
+            type="text"
+            value={displayName}
+            onChange={(e) => {
+              if (e.target.value.length <= MAX_DISPLAY_NAME) {
+                onDisplayNameChange(e.target.value);
+              }
+            }}
+            maxLength={MAX_DISPLAY_NAME}
+            className="w-full rounded-xl border border-white/10 bg-[#0D1117] px-4 py-3 text-white placeholder:text-[#e5e5e5]/30 focus:border-[#fca311]/50 focus:outline-none focus:ring-2 focus:ring-[#fca311]/20 transition-all duration-200"
+            placeholder="Your public display name"
+          />
+        </div>
+        <div className="flex items-center justify-between">
+          <p className="text-xs text-[#e5e5e5]/40">Your public display name.</p>
+          <span className="text-xs tabular-nums text-[#e5e5e5]/40">
+            {displayName.length} / {MAX_DISPLAY_NAME}
+          </span>
+        </div>
       </div>
 
-      <div className="grid gap-2">
-        <label className="text-sm font-medium text-[#e5e5e5]/80">
+      {/* Email Address */}
+      <div className="space-y-2">
+        <label
+          htmlFor="email"
+          className="block text-sm font-medium text-[#e5e5e5]/80"
+        >
           Email Address
         </label>
         <div className="relative">
           <input
+            id="email"
             type="email"
-            defaultValue={currentUser?.email || email}
+            value={email}
             disabled
-            className="w-full rounded-lg border border-white/10 bg-[#0D1117] px-4 py-2.5 text-[#e5e5e5]/50 cursor-not-allowed opacity-70"
+            className="w-full cursor-not-allowed rounded-xl border border-white/5 bg-white/[0.03] px-4 py-3 pr-32 text-[#e5e5e5]/60"
           />
-          <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-0.5 text-xs font-medium text-emerald-400 border border-emerald-500/20">
-            <CheckCircle2 size={12} /> Verified
+          <div className="absolute right-3 top-1/2 flex -translate-y-1/2 items-center gap-1.5">
+            <Lock size={12} className="text-[#e5e5e5]/30" />
+            <span className="inline-flex items-center gap-1 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-2.5 py-1 text-xs font-medium text-emerald-400">
+              <CheckCircle2 size={12} />
+              Verified
+            </span>
           </div>
         </div>
         <p className="text-xs text-[#e5e5e5]/40">
-          To change your email, please contact support.
+          Email changes are currently handled through support.
         </p>
-      </div>
-
-      <div className="grid gap-2">
-        <label className="text-sm font-medium text-[#e5e5e5]/80">Bio</label>
-        <textarea
-          rows={4}
-          defaultValue={currentUser?.bio || ""}
-          placeholder="Tell us a little bit about yourself"
-          className="w-full rounded-lg border border-white/10 bg-[#0D1117] px-4 py-2.5 text-white placeholder:text-[#e5e5e5]/30 focus:border-[#fca311] focus:outline-none focus:ring-1 focus:ring-[#fca311] resize-none"
-        />
       </div>
     </div>
   );
