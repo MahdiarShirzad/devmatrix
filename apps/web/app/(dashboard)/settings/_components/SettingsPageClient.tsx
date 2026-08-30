@@ -15,7 +15,7 @@ const KNOWN_TABS = ["profile", "api-keys", "github", "appearance"];
 
 export default function SettingsPageClient() {
   const { data: currentUser } = useMe();
-  const [activeTab, setActiveTab] = useState<string>("appearance");
+  const [activeTab, setActiveTab] = useState<string>("profile");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
