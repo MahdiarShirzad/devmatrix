@@ -14,32 +14,24 @@ const modules = [
     name: "API Playground",
     href: "/docs/modules/api-playground",
     tagline: "A lightweight API testing environment, similar to Postman.",
-    accent: "text-[#fca311]",
-    ring: "border-[#fca311]/20 bg-[#fca311]/5",
   },
   {
     icon: Bug,
     name: "AI Debugging Assistant",
     href: "/docs/modules/ai-debugging-assistant",
     tagline: "An assistant that analyzes errors and suggests fixes.",
-    accent: "text-[#fca311]",
-    ring: "border-[#fca311]/20 bg-[#fca311]/5",
   },
   {
     icon: BarChart3,
     name: "Developer Analytics Platform",
     href: "/docs/modules/developer-analytics",
     tagline: "GitHub and Jira activity, turned into dashboards.",
-    accent: "text-[#fca311]",
-    ring: "border-[#fca311]/20 bg-[#fca311]/5",
   },
   {
     icon: Rocket,
     name: "SaaS Idea Validator",
     href: "/docs/modules/saas-idea-validator",
     tagline: "AI-powered market and competitor research.",
-    accent: "text-[#fca311]",
-    ring: "border-[#fca311]/20 bg-[#fca311]/5",
   },
 ];
 
@@ -62,30 +54,30 @@ export default function WhatIsDevMatrixPage() {
 
         <div className="max-w-none">
           <SectionHeading id="overview">Overview</SectionHeading>
-          <p className="text-[#e5e5e5]/80 mb-4 text-sm leading-7">
+          <p className="text-neutral-text-secondary mb-4 text-sm leading-7">
             DevMatrix aims to improve developer productivity by centralizing
             workflows such as API testing, debugging, analytics, and idea
             validation. Instead of stitching together multiple disconnected
             tools, DevMatrix provides a single dashboard where developers can
             manage and interact with every tool seamlessly.
           </p>
-          <p className="text-[#e5e5e5]/80 mb-4 text-sm leading-7">
+          <p className="text-neutral-text-secondary mb-4 text-sm leading-7">
             The platform is built around a core system —{" "}
-            <code className="bg-white/10 px-1.5 py-0.5 rounded text-sm text-[#e5e5e5]">
+            <code className="bg-neutral-surface-2 px-1.5 py-0.5 rounded text-sm text-neutral-text-primary">
               User
             </code>
             ,{" "}
-            <code className="bg-white/10 px-1.5 py-0.5 rounded text-sm text-[#e5e5e5]">
+            <code className="bg-neutral-surface-2 px-1.5 py-0.5 rounded text-sm text-neutral-text-primary">
               Authentication
             </code>
             , and{" "}
-            <code className="bg-white/10 px-1.5 py-0.5 rounded text-sm text-[#e5e5e5]">
+            <code className="bg-neutral-surface-2 px-1.5 py-0.5 rounded text-sm text-neutral-text-primary">
               Project
             </code>{" "}
             — that connects every module together. See{" "}
             <Link
               href="/docs/concepts/architecture-overview"
-              className="text-[#fca311] hover:underline"
+              className="text-brand-primary hover:underline"
             >
               Architecture Overview
             </Link>{" "}
@@ -107,7 +99,7 @@ export default function WhatIsDevMatrixPage() {
           <SectionHeading id="sub-applications">
             Sub-Applications (Modules)
           </SectionHeading>
-          <p className="text-[#e5e5e5]/80 mb-6 text-sm leading-7">
+          <p className="text-neutral-text-secondary mb-6 text-sm leading-7">
             DevMatrix ships as four focused modules. Each is independently
             useful, and each has its own doc page with full feature details.
           </p>
@@ -119,17 +111,17 @@ export default function WhatIsDevMatrixPage() {
                 <Link
                   key={mod.href}
                   href={mod.href}
-                  className={`rounded-xl border p-5 hover:border-white/20 transition-colors ${mod.ring}`}
+                  className={`rounded-xl border border-neutral-border bg-neutral-surface-1 p-5 hover:border-brand-primary/30 transition-colors`}
                 >
                   <div className="flex items-center gap-3 mb-2">
-                    <div className="rounded-lg bg-white/5 p-2">
-                      <Icon size={18} className={mod.accent} />
+                    <div className="rounded-lg bg-neutral-surface-2 p-2">
+                      <Icon size={18} className="text-brand-primary" />
                     </div>
-                    <h3 className="text-white font-semibold text-sm">
+                    <h3 className="text-neutral-text-primary font-semibold text-sm">
                       {mod.name}
                     </h3>
                   </div>
-                  <p className="text-[#e5e5e5]/60 text-xs leading-6">
+                  <p className="text-neutral-text-secondary/60 text-xs leading-6">
                     {mod.tagline}
                   </p>
                 </Link>
@@ -138,7 +130,7 @@ export default function WhatIsDevMatrixPage() {
           </div>
 
           <SectionHeading id="core-system">The core system</SectionHeading>
-          <p className="text-[#e5e5e5]/80 mb-4 text-sm leading-7">
+          <p className="text-neutral-text-secondary mb-4 text-sm leading-7">
             Underneath every module sits the same three primitives:
           </p>
           <ul className="space-y-2 mb-6 not-prose">
@@ -149,11 +141,11 @@ export default function WhatIsDevMatrixPage() {
             ].map((line) => (
               <li
                 key={line}
-                className="flex items-start gap-2 text-sm text-[#e5e5e5]/80"
+                className="flex items-start gap-2 text-sm text-neutral-text-secondary"
               >
                 <CheckCircle2
                   size={16}
-                  className="shrink-0 mt-0.5 text-[#fca311]"
+                  className="shrink-0 mt-0.5 text-brand-primary"
                 />
                 {line}
               </li>

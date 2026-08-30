@@ -1,11 +1,10 @@
-// DocsLayout.tsx
 import type { ReactNode } from "react";
 import DocsTopbar from "./_components/DocsTopbar";
 import DocsSidebar from "./_components/DocsSidebar";
 
 export default function DocsLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="min-h-screen bg-[#000000] text-[#e5e5e5] font-sans selection:bg-[#fca311]/30">
+    <div className="min-h-screen bg-neutral-bg text-neutral-text-primary font-sans selection:bg-brand-primary/30">
       <DocsTopbar />
 
       <div className="container mx-auto px-6">

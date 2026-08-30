@@ -29,13 +29,13 @@ export default function UsersAuthPage() {
 
         <div className="max-w-none">
           <SectionHeading id="user-and-session">User & Session</SectionHeading>
-          <p className="text-[#e5e5e5]/80 mb-4 text-sm leading-7">
+          <p className="text-neutral-text-secondary mb-4 text-sm leading-7">
             Every account is a{" "}
-            <code className="bg-white/10 px-1.5 py-0.5 rounded text-sm text-[#e5e5e5]">
+            <code className="bg-neutral-surface-2 px-1.5 py-0.5 rounded text-sm text-neutral-text-primary">
               User
             </code>
             . Signing in issues a{" "}
-            <code className="bg-white/10 px-1.5 py-0.5 rounded text-sm text-[#e5e5e5]">
+            <code className="bg-neutral-surface-2 px-1.5 py-0.5 rounded text-sm text-neutral-text-primary">
               Session
             </code>{" "}
             backed by a JWT token.
@@ -69,9 +69,9 @@ interface Session {
             ].map((line, idx) => (
               <li
                 key={idx}
-                className="flex items-start gap-3 text-sm text-[#e5e5e5]/80"
+                className="flex items-start gap-3 text-sm text-neutral-text-secondary"
               >
-                <span className="shrink-0 flex h-6 w-6 items-center justify-center rounded-full bg-[#fca311]/10 border border-[#fca311]/30 text-xs font-semibold text-[#fca311]">
+                <span className="shrink-0 flex h-6 w-6 items-center justify-center rounded-full bg-brand-primary/10 border border-brand-primary/30 text-xs font-semibold text-brand-primary">
                   {idx + 1}
                 </span>
                 <span className="pt-0.5">{line}</span>
@@ -88,9 +88,9 @@ interface Session {
             client-exposed code.
           </Callout>
 
-          <p className="text-[#e5e5e5]/80 mb-4 text-sm leading-7">
+          <p className="text-neutral-text-secondary mb-4 text-sm leading-7">
             For the exact request and response shapes, see{" "}
-            <code className="bg-white/10 px-1.5 py-0.5 rounded text-sm text-[#e5e5e5]">
+            <code className="bg-neutral-surface-2 px-1.5 py-0.5 rounded text-sm text-neutral-text-primary">
               API Reference → Authentication
             </code>
             .

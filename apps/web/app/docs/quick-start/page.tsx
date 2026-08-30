@@ -39,7 +39,7 @@ export default function QuickStartPage() {
           </Callout>
 
           <SectionHeading id="installation">1. Installation</SectionHeading>
-          <p className="text-[#e5e5e5]/80 mb-4 text-sm leading-7">
+          <p className="text-neutral-text-secondary mb-4 text-sm leading-7">
             Install the core DevMatrix client into your Next.js or Node.js
             environment.
           </p>
@@ -48,10 +48,10 @@ export default function QuickStartPage() {
           <SectionHeading id="setup-workspace">
             2. Setup your workspace
           </SectionHeading>
-          <p className="text-[#e5e5e5]/80 mb-4 text-sm leading-7">
+          <p className="text-neutral-text-secondary mb-4 text-sm leading-7">
             Initialize the DevMatrix client. If you&apos;re using TypeScript,
             the types are included out of the box. Create a new file called{" "}
-            <code className="bg-white/10 px-1.5 py-0.5 rounded text-sm text-[#e5e5e5]">
+            <code className="bg-neutral-surface-2 px-1.5 py-0.5 rounded text-sm text-neutral-text-primary">
               matrix.config.ts
             </code>{" "}
             in your root directory.
@@ -74,7 +74,7 @@ export const matrix = new MatrixClient({
           <SectionHeading id="create-project">
             3. Create your first project
           </SectionHeading>
-          <p className="text-[#e5e5e5]/80 mb-4 text-sm leading-7">
+          <p className="text-neutral-text-secondary mb-4 text-sm leading-7">
             Every module — API Playground, AI Debugging, Analytics, and the Idea
             Validator — needs a project to attach to. Create one from the
             client:
@@ -97,7 +97,7 @@ console.log(project.id); // use this in the dashboard`}
           </Callout>
 
           <SectionHeading id="next-steps">Next Steps</SectionHeading>
-          <p className="text-[#e5e5e5]/80 mb-4 text-sm leading-7">
+          <p className="text-neutral-text-secondary mb-4 text-sm leading-7">
             With a project created, head into any module to start using it —
             send your first request in the API Playground, or connect a
             repository to Developer Analytics.

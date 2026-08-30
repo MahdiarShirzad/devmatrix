@@ -51,28 +51,28 @@ export default function IntroductionPage() {
 
         <div className="max-w-none">
           <SectionHeading id="welcome">Welcome</SectionHeading>
-          <p className="text-[#e5e5e5]/80 mb-4 text-sm leading-7">
+          <p className="text-neutral-text-secondary mb-4 text-sm leading-7">
             Most teams end up with a different tool for every job — one app for
             hitting an API, another for reading a stack trace, a dashboard for
             commit activity, and a spreadsheet for evaluating the next idea.
             DevMatrix centralizes all of that around a single{" "}
-            <code className="bg-white/10 px-1.5 py-0.5 rounded text-sm text-[#e5e5e5]">
+            <code className="bg-neutral-surface-2 px-1.5 py-0.5 rounded text-sm text-neutral-text-primary">
               Project
             </code>
             , so context never gets lost moving between them.
           </p>
-          <p className="text-[#e5e5e5]/80 mb-4 text-sm leading-7">
+          <p className="text-neutral-text-secondary mb-4 text-sm leading-7">
             If you&apos;re new here, start with{" "}
             <Link
               href="/docs/what-is-devmatrix"
-              className="text-[#fca311] hover:underline"
+              className="text-brand-primary hover:underline"
             >
               What is DevMatrix?
             </Link>{" "}
             for the full picture, or jump straight to{" "}
             <Link
               href="/docs/quick-start"
-              className="text-[#fca311] hover:underline"
+              className="text-brand-primary hover:underline"
             >
               Quick Start
             </Link>{" "}
@@ -88,7 +88,7 @@ export default function IntroductionPage() {
           <SectionHeading id="explore">
             What you&apos;ll find in these docs
           </SectionHeading>
-          <p className="text-[#e5e5e5]/80 mb-6 text-sm leading-7">
+          <p className="text-neutral-text-secondary mb-6 text-sm leading-7">
             The sidebar is organized the same way DevMatrix itself is: core
             concepts first, then each module in depth, then the raw API
             reference.
@@ -101,20 +101,20 @@ export default function IntroductionPage() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="group rounded-xl border border-white/10 bg-[#0D1117] p-5 hover:border-[#fca311]/30 transition-colors"
+                  className="group rounded-xl border border-neutral-border bg-neutral-surface-1 p-5 hover:border-brand-primary/30 transition-colors"
                 >
                   <div className="flex items-center gap-3 mb-2">
-                    <div className="rounded-lg bg-white/5 p-2">
-                      <Icon size={18} className="text-[#fca311]" />
+                    <div className="rounded-lg bg-neutral-surface-2 p-2">
+                      <Icon size={18} className="text-brand-primary" />
                     </div>
-                    <h3 className="text-white font-semibold text-sm">
+                    <h3 className="text-neutral-text-primary font-semibold text-sm">
                       {item.title}
                     </h3>
                   </div>
-                  <p className="text-[#e5e5e5]/60 text-xs leading-6 mb-3">
+                  <p className="text-neutral-text-secondary/60 text-xs leading-6 mb-3">
                     {item.description}
                   </p>
-                  <span className="text-xs text-[#fca311] flex items-center gap-1 group-hover:gap-2 transition-all">
+                  <span className="text-xs text-brand-primary flex items-center gap-1 group-hover:gap-2 transition-all">
                     Read more <ArrowRight size={12} />
                   </span>
                 </Link>

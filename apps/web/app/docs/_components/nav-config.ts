@@ -8,8 +8,6 @@ export interface DocsNavSection {
   items: DocsNavItem[];
 }
 
-// یک منبع واحد برای مسیرها: هم سایدبار چپ و هم pagination (prev/next)
-// از همین آرایه ساخته می‌شن، پس هیچ لینکی جا نمی‌مونه یا با صفحه واقعی فرق نمی‌کنه.
 export const docsNav: DocsNavSection[] = [
   {
     title: "Getting Started",
@@ -22,18 +20,33 @@ export const docsNav: DocsNavSection[] = [
   {
     title: "Core Concepts",
     items: [
-      { name: "Projects & Workspaces", href: "/docs/concepts/projects-workspaces" },
+      {
+        name: "Projects & Workspaces",
+        href: "/docs/concepts/projects-workspaces",
+      },
       { name: "Users & Auth", href: "/docs/concepts/users-auth" },
-      { name: "Architecture Overview", href: "/docs/concepts/architecture-overview" },
+      {
+        name: "Architecture Overview",
+        href: "/docs/concepts/architecture-overview",
+      },
     ],
   },
   {
     title: "Modules",
     items: [
       { name: "API Playground", href: "/docs/modules/api-playground" },
-      { name: "AI Debugging Assistant", href: "/docs/modules/ai-debugging-assistant" },
-      { name: "Developer Analytics", href: "/docs/modules/developer-analytics" },
-      { name: "SaaS Idea Validator", href: "/docs/modules/saas-idea-validator" },
+      {
+        name: "AI Debugging Assistant",
+        href: "/docs/modules/ai-debugging-assistant",
+      },
+      {
+        name: "Developer Analytics",
+        href: "/docs/modules/developer-analytics",
+      },
+      {
+        name: "SaaS Idea Validator",
+        href: "/docs/modules/saas-idea-validator",
+      },
     ],
   },
   {
@@ -45,4 +58,6 @@ export const docsNav: DocsNavSection[] = [
   },
 ];
 
-export const flatDocsNav: DocsNavItem[] = docsNav.flatMap((section) => section.items);
+export const flatDocsNav: DocsNavItem[] = docsNav.flatMap(
+  (section) => section.items,
+);

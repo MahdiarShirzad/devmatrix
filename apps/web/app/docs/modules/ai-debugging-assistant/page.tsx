@@ -30,8 +30,8 @@ export default function AiDebuggingAssistantPage() {
         />
 
         <div className="flex items-center gap-3 mb-4">
-          <div className="rounded-lg bg-[#fca311]/10 p-2">
-            <Bug size={20} className="text-[#fca311]" />
+          <div className="rounded-lg bg-brand-primary/10 p-2">
+            <Bug size={20} className="text-brand-primary" />
           </div>
         </div>
         <PageHeader
@@ -45,11 +45,11 @@ export default function AiDebuggingAssistantPage() {
             {features.map((f) => (
               <li
                 key={f}
-                className="flex items-start gap-2 text-sm text-[#e5e5e5]/80"
+                className="flex items-start gap-2 text-sm text-neutral-text-secondary"
               >
                 <CheckCircle2
                   size={16}
-                  className="shrink-0 mt-0.5 text-[#fca311]"
+                  className="shrink-0 mt-0.5 text-brand-primary"
                 />
                 {f}
               </li>
@@ -57,7 +57,7 @@ export default function AiDebuggingAssistantPage() {
           </ul>
 
           <SectionHeading id="how-it-works">How it works</SectionHeading>
-          <p className="text-[#e5e5e5]/80 mb-4 text-sm leading-7">
+          <p className="text-neutral-text-secondary mb-4 text-sm leading-7">
             Submit an error message or stack trace, and the assistant analyzes
             it against your project&apos;s context to suggest likely causes, a
             concrete fix, and — where relevant — a refactor.
@@ -81,7 +81,7 @@ console.log(result.suggestedFix);`}
           </Callout>
 
           <SectionHeading id="goal">Goal</SectionHeading>
-          <p className="text-[#e5e5e5]/80 mb-4 text-sm leading-7">
+          <p className="text-neutral-text-secondary mb-4 text-sm leading-7">
             Reduce debugging time and improve problem-solving efficiency.
           </p>
         </div>

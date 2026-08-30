@@ -5,10 +5,6 @@ import { ArrowLeft } from "lucide-react";
 export default function NotFound() {
   return (
     <div className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-neutral-bg px-6 text-center">
-      {/* 
-        المان تزئینی پس‌زمینه: عدد 404 با استایل توخالی یا بسیار کم‌رنگ 
-        برای ایجاد عمق و حس مدرن بودن
-      */}
       <div className="absolute flex items-center justify-center pointer-events-none select-none">
         <span className="text-[15rem] font-black leading-none text-brand-primary/[0.03]">
           404
@@ -16,7 +12,6 @@ export default function NotFound() {
       </div>
 
       <div className="relative z-10 flex flex-col items-center">
-        {/* کانتینر لوگو با یک بوردر ظریف */}
         <div className="mb-8 rounded-2xl border border-neutral-border bg-neutral-surface-1 p-4 shadow-xl">
           <Image
             src="/logo.png"

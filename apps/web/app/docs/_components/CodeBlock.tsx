@@ -1,4 +1,3 @@
-// CodeBlock.tsx
 "use client";
 
 import { useState } from "react";
@@ -20,23 +19,23 @@ export default function CodeBlock({
   };
 
   return (
-    <div className="relative my-6 rounded-xl border border-white/10 bg-[#0D1117] overflow-hidden group not-prose">
-      <div className="flex items-center justify-between px-4 py-2 border-b border-white/5 bg-black/60">
-        <div className="flex items-center gap-2 text-xs text-[#e5e5e5]/50 font-mono">
+    <div className="relative my-6 rounded-xl border border-neutral-border bg-neutral-surface-1 overflow-hidden group not-prose">
+      <div className="flex items-center justify-between px-4 py-2 border-b border-neutral-border bg-neutral-surface-2/50">
+        <div className="flex items-center gap-2 text-xs text-neutral-text-secondary/50 font-mono">
           <Terminal size={14} /> {label}
         </div>
         <button
           onClick={handleCopy}
-          className="text-[#e5e5e5]/50 hover:text-white transition-colors"
+          className="text-neutral-text-secondary/50 hover:text-neutral-text-primary transition-colors"
         >
           {copied ? (
-            <Check size={16} className="text-emerald-400" />
+            <Check size={16} className="text-success" />
           ) : (
             <Copy size={16} />
           )}
         </button>
       </div>
-      <pre className="p-4 overflow-x-auto text-sm font-mono leading-relaxed text-[#e5e5e5]">
+      <pre className="p-4 overflow-x-auto text-sm font-mono leading-relaxed text-neutral-text-primary">
         {code}
       </pre>
     </div>

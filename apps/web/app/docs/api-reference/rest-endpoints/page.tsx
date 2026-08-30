@@ -82,7 +82,7 @@ const endpointGroups = [
 const methodColor: Record<string, string> = {
   GET: "text-sky-400 bg-sky-500/10",
   POST: "text-emerald-400 bg-emerald-500/10",
-  PATCH: "text-[#fca311] bg-[#fca311]/10",
+  PATCH: "text-brand-primary bg-brand-primary/10",
   DELETE: "text-rose-400 bg-rose-500/10",
 };
 
@@ -110,13 +110,15 @@ export default function RestEndpointsPage() {
           {endpointGroups.map((group) => (
             <div key={group.id}>
               <SectionHeading id={group.id}>{group.title}</SectionHeading>
-              <div className="not-prose overflow-hidden rounded-xl border border-white/10 bg-[#0D1117] mb-6">
+              <div className="not-prose overflow-hidden rounded-xl border border-neutral-border bg-neutral-surface-1 mb-6">
                 <table className="w-full text-sm">
                   <tbody>
                     {group.rows.map(([method, path, desc], idx) => (
                       <tr
                         key={`${method}-${path}`}
-                        className={idx !== 0 ? "border-t border-white/10" : ""}
+                        className={
+                          idx !== 0 ? "border-t border-neutral-border" : ""
+                        }
                       >
                         <td className="px-4 py-3 w-24">
                           <span
@@ -125,10 +127,10 @@ export default function RestEndpointsPage() {
                             {method}
                           </span>
                         </td>
-                        <td className="px-4 py-3 font-mono text-xs text-[#e5e5e5] whitespace-nowrap">
+                        <td className="px-4 py-3 font-mono text-xs text-neutral-text-primary whitespace-nowrap">
                           {path}
                         </td>
-                        <td className="px-4 py-3 text-xs text-[#e5e5e5]/70">
+                        <td className="px-4 py-3 text-xs text-neutral-text-secondary">
                           {desc}
                         </td>
                       </tr>

@@ -1,4 +1,3 @@
-// DocsSidebar.tsx
 "use client";
 
 import Link from "next/link";
@@ -14,10 +13,10 @@ export default function DocsSidebar() {
         <nav className="space-y-8">
           {docsNav.map((section, idx) => (
             <div key={idx}>
-              <h4 className="font-semibold text-white text-sm mb-3">
+              <h4 className="font-semibold text-neutral-text-primary text-sm mb-3">
                 {section.title}
               </h4>
-              <ul className="space-y-2 border-l border-white/10 ml-2 pl-4">
+              <ul className="space-y-2 border-l border-neutral-border ml-2 pl-4">
                 {section.items.map((item) => {
                   const active = pathname === item.href;
                   return (
@@ -26,8 +25,8 @@ export default function DocsSidebar() {
                         href={item.href}
                         className={`text-sm transition-colors flex items-center gap-2 ${
                           active
-                            ? "text-[#fca311] font-medium -ml-[17px] border-l-2 border-[#fca311] pl-4"
-                            : "text-[#e5e5e5]/70 hover:text-white"
+                            ? "text-brand-primary font-medium -ml-[17px] border-l-2 border-brand-primary pl-4"
+                            : "text-neutral-text-secondary/70 hover:text-neutral-text-primary"
                         }`}
                       >
                         {item.name}

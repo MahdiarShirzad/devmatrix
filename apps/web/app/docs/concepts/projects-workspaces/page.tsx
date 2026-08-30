@@ -31,12 +31,12 @@ export default function ProjectsWorkspacesPage() {
           <SectionHeading id="the-project-entity">
             The Project entity
           </SectionHeading>
-          <p className="text-[#e5e5e5]/80 mb-4 text-sm leading-7">
+          <p className="text-neutral-text-secondary mb-4 text-sm leading-7">
             Every request you make in the API Playground, every error you submit
             to the AI Debugging Assistant, every commit tracked by Developer
             Analytics, and every report from the SaaS Idea Validator is stored
             against a single{" "}
-            <code className="bg-white/10 px-1.5 py-0.5 rounded text-sm text-[#e5e5e5]">
+            <code className="bg-neutral-surface-2 px-1.5 py-0.5 rounded text-sm text-neutral-text-primary">
               Project
             </code>{" "}
             record.
@@ -54,9 +54,9 @@ export default function ProjectsWorkspacesPage() {
           />
 
           <SectionHeading id="workspaces">Workspaces</SectionHeading>
-          <p className="text-[#e5e5e5]/80 mb-4 text-sm leading-7">
+          <p className="text-neutral-text-secondary mb-4 text-sm leading-7">
             A workspace is simply the set of projects a{" "}
-            <code className="bg-white/10 px-1.5 py-0.5 rounded text-sm text-[#e5e5e5]">
+            <code className="bg-neutral-surface-2 px-1.5 py-0.5 rounded text-sm text-neutral-text-primary">
               User
             </code>{" "}
             has access to. There&apos;s no separate workspace table today —
@@ -73,7 +73,7 @@ export default function ProjectsWorkspacesPage() {
           <SectionHeading id="switching-projects">
             Switching projects
           </SectionHeading>
-          <p className="text-[#e5e5e5]/80 mb-4 text-sm leading-7">
+          <p className="text-neutral-text-secondary mb-4 text-sm leading-7">
             The project switcher in the dashboard sidebar lets you move between
             projects without losing your place — each module reads the active
             project ID from the same client instance you configured in Quick

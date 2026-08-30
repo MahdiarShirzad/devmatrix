@@ -29,7 +29,7 @@ export default function AuthenticationApiPage() {
 
         <div className="max-w-none">
           <SectionHeading id="register">POST /api/auth/register</SectionHeading>
-          <p className="text-[#e5e5e5]/80 mb-4 text-sm leading-7">
+          <p className="text-neutral-text-secondary mb-4 text-sm leading-7">
             Creates a new user.
           </p>
           <CodeBlock
@@ -56,7 +56,7 @@ Content-Type: application/json
           />
 
           <SectionHeading id="login">POST /api/auth/login</SectionHeading>
-          <p className="text-[#e5e5e5]/80 mb-4 text-sm leading-7">
+          <p className="text-neutral-text-secondary mb-4 text-sm leading-7">
             Exchanges credentials for a session token.
           </p>
           <CodeBlock
@@ -78,7 +78,7 @@ Content-Type: application/json
           />
 
           <SectionHeading id="using-the-token">Using the token</SectionHeading>
-          <p className="text-[#e5e5e5]/80 mb-4 text-sm leading-7">
+          <p className="text-neutral-text-secondary mb-4 text-sm leading-7">
             Send the token on every authenticated request as a bearer header:
           </p>
           <CodeBlock

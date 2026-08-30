@@ -45,27 +45,31 @@ export default function ArchitectureOverviewPage() {
           />
 
           <div className="grid sm:grid-cols-2 gap-4 not-prose mb-6">
-            <div className="rounded-xl border border-white/10 bg-[#0D1117] p-5">
+            <div className="rounded-xl border border-neutral-border bg-neutral-surface-1 p-5">
               <div className="flex items-center gap-2 mb-3">
-                <Server size={16} className="text-[#fca311]" />
-                <h4 className="text-white font-semibold text-sm">Frontend</h4>
+                <Server size={16} className="text-brand-primary" />
+                <h4 className="text-neutral-text-primary font-semibold text-sm">
+                  Frontend
+                </h4>
               </div>
               <ul className="space-y-2">
                 {["Next.js", "TypeScript", "TailwindCSS"].map((t) => (
                   <li
                     key={t}
-                    className="text-xs text-[#e5e5e5]/80 flex items-center gap-2"
+                    className="text-xs text-neutral-text-secondary flex items-center gap-2"
                   >
-                    <span className="h-1 w-1 rounded-full bg-[#fca311]" />
+                    <span className="h-1 w-1 rounded-full bg-brand-primary" />
                     {t}
                   </li>
                 ))}
               </ul>
             </div>
-            <div className="rounded-xl border border-white/10 bg-[#0D1117] p-5">
+            <div className="rounded-xl border border-neutral-border bg-neutral-surface-1 p-5">
               <div className="flex items-center gap-2 mb-3">
                 <Database size={16} className="text-sky-400" />
-                <h4 className="text-white font-semibold text-sm">Backend</h4>
+                <h4 className="text-neutral-text-primary font-semibold text-sm">
+                  Backend
+                </h4>
               </div>
               <ul className="space-y-2">
                 {[
@@ -76,7 +80,7 @@ export default function ArchitectureOverviewPage() {
                 ].map((t) => (
                   <li
                     key={t}
-                    className="text-xs text-[#e5e5e5]/80 flex items-center gap-2"
+                    className="text-xs text-neutral-text-secondary flex items-center gap-2"
                   >
                     <span className="h-1 w-1 rounded-full bg-sky-400" />
                     {t}
@@ -89,11 +93,11 @@ export default function ArchitectureOverviewPage() {
           <SectionHeading id="how-modules-connect">
             How modules connect
           </SectionHeading>
-          <p className="text-[#e5e5e5]/80 mb-4 text-sm leading-7">
+          <p className="text-neutral-text-secondary mb-4 text-sm leading-7">
             The backend exposes one core API for auth and projects, and each
             module (Playground, Debugging, Analytics, Idea Validator) is its own
             set of routes and tables that all foreign-key back to{" "}
-            <code className="bg-white/10 px-1.5 py-0.5 rounded text-sm text-[#e5e5e5]">
+            <code className="bg-neutral-surface-2 px-1.5 py-0.5 rounded text-sm text-neutral-text-primary">
               projectId
             </code>
             . The frontend renders each module as a route inside the dashboard
@@ -110,12 +114,12 @@ export default function ArchitectureOverviewPage() {
           <SectionHeading id="build-order">
             Why modules ship in this order
           </SectionHeading>
-          <p className="text-[#e5e5e5]/80 mb-4 text-sm leading-7">
+          <p className="text-neutral-text-secondary mb-4 text-sm leading-7">
             Core auth and the Project entity come first since every module
             depends on them. API Playground ships next because it needs no AI
             and no external integrations, making it the reference pattern for
             the modules that follow. See{" "}
-            <code className="bg-white/10 px-1.5 py-0.5 rounded text-sm text-[#e5e5e5]">
+            <code className="bg-neutral-surface-2 px-1.5 py-0.5 rounded text-sm text-neutral-text-primary">
               What is DevMatrix?
             </code>{" "}
             for the full roadmap.

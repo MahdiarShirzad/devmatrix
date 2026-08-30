@@ -31,8 +31,8 @@ export default function SaasIdeaValidatorPage() {
         />
 
         <div className="flex items-center gap-3 mb-4">
-          <div className="rounded-lg bg-[#fca311]/10 p-2">
-            <Rocket size={20} className="text-[#fca311]" />
+          <div className="rounded-lg bg-brand-primary/10 p-2">
+            <Rocket size={20} className="text-brand-primary" />
           </div>
         </div>
         <PageHeader
@@ -46,11 +46,11 @@ export default function SaasIdeaValidatorPage() {
             {features.map((f) => (
               <li
                 key={f}
-                className="flex items-start gap-2 text-sm text-[#e5e5e5]/80"
+                className="flex items-start gap-2 text-sm text-neutral-text-secondary"
               >
                 <CheckCircle2
                   size={16}
-                  className="shrink-0 mt-0.5 text-[#fca311]"
+                  className="shrink-0 mt-0.5 text-brand-primary"
                 />
                 {f}
               </li>
@@ -60,7 +60,7 @@ export default function SaasIdeaValidatorPage() {
           <SectionHeading id="requesting-a-report">
             Requesting a report
           </SectionHeading>
-          <p className="text-[#e5e5e5]/80 mb-4 text-sm leading-7">
+          <p className="text-neutral-text-secondary mb-4 text-sm leading-7">
             Describe the idea in plain language, and the validator returns a
             structured report covering market size, competitors, suggested
             features, a revenue model, and a SWOT breakdown.
@@ -83,7 +83,7 @@ console.log(report.swot);`}
           </Callout>
 
           <SectionHeading id="goal">Goal</SectionHeading>
-          <p className="text-[#e5e5e5]/80 mb-4 text-sm leading-7">
+          <p className="text-neutral-text-secondary mb-4 text-sm leading-7">
             Help developers and founders evaluate ideas before building
             products.
           </p>

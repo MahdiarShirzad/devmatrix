@@ -1,4 +1,3 @@
-// Toc.tsx
 import Link from "next/link";
 import { AlertTriangle } from "lucide-react";
 
@@ -10,7 +9,7 @@ export default function Toc({
   return (
     <aside className="hidden xl:block w-56 shrink-0 py-10">
       <div className="sticky top-28">
-        <h4 className="font-semibold text-white text-xs uppercase tracking-wider mb-4">
+        <h4 className="font-semibold text-neutral-text-primary text-xs uppercase tracking-wider mb-4">
           On this page
         </h4>
         <ul className="space-y-3 text-sm">
@@ -20,8 +19,8 @@ export default function Toc({
                 href={`#${item.id}`}
                 className={
                   idx === 0
-                    ? "text-[#fca311] font-medium transition-colors hover:text-[#fca311]/80"
-                    : "text-[#e5e5e5]/70 transition-colors hover:text-white"
+                    ? "text-brand-primary font-medium transition-colors hover:text-brand-primary/80"
+                    : "text-neutral-text-secondary/70 transition-colors hover:text-neutral-text-primary"
                 }
               >
                 {item.label}
@@ -30,10 +29,10 @@ export default function Toc({
           ))}
         </ul>
 
-        <div className="mt-8 pt-8 border-t border-white/10 space-y-4">
+        <div className="mt-8 pt-8 border-t border-neutral-border space-y-4">
           <Link
             href="#"
-            className="flex items-center gap-2 text-xs text-[#e5e5e5]/60 hover:text-white transition-colors"
+            className="flex items-center gap-2 text-xs text-neutral-text-secondary/60 hover:text-neutral-text-primary transition-colors"
           >
             <AlertTriangle size={14} /> Report an issue
           </Link>

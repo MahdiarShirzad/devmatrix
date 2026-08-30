@@ -1,4 +1,3 @@
-// Callout.tsx
 import { Info, Lightbulb, AlertTriangle, CheckCircle2 } from "lucide-react";
 import type { ReactNode } from "react";
 
@@ -16,9 +15,9 @@ const variantStyles: Record<
   },
   tip: {
     Icon: Lightbulb,
-    wrap: "border-[#fca311]/20 bg-[#fca311]/10 text-amber-100",
-    icon: "text-[#fca311]",
-    title: "text-[#fca311]",
+    wrap: "border-brand-primary/20 bg-brand-primary/10 text-amber-100",
+    icon: "text-brand-primary",
+    title: "text-brand-primary",
   },
   warning: {
     Icon: AlertTriangle,
