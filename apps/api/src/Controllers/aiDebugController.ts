@@ -4,6 +4,7 @@ import AppError from "../utils/appError.js";
 import { analyzeCode } from "../services/aiDebudService.js";
 import { DebugSession } from "../Models/DebugSession.js";
 import GithubProject from "../Models/GithubProject.js";
+import { parseDaysParam } from "../utils/parseDaysParam.js";
 
 const findOwnedProject = async (projectId: string, userId: string) => {
   return GithubProject.findOne({ _id: projectId, userId });
@@ -155,3 +156,21 @@ export const deleteSession = catchAsync(async (req: Request, res: Response) => {
 
   res.status(204).send();
 });
+
+export const listAllSessions = catchAsync(
+  async (req: Request, res: Response): Promise<void> => {
+    const userId = (req as any).userId;
+    const { isAllTime, rangeStart } = parseDaysParam(req.query.days);
+
+    const match: Record<string, unknown> = { userId: userId.toString() };
+    if (!isAllTime && rangeStart) {
+      match.createdAt = { $gte: rangeStart };
+    }
+
+    const sessions = await DebugSession.find(match)
+      .sort({ createdAt: -1 })
+      .select("title language status createdAt projectId");
+
+    res.status(200).json({ sessions });
+  },
+);

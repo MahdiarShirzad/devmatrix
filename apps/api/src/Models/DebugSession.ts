@@ -12,6 +12,9 @@ interface IDebugSession {
   fixedCode?: string;
   errorMessage?: string;
   resolvedAt?: Date;
+
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 const debugSessionSchema = new Schema<IDebugSession>(

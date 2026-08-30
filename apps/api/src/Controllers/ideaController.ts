@@ -5,6 +5,7 @@ import AppError from "../utils/appError.js";
 import { validateIdea } from "../services/ideaValidatorService.js";
 import { Idea } from "../Models/Idea.js";
 import GithubProject from "../Models/GithubProject.js";
+import { parseDaysParam } from "../utils/parseDaysParam.js";
 
 /**
  * Ideas are always scoped to a project, so every route below expects a
@@ -230,5 +231,64 @@ export const deleteIdea = catchAsync(
     res
       .status(200)
       .json({ status: "success", message: "Idea deleted successfully" });
+  },
+);
+
+export const getAllOverviewStats = catchAsync(
+  async (req: Request, res: Response): Promise<void> => {
+    const userId = (req as any).userId;
+    const { isAllTime, rangeStart } = parseDaysParam(req.query.days);
+
+    const match: Record<string, unknown> = {
+      userId: new mongoose.Types.ObjectId(userId),
+    };
+    if (!isAllTime && rangeStart) {
+      match.createdAt = { $gte: rangeStart };
+    }
+
+    const stats = await Idea.aggregate([
+      { $match: match },
+      {
+        $group: {
+          _id: null,
+          totalIdeas: { $sum: 1 },
+          validatedCount: {
+            $sum: {
+              $cond: [{ $gte: ["$overallScore", 70] }, 1, 0],
+            },
+          },
+          pendingCount: {
+            $sum: {
+              $cond: [{ $eq: ["$status", "pending"] }, 1, 0],
+            },
+          },
+          failedCount: {
+            $sum: {
+              $cond: [{ $eq: ["$status", "failed"] }, 1, 0],
+            },
+          },
+          avgScore: { $avg: "$overallScore" },
+        },
+      },
+    ]);
+
+    const result = stats[0] || {
+      totalIdeas: 0,
+      validatedCount: 0,
+      pendingCount: 0,
+      failedCount: 0,
+      avgScore: 0,
+    };
+
+    res.status(200).json({
+      status: "success",
+      stats: {
+        totalIdeas: result.totalIdeas,
+        validatedCount: result.validatedCount,
+        pendingCount: result.pendingCount,
+        failedCount: result.failedCount,
+        avgScore: result.avgScore ? Math.round(result.avgScore * 10) / 10 : 0,
+      },
+    });
   },
 );

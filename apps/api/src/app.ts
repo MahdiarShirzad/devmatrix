@@ -5,6 +5,9 @@ import passport from "./config/passport.js";
 import authRoutes from "./Routes/authRoutes.js";
 import projectScopedRoutes from "./Routes/projectScopedRoutes.js";
 import githubProjectRoutes from "./Routes/githubProjectRoutes.js";
+import aiDebugRoutes from "./Routes/aiDebugRoutes.js";
+import ideaRoutes from "./Routes/ideaRoutes.js";
+import dashboardRoutes from "./Routes/dashboardRoutes.js";
 import cors from "cors";
 
 import type { Request, Response } from "express";
@@ -38,6 +41,9 @@ app.get("/", (req: Request, res: Response) => {
 
 app.use("/api/auth", authRoutes);
 app.use("/api/github-projects", githubProjectRoutes);
+app.use("/api/ai-debug", aiDebugRoutes);
+app.use("/api/ideas", ideaRoutes);
+app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/projects/:projectId", projectScopedRoutes);
 
 export default app;

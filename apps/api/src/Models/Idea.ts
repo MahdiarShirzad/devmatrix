@@ -16,6 +16,9 @@ interface Idea {
   riskScore?: number;
   riskSummary?: string;
   errorMessage?: string;
+
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 const ideaSchema = new Schema<Idea>(
