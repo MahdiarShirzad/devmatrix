@@ -12,7 +12,6 @@ interface ProfileSettingsPanelProps {
 export default function ProfileSettingsPanel({
   currentUser,
 }: ProfileSettingsPanelProps) {
-  // Initialize state directly from props - this is the correct pattern
   const [displayName, setDisplayName] = useState(currentUser?.name ?? "");
   const [savedSnapshot, setSavedSnapshot] = useState({
     displayName: currentUser?.name ?? "",
@@ -47,27 +46,27 @@ export default function ProfileSettingsPanel({
         <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
           {/* Page Header */}
           <header className="mb-12">
-            <h1 className="text-3xl font-semibold tracking-tight text-white">
+            <h1 className="text-3xl font-semibold tracking-tight text-neutral-text-primary">
               Profile
             </h1>
-            <p className="mt-2 text-sm text-[#e5e5e5]/60">
+            <p className="mt-2 text-sm text-neutral-text-secondary">
               Manage how your identity appears across DevMatrix.
             </p>
           </header>
 
           {/* Identity Card */}
           <ProfileIdentityCard
-            key={currentUser?.id} // Remount when user changes
+            key={currentUser?.id}
             currentUser={currentUser}
           />
 
           {/* Personal Information */}
           <section className="mt-16">
             <div className="mb-6">
-              <h2 className="text-lg font-medium text-white">
+              <h2 className="text-lg font-medium text-neutral-text-primary">
                 Personal Information
               </h2>
-              <p className="mt-1 text-sm text-[#e5e5e5]/50">
+              <p className="mt-1 text-sm text-neutral-text-secondary/50">
                 Update your profile details and email preferences.
               </p>
             </div>

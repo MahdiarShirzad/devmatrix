@@ -1,33 +1,54 @@
 "use client";
 
-import { useState } from "react";
+import { useSyncExternalStore } from "react";
 import { Check } from "lucide-react";
 import { AVAILABLE_THEMES } from "../theme-config";
 
 const THEME_STORAGE_KEY = "devmatrix-theme";
 const DEFAULT_THEME = "obsidian";
 
+// 1. Subscribe function to listen for storage updates across tabs/windows
+function subscribeToTheme(callback: () => void) {
+  window.addEventListener("storage", callback);
+  return () => window.removeEventListener("storage", callback);
+}
+
+// 2. Client snapshot reader from localStorage
+function getThemeSnapshot(): string {
+  const savedTheme = localStorage.getItem(THEME_STORAGE_KEY);
+  if (savedTheme && AVAILABLE_THEMES.some((t) => t.id === savedTheme)) {
+    return savedTheme;
+  }
+  return DEFAULT_THEME;
+}
+
+// 3. Server snapshot for SSR initial pass
+function getServerThemeSnapshot(): string {
+  return DEFAULT_THEME;
+}
+
 export default function AppearanceSettingsPanel() {
-  const [currentTheme, setCurrentTheme] = useState<string>(() => {
-    if (typeof window !== "undefined") {
-      const savedTheme = localStorage.getItem(THEME_STORAGE_KEY);
-      if (savedTheme && AVAILABLE_THEMES.some((t) => t.id === savedTheme)) {
-        return savedTheme;
-      }
-    }
-    return DEFAULT_THEME;
-  });
+  // Sync state directly with localStorage safely during render
+  const currentTheme = useSyncExternalStore(
+    subscribeToTheme,
+    getThemeSnapshot,
+    getServerThemeSnapshot,
+  );
 
   const handleThemeSelect = (themeId: string) => {
     localStorage.setItem(THEME_STORAGE_KEY, themeId);
     document.documentElement.setAttribute("data-theme", themeId);
+
     const isLightTheme = themeId === "verdant" || themeId === "alabaster";
     document.documentElement.style.setProperty(
       "color-scheme",
       isLightTheme ? "light" : "dark",
     );
-    setCurrentTheme(themeId);
+
+    // Trigger a window storage event so useSyncExternalStore updates locally immediately
+    window.dispatchEvent(new Event("storage"));
   };
+
   return (
     <div className="space-y-8 animate-in fade-in duration-300">
       <div>

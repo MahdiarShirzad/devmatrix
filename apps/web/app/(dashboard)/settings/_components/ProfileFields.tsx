@@ -19,7 +19,7 @@ export default function ProfileFields({
       <div className="space-y-2">
         <label
           htmlFor="displayName"
-          className="block text-sm font-medium text-[#e5e5e5]/80"
+          className="block text-sm font-medium text-neutral-text-secondary"
         >
           Display Name
         </label>
@@ -34,13 +34,15 @@ export default function ProfileFields({
               }
             }}
             maxLength={MAX_DISPLAY_NAME}
-            className="w-full rounded-xl border border-white/10 bg-[#0D1117] px-4 py-3 text-white placeholder:text-[#e5e5e5]/30 focus:border-[#fca311]/50 focus:outline-none focus:ring-2 focus:ring-[#fca311]/20 transition-all duration-200"
+            className="w-full rounded-xl border border-neutral-border bg-neutral-surface-1 px-4 py-3 text-neutral-text-primary placeholder:text-neutral-text-secondary/30 focus:border-brand-primary/50 focus:outline-none focus:ring-2 focus:ring-brand-primary/20 transition-all duration-200"
             placeholder="Your public display name"
           />
         </div>
         <div className="flex items-center justify-between">
-          <p className="text-xs text-[#e5e5e5]/40">Your public display name.</p>
-          <span className="text-xs tabular-nums text-[#e5e5e5]/40">
+          <p className="text-xs text-neutral-text-secondary/40">
+            Your public display name.
+          </p>
+          <span className="text-xs tabular-nums text-neutral-text-secondary/40">
             {displayName.length} / {MAX_DISPLAY_NAME}
           </span>
         </div>
@@ -50,7 +52,7 @@ export default function ProfileFields({
       <div className="space-y-2">
         <label
           htmlFor="email"
-          className="block text-sm font-medium text-[#e5e5e5]/80"
+          className="block text-sm font-medium text-neutral-text-secondary"
         >
           Email Address
         </label>
@@ -60,17 +62,17 @@ export default function ProfileFields({
             type="email"
             value={email}
             disabled
-            className="w-full cursor-not-allowed rounded-xl border border-white/5 bg-white/[0.03] px-4 py-3 pr-32 text-[#e5e5e5]/60"
+            className="w-full cursor-not-allowed rounded-xl border border-neutral-border/50 bg-neutral-surface-1/50 px-4 py-3 pr-32 text-neutral-text-secondary/60"
           />
           <div className="absolute right-3 top-1/2 flex -translate-y-1/2 items-center gap-1.5">
-            <Lock size={12} className="text-[#e5e5e5]/30" />
-            <span className="inline-flex items-center gap-1 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-2.5 py-1 text-xs font-medium text-emerald-400">
+            <Lock size={12} className="text-neutral-text-secondary/30" />
+            <span className="inline-flex items-center gap-1 rounded-full border border-success/20 bg-success/10 px-2.5 py-1 text-xs font-medium text-success">
               <CheckCircle2 size={12} />
               Verified
             </span>
           </div>
         </div>
-        <p className="text-xs text-[#e5e5e5]/40">
+        <p className="text-xs text-neutral-text-secondary/40">
           Email changes are currently handled through support.
         </p>
       </div>

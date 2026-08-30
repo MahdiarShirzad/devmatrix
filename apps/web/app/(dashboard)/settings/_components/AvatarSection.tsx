@@ -13,7 +13,6 @@ const getUserInitials = (name?: string): string => {
     return nameParts[0].charAt(0).toUpperCase();
   }
 
-  // Get first letter of first name and last name
   const firstInitial = nameParts[0].charAt(0).toUpperCase();
   const lastInitial = nameParts[nameParts.length - 1].charAt(0).toUpperCase();
 
@@ -25,22 +24,24 @@ export default function AvatarSection({ currentUser }: AvatarSectionProps) {
   const initials = getUserInitials(name);
 
   return (
-    <div className="flex items-center gap-6">
-      <div className="h-20 w-20 shrink-0 overflow-hidden rounded-full bg-gradient-to-br from-[#fca311] to-[#e55039] p-0.5">
-        <div className="flex h-full w-full items-center justify-center rounded-full bg-[#0a0916] text-2xl font-bold text-white">
+    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
+      <div className="h-20 w-20 shrink-0 overflow-hidden rounded-full bg-gradient-to-br from-brand-primary to-brand-accent p-0.5">
+        <div className="flex h-full w-full items-center justify-center rounded-full bg-neutral-surface-1 text-2xl font-bold text-neutral-text-primary">
           {initials}
         </div>
       </div>
       <div>
-        <h3 className="text-lg font-medium text-white">Avatar</h3>
-        <p className="text-sm text-[#e5e5e5]/60 mb-3">
+        <h3 className="text-lg font-medium text-neutral-text-primary">
+          Avatar
+        </h3>
+        <p className="text-sm text-neutral-text-secondary mb-3">
           This is your public display picture.
         </p>
         <div className="flex gap-3">
-          <button className="rounded-lg bg-white/10 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-white/20">
+          <button className="rounded-lg bg-neutral-surface-2 px-4 py-2 text-sm font-medium text-neutral-text-primary transition-colors hover:bg-neutral-surface-2/70">
             Upload new
           </button>
-          <button className="rounded-lg px-4 py-2 text-sm font-medium text-[#e5e5e5]/60 transition-colors hover:bg-white/5 hover:text-red-400">
+          <button className="rounded-lg px-4 py-2 text-sm font-medium text-neutral-text-secondary transition-colors hover:bg-neutral-surface-2 hover:text-error">
             Remove
           </button>
         </div>

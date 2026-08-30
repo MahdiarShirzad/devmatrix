@@ -30,20 +30,26 @@ export default function GithubSettingsPanel() {
 
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <div className="flex items-start gap-4 rounded-xl border border-white/10 bg-[#0D1117] p-6">
-        <div className="rounded-lg bg-white/5 p-2.5 flex items-center justify-center">
-          <GithubIcon width={30} height={30} className=" text-black" />
+      <div className="flex items-start gap-4 rounded-xl border border-neutral-border bg-neutral-surface-1 p-6">
+        <div className="rounded-lg bg-neutral-surface-2 p-2.5 flex items-center justify-center">
+          <GithubIcon
+            width={30}
+            height={30}
+            className="text-neutral-text-primary"
+          />
         </div>
         <div className="flex-1">
-          <div className="flex items-center gap-2">
-            <h3 className="text-lg font-medium text-white">GitHub</h3>
+          <div className="flex flex-wrap items-center gap-2">
+            <h3 className="text-lg font-medium text-neutral-text-primary">
+              GitHub
+            </h3>
             {!isLoading && githubConnected && (
-              <span className="flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-0.5 text-xs font-medium text-emerald-400 border border-emerald-500/20">
+              <span className="flex items-center gap-1 rounded-full bg-success/10 px-2 py-0.5 text-xs font-medium text-success border border-success/20">
                 <CheckCircle2 size={12} /> Connected
               </span>
             )}
           </div>
-          <p className="text-sm text-[#e5e5e5]/60 mt-1">
+          <p className="text-sm text-neutral-text-secondary mt-1">
             Connect a GitHub personal access token to link repositories and view
             analytics for them.
           </p>
@@ -51,21 +57,21 @@ export default function GithubSettingsPanel() {
       </div>
 
       {!isLoading && githubConnected && (
-        <div className="rounded-xl border border-white/10 bg-[#0D1117] p-6">
-          <p className="text-sm text-[#e5e5e5]/80 mb-4">
+        <div className="rounded-xl border border-neutral-border bg-neutral-surface-1 p-6">
+          <p className="text-sm text-neutral-text-secondary mb-4">
             Your GitHub account is connected. You can replace the token below,
             or disconnect it entirely.
           </p>
           <button
             onClick={handleRemove}
             disabled={removeToken.isPending}
-            className="flex items-center gap-2 rounded-lg bg-red-500/10 px-4 py-2 text-sm font-medium text-red-400 transition-colors hover:bg-red-500 hover:text-white border border-red-500/20 disabled:opacity-60 disabled:pointer-events-none"
+            className="flex items-center gap-2 rounded-lg bg-error/10 px-4 py-2 text-sm font-medium text-error transition-colors hover:bg-error hover:text-white border border-error/20 disabled:opacity-60 disabled:pointer-events-none"
           >
             <Trash2 size={14} />
             {removeToken.isPending ? "Disconnecting..." : "Disconnect GitHub"}
           </button>
           {removeToken.isError && (
-            <p className="mt-2 text-xs text-red-400">
+            <p className="mt-2 text-xs text-error">
               {removeToken.error instanceof Error
                 ? removeToken.error.message
                 : "Failed to disconnect."}
@@ -74,20 +80,20 @@ export default function GithubSettingsPanel() {
         </div>
       )}
 
-      <div className="rounded-xl border border-white/10 bg-[#0D1117] p-6">
-        <label className="text-sm font-medium text-[#e5e5e5]/80">
+      <div className="rounded-xl border border-neutral-border bg-neutral-surface-1 p-6">
+        <label className="text-sm font-medium text-neutral-text-secondary">
           {githubConnected
             ? "Replace access token"
             : "GitHub personal access token"}
         </label>
-        <p className="text-xs text-[#e5e5e5]/40 mt-1 mb-3">
-          Needs the <code className="text-[#fca311]">repo</code> scope. You can
-          create one from{" "}
+        <p className="text-xs text-neutral-text-secondary/40 mt-1 mb-3">
+          Needs the <code className="text-brand-primary">repo</code> scope. You
+          can create one from{" "}
           <a
             href="https://github.com/settings/tokens/new"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 text-[#fca311] hover:underline"
+            className="inline-flex items-center gap-1 text-brand-primary hover:underline"
           >
             GitHub token settings <ExternalLink size={11} />
           </a>
@@ -101,26 +107,26 @@ export default function GithubSettingsPanel() {
             value={tokenInput}
             onChange={(e) => setTokenInput(e.target.value)}
             placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"
-            className="flex-1 rounded-lg border border-white/10 bg-[#0a0916] px-4 py-2.5 text-white placeholder:text-[#e5e5e5]/30 focus:border-[#fca311] focus:outline-none focus:ring-1 focus:ring-[#fca311] font-mono text-sm"
+            className="flex-1 rounded-lg border border-neutral-border bg-neutral-surface-1 px-4 py-2.5 text-neutral-text-primary placeholder:text-neutral-text-secondary/30 focus:border-brand-primary focus:outline-none focus:ring-1 focus:ring-brand-primary font-mono text-sm"
           />
           <button
             onClick={handleSave}
             disabled={!tokenInput.trim() || setToken.isPending}
-            className="shrink-0 rounded-lg bg-[#fca311] px-5 py-2.5 text-sm font-semibold text-[#0a0916] transition-all hover:bg-[#fca311]/90 active:scale-95 disabled:opacity-50 disabled:pointer-events-none"
+            className="shrink-0 rounded-lg bg-brand-primary text-btn-primary px-5 py-2.5 text-sm font-semibold transition-all hover:bg-brand-primary/90 active:scale-95 disabled:opacity-50 disabled:pointer-events-none"
           >
             {setToken.isPending ? "Saving..." : "Save Token"}
           </button>
         </div>
 
         {setToken.isError && (
-          <p className="mt-2 text-xs text-red-400">
+          <p className="mt-2 text-xs text-error">
             {setToken.error instanceof Error
               ? setToken.error.message
               : "Failed to save token."}
           </p>
         )}
         {setToken.isSuccess && (
-          <p className="mt-2 text-xs text-emerald-400">
+          <p className="mt-2 text-xs text-success">
             Token saved. GitHub is now connected.
           </p>
         )}

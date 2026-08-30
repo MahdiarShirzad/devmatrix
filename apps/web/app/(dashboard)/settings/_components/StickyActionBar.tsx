@@ -19,9 +19,9 @@ export default function StickyActionBar({
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 animate-in slide-in-from-bottom duration-300">
-      <div className="border-t border-white/10 bg-[#0D1117]/95 backdrop-blur-md">
+      <div className="border-t border-neutral-border bg-neutral-surface-1/95 backdrop-blur-md">
         <div className="mx-auto flex max-w-2xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
-          <span className="text-sm text-[#e5e5e5]/60">
+          <span className="text-sm text-neutral-text-secondary">
             {saving
               ? "Saving changes..."
               : success
@@ -32,14 +32,14 @@ export default function StickyActionBar({
             <button
               onClick={onCancel}
               disabled={saving}
-              className="rounded-lg px-4 py-2 text-sm font-medium text-[#e5e5e5]/60 transition-colors hover:bg-white/5 hover:text-white disabled:opacity-50"
+              className="rounded-lg px-4 py-2 text-sm font-medium text-neutral-text-secondary transition-colors hover:bg-neutral-surface-2 hover:text-neutral-text-primary disabled:opacity-50"
             >
               Cancel
             </button>
             <button
               onClick={onSave}
               disabled={saving}
-              className="inline-flex min-w-[120px] items-center justify-center gap-2 rounded-lg bg-[#fca311] px-4 py-2 text-sm font-semibold text-black transition-all hover:bg-[#fca311]/90 disabled:opacity-70"
+              className="inline-flex min-w-[120px] items-center justify-center gap-2 rounded-lg bg-brand-primary text-btn-primary px-4 py-2 text-sm font-semibold transition-all hover:bg-brand-primary/90 disabled:opacity-70"
             >
               {saving ? (
                 <>

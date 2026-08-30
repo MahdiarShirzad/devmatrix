@@ -22,7 +22,6 @@ export default function SettingsSidebar({
       <div className="sticky top-8 space-y-8">
         {SIDEBAR_GROUPS.map((group, idx) => (
           <div key={idx}>
-            {/* Replaced hardcoded #e5e5e5/40 */}
             <h4 className="text-xs font-semibold text-neutral-text-secondary/50 uppercase tracking-wider mb-3 px-3">
               {group.label}
             </h4>
