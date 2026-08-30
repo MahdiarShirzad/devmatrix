@@ -25,7 +25,8 @@ export function DashboardHeader({
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const greeting = getGreeting();
-  const current = TIME_RANGES.find((r) => r.value === range) ?? TIME_RANGES[0];
+  const current =
+    TIME_RANGES.find((r) => r.value === range) ?? TIME_RANGES[0];
 
   useEffect(() => {
     function onClickOutside(e: MouseEvent) {
@@ -57,6 +58,7 @@ export function DashboardHeader({
           {current.label}
           <ChevronDown className="h-3.5 w-3.5 text-[var(--color-neutral-text-secondary)]/60" />
         </button>
+
         {open && (
           <div className="absolute right-0 z-20 mt-1.5 w-40 overflow-hidden rounded-lg border border-[var(--color-neutral-border)] bg-[var(--color-neutral-surface-1)] shadow-lg">
             {TIME_RANGES.map((r) => (

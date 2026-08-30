@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
+import Link from "next/link";
 import { ListCardSkeleton } from "./Skeletons";
 import { EmptyState, ErrorState } from "./EmptyState";
 import type { GithubProject } from "@/types/githubAnalytics.types";
@@ -12,35 +13,36 @@ interface ProjectsListProps {
   isLoading: boolean;
   isError: boolean;
   onRetry: () => void;
-  selectedProjectId: string | null;
-  onSelectProject: (id: string) => void;
 }
 
 const STALE_SYNC_HOURS = 24;
 
+/**
+ * Clicking a project now navigates to /projects/:id (its own
+ * project-scoped page) instead of calling onSelectProject to swap the
+ * whole Dashboard's context — the old behavior this replaces was the
+ * root cause of the Dashboard silently becoming a single-project view.
+ */
 export function ProjectsList({
   projects,
   allDebugSessions,
   isLoading,
   isError,
   onRetry,
-  selectedProjectId,
-  onSelectProject,
 }: ProjectsListProps) {
   const rows = useMemo(() => {
-    /* eslint-disable react-hooks/purity -- staleness is intentionally computed
-       against wall-clock time on every render, not cached; this reflects "how
-       long ago" the last sync was, which must stay accurate as time passes. */
     const now = Date.now();
-    /* eslint-enable react-hooks/purity */
     return (projects ?? []).map((p) => {
-      const projectSessions = allDebugSessions.filter((s) => s.projectId === p._id);
+      const projectSessions = allDebugSessions.filter(
+        (s) => s.projectId === p._id,
+      );
       const unresolvedCount = projectSessions.filter(
         (s) => s.status === "failed" || s.status === "in_progress",
       ).length;
       const staleSync =
         !!p.lastSyncedAt &&
-        now - new Date(p.lastSyncedAt).getTime() > STALE_SYNC_HOURS * 60 * 60 * 1000;
+        now - new Date(p.lastSyncedAt).getTime() >
+          STALE_SYNC_HOURS * 60 * 60 * 1000;
       const status: "Healthy" | "Attention" =
         unresolvedCount > 0 || staleSync ? "Attention" : "Healthy";
 
@@ -50,6 +52,7 @@ export function ProjectsList({
         status,
         commits: p.commitsThisWeek,
         unresolvedCount,
+        staleSync,
         lastSyncedAt: p.lastSyncedAt,
       };
     });
@@ -70,15 +73,10 @@ export function ProjectsList({
       ) : (
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {rows.map((row) => (
-            <button
+            <Link
               key={row.id}
-              type="button"
-              onClick={() => onSelectProject(row.id)}
-              className={`flex flex-col gap-2 rounded-lg border p-3.5 text-left transition-colors ${
-                row.id === selectedProjectId
-                  ? "border-[var(--color-brand-primary)]/40 bg-[var(--color-warning-bg)]"
-                  : "border-[var(--color-neutral-border)] bg-[var(--color-neutral-surface-2)]/40 hover:border-[var(--color-neutral-text-secondary)]/30"
-              }`}
+              href={`/projects/${row.id}`}
+              className="flex flex-col gap-2 rounded-lg border border-[var(--color-neutral-border)] bg-[var(--color-neutral-surface-2)]/40 p-3.5 text-left transition-colors hover:border-[var(--color-neutral-text-secondary)]/30"
             >
               <div className="flex items-center justify-between gap-2">
                 <span className="truncate text-sm font-medium text-white">
@@ -106,7 +104,9 @@ export function ProjectsList({
 
               <div className="flex items-center gap-3 text-xs text-[var(--color-neutral-text-secondary)]/70">
                 <span>
-                  {typeof row.commits === "number" ? `${row.commits} commits` : "— commits"}
+                  {typeof row.commits === "number"
+                    ? `${row.commits} commits`
+                    : "— commits"}
                 </span>
                 <span>
                   {row.unresolvedCount > 0
@@ -116,9 +116,11 @@ export function ProjectsList({
               </div>
 
               <div className="text-[11px] text-[var(--color-neutral-text-secondary)]/50">
-                Updated {formatRelativeTime(row.lastSyncedAt)}
+                {row.staleSync
+                  ? "Sync stale"
+                  : `Updated ${formatRelativeTime(row.lastSyncedAt)}`}
               </div>
-            </button>
+            </Link>
           ))}
         </div>
       )}

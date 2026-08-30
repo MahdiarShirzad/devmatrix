@@ -19,7 +19,7 @@ export interface DebugAnalytics {
   resolvedSessions: number;
   inProgressSessions: number;
   failedSessions: number;
-  resolutionRate: number; // 0-100, based on total sessions that have a terminal-or-active outcome
+  resolutionRate: number; // 0-100
   activityByDay: DayActivity[];
   languageBreakdown: LanguageSlice[];
   attentionSessions: DebugSession[];
@@ -33,16 +33,31 @@ const FULL_DAY_LABEL = new Intl.DateTimeFormat("en-US", {
   month: "short",
   day: "numeric",
 });
+// For ranges longer than ~14 days, "Mon"/"Tue" repeats meaninglessly —
+// switch to a date label instead (matches the "no meaningless repeated
+// labels" requirement from the Dashboard redesign brief).
+const DATE_LABEL = new Intl.DateTimeFormat("en-US", {
+  month: "short",
+  day: "numeric",
+});
 
 function dayKey(d: Date): string {
   return d.toISOString().slice(0, 10);
 }
 
+/**
+ * @param sessions - debug sessions to analyze
+ * @param days - size of the activity-by-day window. Previously hardcoded
+ *   to 7, which silently ignored the Dashboard's 30/90-day selector.
+ *   Callers MUST pass the Dashboard's actual selected range here.
+ */
 export function useDebugAnalytics(
   sessions: DebugSession[] | undefined,
+  days: number = 7,
 ): DebugAnalytics {
   return useMemo(() => {
     const list = sessions ?? [];
+    const safeDays = Math.min(Math.max(days, 1), 90);
 
     const totalSessions = list.length;
     const resolvedSessions = list.filter(
@@ -58,21 +73,22 @@ export function useDebugAnalytics(
         ? Math.round((resolvedSessions / totalSessions) * 100)
         : 0;
 
-    // Build last 7 days (including today), oldest -> newest
+    // Build last `safeDays` days (including today), oldest -> newest
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    const days: DayActivity[] = [];
-    for (let i = 6; i >= 0; i--) {
+    const useDateLabels = safeDays > 14;
+    const activityDays: DayActivity[] = [];
+    for (let i = safeDays - 1; i >= 0; i--) {
       const d = new Date(today);
       d.setDate(d.getDate() - i);
-      days.push({
+      activityDays.push({
         key: dayKey(d),
-        label: DAY_LABEL.format(d),
+        label: useDateLabels ? DATE_LABEL.format(d) : DAY_LABEL.format(d),
         fullLabel: FULL_DAY_LABEL.format(d),
         count: 0,
       });
     }
-    const dayIndex = new Map(days.map((d, i) => [d.key, i]));
+    const dayIndex = new Map(activityDays.map((d, i) => [d.key, i]));
     for (const session of list) {
       if (!session.createdAt) continue;
       const created = new Date(session.createdAt);
@@ -82,7 +98,7 @@ export function useDebugAnalytics(
       );
       const idx = dayIndex.get(key);
       if (idx !== undefined) {
-        days[idx].count += 1;
+        activityDays[idx].count += 1;
       }
     }
 
@@ -98,7 +114,8 @@ export function useDebugAnalytics(
       .map(([language, count]) => ({
         language,
         count,
-        percent: totalSessions > 0 ? Math.round((count / totalSessions) * 100) : 0,
+        percent:
+          totalSessions > 0 ? Math.round((count / totalSessions) * 100) : 0,
       }))
       .sort((a, b) => b.count - a.count);
 
@@ -119,11 +136,11 @@ export function useDebugAnalytics(
       inProgressSessions,
       failedSessions,
       resolutionRate,
-      activityByDay: days,
+      activityByDay: activityDays,
       languageBreakdown,
       attentionSessions,
       languages,
       projectIds,
     };
-  }, [sessions]);
+  }, [sessions, days]);
 }

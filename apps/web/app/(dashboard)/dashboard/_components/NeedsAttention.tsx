@@ -1,85 +1,101 @@
+"use client";
+
 import { useMemo } from "react";
-import { AlertTriangle, Circle, CheckCircle2 } from "lucide-react";
+import Link from "next/link";
+import { AlertTriangle, Circle, CheckCircle2, ChevronRight } from "lucide-react";
 import { ListCardSkeleton } from "./Skeletons";
 import type { DebugSession } from "@/types/aiDebug.types";
-import type { Idea } from "@/types/ideaValidator.types";
 import type { GithubProject } from "@/types/githubAnalytics.types";
+import type { AllIdeasOverviewStats } from "@/hooks/useAllIdeasOverviewStats";
 
 interface NeedsAttentionProps {
   attentionSessions: DebugSession[];
-  ideas?: Idea[];
-  project?: GithubProject | null;
+  ideasStats?: AllIdeasOverviewStats;
+  projects?: GithubProject[];
   isLoading: boolean;
 }
 
 const STALE_SYNC_HOURS = 24;
 
+interface AttentionRow {
+  key: string;
+  icon: typeof AlertTriangle;
+  tone: "warning" | "neutral";
+  title: string;
+  subtitle: string;
+  href: string;
+}
+
+/**
+ * Workspace-wide attention list. Unlike the old version (which read a
+ * single `project` and its `ideas`), this scans across every linked
+ * project for stale syncs and groups debug attention by project so each
+ * row can link somewhere real instead of a dead <button>.
+ */
 export function NeedsAttention({
   attentionSessions,
-  ideas,
-  project,
+  ideasStats,
+  projects,
   isLoading,
 }: NeedsAttentionProps) {
-  const items = useMemo(() => {
-    const failedCount = attentionSessions.filter((s) => s.status === "failed").length;
-    const inProgressCount = attentionSessions.filter(
-      (s) => s.status === "in_progress",
-    ).length;
-    const unresolvedDebugTitle = attentionSessions[0]?.title;
+  const items = useMemo<AttentionRow[]>(() => {
+    const result: AttentionRow[] = [];
+    const now = Date.now();
 
-    const pendingIdeas = (ideas ?? []).filter((i) => i.status === "pending");
+    // Group unresolved debug sessions by project so each project gets
+    // one actionable row instead of one giant "N unresolved" blob.
+    const byProject = new Map<string, DebugSession[]>();
+    for (const s of attentionSessions) {
+      const pid = s.projectId ?? "unknown";
+      if (!byProject.has(pid)) byProject.set(pid, []);
+      byProject.get(pid)!.push(s);
+    }
 
-    /* eslint-disable react-hooks/purity -- staleness is intentionally computed
-       against wall-clock time on every render, not cached; this reflects "how
-       long ago" the last sync was, which must stay accurate as time passes. */
-    const syncStale =
-      !!project?.lastSyncedAt &&
-      Date.now() - new Date(project.lastSyncedAt).getTime() >
-        STALE_SYNC_HOURS * 60 * 60 * 1000;
-    /* eslint-enable react-hooks/purity */
-
-    const result: {
-      key: string;
-      icon: typeof AlertTriangle;
-      tone: "warning" | "neutral";
-      title: string;
-      subtitle: string;
-    }[] = [];
-
-    if (failedCount + inProgressCount > 0) {
+    for (const [pid, sessions] of byProject) {
+      const project = projects?.find((p) => p._id === pid);
+      const count = sessions.length;
       result.push({
-        key: "debug",
+        key: `debug-${pid}`,
         icon: AlertTriangle,
         tone: "warning",
-        title: `${failedCount + inProgressCount} unresolved debugging session${
-          failedCount + inProgressCount > 1 ? "s" : ""
-        }`,
-        subtitle: unresolvedDebugTitle ?? "",
+        title: `${count} unresolved debugging session${count > 1 ? "s" : ""}`,
+        subtitle: project?.name ?? "Unknown project",
+        href: project ? `/projects/${pid}/ai-debug` : "/ai-debug",
       });
     }
 
-    if (pendingIdeas.length > 0) {
+    if (ideasStats && ideasStats.pendingCount > 0) {
       result.push({
         key: "ideas",
         icon: Circle,
         tone: "neutral",
-        title: `${pendingIdeas.length} idea${pendingIdeas.length > 1 ? "s" : ""} waiting for review`,
-        subtitle: pendingIdeas[0]?.title ?? "",
+        title: `${ideasStats.pendingCount} idea${
+          ideasStats.pendingCount > 1 ? "s" : ""
+        } waiting for review`,
+        subtitle: "Across your projects",
+        href: "/saas-validator",
       });
     }
 
-    if (syncStale) {
-      result.push({
-        key: "sync",
-        icon: AlertTriangle,
-        tone: "warning",
-        title: "Project sync needs attention",
-        subtitle: project?.name ?? "",
-      });
+    for (const project of projects ?? []) {
+      const staleSync =
+        !!project.lastSyncedAt &&
+        now - new Date(project.lastSyncedAt).getTime() >
+          STALE_SYNC_HOURS * 60 * 60 * 1000;
+      if (staleSync) {
+        result.push({
+          key: `sync-${project._id}`,
+          icon: AlertTriangle,
+          tone: "warning",
+          title: "GitHub sync needs attention",
+          subtitle: project.name,
+          href: `/analytics/${project._id}`,
+        });
+      }
     }
 
     return result;
-  }, [attentionSessions, ideas, project]);
+  }, [attentionSessions, ideasStats, projects]);
 
   if (isLoading) return <ListCardSkeleton rows={3} />;
 
@@ -107,10 +123,10 @@ export function NeedsAttention({
           {items.map((item) => {
             const Icon = item.icon;
             return (
-              <button
+              <Link
                 key={item.key}
-                type="button"
-                className="flex items-center gap-3 py-3 text-left transition-colors first:pt-0 last:pb-0 hover:opacity-80"
+                href={item.href}
+                className="group flex items-center gap-3 py-3 text-left transition-colors first:pt-0 last:pb-0 hover:opacity-80"
               >
                 <Icon
                   className={`h-4 w-4 shrink-0 ${
@@ -121,13 +137,12 @@ export function NeedsAttention({
                 />
                 <div className="min-w-0 flex-1">
                   <div className="truncate text-sm text-white">{item.title}</div>
-                  {item.subtitle && (
-                    <div className="truncate text-xs text-[var(--color-neutral-text-secondary)]/60">
-                      {item.subtitle}
-                    </div>
-                  )}
+                  <div className="truncate text-xs text-[var(--color-neutral-text-secondary)]/60">
+                    {item.subtitle}
+                  </div>
                 </div>
-              </button>
+                <ChevronRight className="h-3.5 w-3.5 shrink-0 text-[var(--color-neutral-text-secondary)]/40 transition-transform group-hover:translate-x-0.5" />
+              </Link>
             );
           })}
         </div>

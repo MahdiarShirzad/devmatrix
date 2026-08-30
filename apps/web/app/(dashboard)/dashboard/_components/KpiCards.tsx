@@ -1,18 +1,16 @@
 import { FolderGit2, GitCommitHorizontal, Bug, Lightbulb } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { KpiCardSkeleton } from "./Skeletons";
-import type { GithubProject, CommitsByDay } from "@/types/githubAnalytics.types";
+import type { GithubProject, OverviewStats } from "@/types/githubAnalytics.types";
 import type { DebugAnalytics } from "@/hooks/useDebugAnalytics";
-import type { OverviewStats as IdeasOverviewStats } from "@/types/ideaValidator.types";
+import type { AllIdeasOverviewStats } from "@/hooks/useAllIdeasOverviewStats";
+import type { TimeRangeValue } from "./DashboardHeader";
 
 interface KpiCardsProps {
-  projects: {
-    data?: GithubProject[];
-    isLoading: boolean;
-    isError: boolean;
-  };
-  commits: {
-    data?: CommitsByDay[];
+  range: TimeRangeValue;
+  projects: { data?: GithubProject[]; isLoading: boolean; isError: boolean };
+  overviewStats: {
+    data?: OverviewStats;
     isLoading: boolean;
     isError: boolean;
   };
@@ -20,22 +18,27 @@ interface KpiCardsProps {
   debugLoading: boolean;
   debugError: boolean;
   ideasStats: {
-    data?: IdeasOverviewStats;
+    data?: AllIdeasOverviewStats;
     isLoading: boolean;
     isError: boolean;
   };
 }
 
+const RANGE_LABEL: Record<TimeRangeValue, string> = {
+  "7": "Last 7 days",
+  "30": "Last 30 days",
+  "90": "Last 90 days",
+};
+
 export function KpiCards({
+  range,
   projects,
-  commits,
+  overviewStats,
   debugAnalytics,
   debugLoading,
   debugError,
   ideasStats,
 }: KpiCardsProps) {
-  const commitTotal = commits.data?.reduce((sum, d) => sum + d.commits, 0);
-
   return (
     <div className="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4">
       {projects.isLoading ? (
@@ -44,25 +47,25 @@ export function KpiCards({
         <KpiCard
           icon={FolderGit2}
           label="Projects"
-          value={
-            projects.isError
-              ? "—"
-              : String(projects.data?.length ?? 0)
-          }
+          value={projects.isError ? "—" : String(projects.data?.length ?? 0)}
           sub={projects.isError ? "Couldn't load" : "Linked repositories"}
           subTone={projects.isError ? "error" : "neutral"}
         />
       )}
 
-      {commits.isLoading ? (
+      {overviewStats.isLoading ? (
         <KpiCardSkeleton />
       ) : (
         <KpiCard
           icon={GitCommitHorizontal}
           label="Commits"
-          value={commits.isError ? "—" : String(commitTotal ?? 0)}
-          sub={commits.isError ? "Couldn't load" : "Selected period"}
-          subTone={commits.isError ? "error" : "neutral"}
+          value={
+            overviewStats.isError
+              ? "—"
+              : String(overviewStats.data?.totalCommits ?? 0)
+          }
+          sub={overviewStats.isError ? "Couldn't load" : RANGE_LABEL[range]}
+          subTone={overviewStats.isError ? "error" : "neutral"}
         />
       )}
 
@@ -71,12 +74,14 @@ export function KpiCards({
       ) : (
         <KpiCard
           icon={Bug}
-          label="Debug Sessions"
+          label="AI Debugging"
           value={debugError ? "—" : String(debugAnalytics.totalSessions)}
           sub={
             debugError
               ? "Couldn't load"
-              : `${debugAnalytics.resolvedSessions} resolved`
+              : debugAnalytics.totalSessions > 0
+                ? `${debugAnalytics.resolutionRate}% resolved`
+                : "No sessions yet"
           }
           subTone={debugError ? "error" : "success"}
         />
@@ -88,7 +93,9 @@ export function KpiCards({
         <KpiCard
           icon={Lightbulb}
           label="Ideas"
-          value={ideasStats.isError ? "—" : String(ideasStats.data?.totalIdeas ?? 0)}
+          value={
+            ideasStats.isError ? "—" : String(ideasStats.data?.totalIdeas ?? 0)
+          }
           sub={
             ideasStats.isError
               ? "Couldn't load"
