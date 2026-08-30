@@ -12,7 +12,7 @@ export default function ContentHeader({
   onSave,
 }: ContentHeaderProps) {
   return (
-    <header className="sticky top-0 z-10 flex items-center justify-between pb-6 mb-8 border-b border-white/10 bg-[#0a0916]/80 backdrop-blur-xl pt-4 md:pt-0">
+    <header className="sticky top-0 z-10 flex items-center justify-between pb-6 mb-8 border-b border-white/10  backdrop-blur-xl pt-4 md:pt-0">
       <div>
         <h2 className="text-2xl font-bold text-white tracking-tight capitalize">
           {activeTab.replace("-", " ")}

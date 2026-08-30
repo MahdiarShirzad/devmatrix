@@ -1,6 +1,11 @@
+import { User } from "@/types/user";
 import { AlertTriangle } from "lucide-react";
 
-export default function DangerZone() {
+interface DangerZoneProps {
+  currentUser?: User;
+}
+
+export default function DangerZone({ currentUser }: DangerZoneProps) {
   return (
     <div>
       <h3 className="text-lg font-medium text-red-400 flex items-center gap-2 mb-4">

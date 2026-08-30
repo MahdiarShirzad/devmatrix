@@ -8,10 +8,15 @@ import ProfileSettingsPanel from "./ProfileSettingsPanel";
 import ApiKeysPanel from "./ApiKeysPanel";
 import GithubSettingsPanel from "./GithubSettingsPanel";
 import ComingSoonPlaceholder from "./ComingSoonPlaceholder";
+import { useMe } from "@/hooks/useMe";
 
 const KNOWN_TABS = ["profile", "api-keys", "github"];
 
 export default function SettingsPageClient() {
+  const { data: currentUser } = useMe();
+
+  console.log(currentUser);
+
   const [activeTab, setActiveTab] = useState<string>("profile");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -27,7 +32,7 @@ export default function SettingsPageClient() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0916] text-[#e5e5e5] font-sans selection:bg-[#fca311]/30">
+    <div className="min-h-screen bg-brand-surface text-[#e5e5e5] font-sans selection:bg-[#fca311]/30">
       <div className="container mx-auto px-4 md:px-6 py-8 max-w-7xl">
         <MobileHeader
           isMobileMenuOpen={isMobileMenuOpen}
@@ -49,7 +54,9 @@ export default function SettingsPageClient() {
             />
 
             <div className="max-w-4xl">
-              {activeTab === "profile" && <ProfileSettingsPanel />}
+              {activeTab === "profile" && (
+                <ProfileSettingsPanel currentUser={currentUser} />
+              )}
               {activeTab === "api-keys" && <ApiKeysPanel />}
               {activeTab === "github" && <GithubSettingsPanel />}
 
