@@ -104,7 +104,7 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
       <div className="flex h-14 shrink-0 items-center gap-3 border-b border-neutral-border px-5">
         <Link href="/" className="flex items-center gap-2">
           <Image
-            src={isLightTheme ? "/logo-dark.png" : "/logo.png"}
+            src={isLightTheme ? "/logo-dark.png" : "/logo2.png"}
             alt="DevMatrix"
             width={150}
             height={24}

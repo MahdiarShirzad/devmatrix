@@ -19,7 +19,6 @@
   --color-neutral-border: var(--theme-border);
   --color-neutral-text-secondary: var(--theme-text-secondary);
   --color-neutral-text-primary: var(--theme-text-primary);
-  --color-button-text: var(--theme-button-text);
 
   /* Status / semantic colors (Unaffected by themes) */
   --color-success: #4caf50;
@@ -50,7 +49,7 @@
     --theme-highlight: #ffffff;
     --theme-text-secondary: #a3a3a3;
     --theme-text-primary: #ffffff;
-    --theme-button-text: #000000; /* Dark text on light orange */
+    --theme-button-text: #000000;
   }
 
   /* 2. Deep Blue */
@@ -65,7 +64,7 @@
     --theme-highlight: #f8fafc;
     --theme-text-secondary: #64748b;
     --theme-text-primary: #f8fafc;
-    --theme-button-text: #ffffff; /* White text on blue */
+    --theme-button-text: #ffffff;
   }
 
   /* 3. Terminal */
@@ -80,7 +79,7 @@
     --theme-highlight: #f2f5f7;
     --theme-text-secondary: #8a949e;
     --theme-text-primary: #f2f5f7;
-    --theme-button-text: #0a0a0a; /* Dark text on light green */
+    --theme-button-text: #0a0a0a;
   }
 
   /* 4. Arctic */
@@ -95,7 +94,7 @@
     --theme-highlight: #ffffff;
     --theme-text-secondary: #7a9bb5;
     --theme-text-primary: #ffffff;
-    --theme-button-text: #0a1823; /* Dark text on light cyan */
+    --theme-button-text: #0a1823;
   }
 
   /* 5. Amethyst */
@@ -110,7 +109,7 @@
     --theme-highlight: #f5f0ff;
     --theme-text-secondary: #6d5c9e;
     --theme-text-primary: #f5f0ff;
-    --theme-button-text: #0d0b14; /* Dark text on light purple */
+    --theme-button-text: #0d0b14;
   }
 
   /* 6. Verdant */
@@ -125,7 +124,7 @@
     --theme-highlight: #0d2231;
     --theme-text-secondary: #8c99a2;
     --theme-text-primary: #0d2231;
-    --theme-button-text: #ffffff; /* White text on dark navy */
+    --theme-button-text: #ffffff;
   }
 
   /* 7. Monochrome */
@@ -140,7 +139,7 @@
     --theme-highlight: #ffffff;
     --theme-text-secondary: #9ca3af;
     --theme-text-primary: #ffffff;
-    --theme-button-text: #0a0a0a; /* Dark text on light gray */
+    --theme-button-text: #0a0a0a;
   }
 
   /* 8. Alabaster */
@@ -155,7 +154,7 @@
     --theme-highlight: #1a1a1a;
     --theme-text-secondary: #8d9a9e;
     --theme-text-primary: #1a1a1a;
-    --theme-button-text: #ffffff; /* White text on dark slate */
+    --theme-button-text: #ffffff;
   }
 
   body {

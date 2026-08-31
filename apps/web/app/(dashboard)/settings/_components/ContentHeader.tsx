@@ -27,11 +27,19 @@ export default function ContentHeader({
         <button
           onClick={onSave}
           disabled={isSaving}
-          className="flex items-center gap-2 rounded-lg bg-brand-primary text-btn-primary px-5 py-2 text-sm font-semibold transition-all hover:bg-brand-primary/90 active:scale-95 disabled:opacity-70 disabled:pointer-events-none whitespace-nowrap"
+          className="flex items-center gap-2 rounded-lg bg-brand-primary px-5 py-2 text-sm font-semibold transition-all hover:bg-brand-primary/90 active:scale-95 disabled:opacity-70 disabled:pointer-events-none whitespace-nowrap"
+          style={{ color: "var(--theme-button-text)" }}
         >
           {isSaving ? (
             <>
-              <div className="h-4 w-4 rounded-full border-2 border-btn-primary/30 border-t-btn-primary animate-spin" />
+              <div
+                className="h-4 w-4 rounded-full border-2 animate-spin"
+                style={{
+                  borderColor:
+                    "color-mix(in srgb, var(--theme-button-text) 30%, transparent)",
+                  borderTopColor: "var(--theme-button-text)",
+                }}
+              />
               Saving...
             </>
           ) : (
