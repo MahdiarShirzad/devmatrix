@@ -11,6 +11,7 @@ import { useLogout } from "@/hooks/useAuth";
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isLightTheme, setIsLightTheme] = useState(false);
 
   const { data: user, isLoading } = useMe();
   const logoutMutation = useLogout();
@@ -21,6 +22,25 @@ const Header = () => {
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const checkTheme = () => {
+      const theme = document.documentElement.getAttribute("data-theme");
+      const lightThemes = ["alabaster", "verdant"];
+      setIsLightTheme(lightThemes.includes(theme || ""));
+    };
+
+    checkTheme();
+
+    // Watch for theme changes
+    const observer = new MutationObserver(checkTheme);
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["data-theme"],
+    });
+
+    return () => observer.disconnect();
   }, []);
 
   const handleLogout = async () => {
@@ -43,7 +63,13 @@ const Header = () => {
       >
         <div className="flex h-14 items-center justify-between">
           <Link href="/" className="group flex items-center gap-2">
-            <Image src="/logo2.png" alt="logo" width={170} height={50} />
+            <Image
+              src={isLightTheme ? "/logo-dark.png" : "/logo2.png"}
+              alt="logo"
+              width={170}
+              height={50}
+              priority
+            />
           </Link>
 
           <nav className="hidden items-center gap-8 md:flex">
@@ -98,7 +124,7 @@ const Header = () => {
                 </Link>
                 <Link
                   href="/register"
-                  className="rounded-xl border border-transparent bg-brand-primary px-5 py-2 text-sm font-bold text-btn-primary transition-all hover:bg-brand-primary/90 hover:shadow-[0_0_20px_rgba(252,163,17,0.3)] active:scale-95"
+                  className="rounded-xl border border-transparent bg-brand-primary px-5 py-2 text-sm font-bold text-[var(--color-button-text)] transition-all hover:bg-brand-primary/90 hover:shadow-[0_0_20px_rgba(252,163,17,0.3)] active:scale-95"
                 >
                   Get Started
                 </Link>
@@ -173,7 +199,7 @@ const Header = () => {
               </Link>
               <Link
                 href="/register"
-                className="mt-2 flex w-full justify-center rounded-xl bg-brand-primary py-3 text-sm font-bold text-btn-primary transition-colors hover:bg-brand-primary/90"
+                className="mt-2 flex w-full justify-center rounded-xl bg-brand-primary py-3 text-sm font-bold text-[var(--color-button-text)] transition-colors hover:bg-brand-primary/90"
               >
                 Get Started
               </Link>

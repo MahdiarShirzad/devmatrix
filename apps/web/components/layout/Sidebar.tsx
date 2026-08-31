@@ -39,6 +39,7 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
   const router = useRouter();
 
   const [isProjectMenuOpen, setIsProjectMenuOpen] = useState(false);
+  const [isLightTheme, setIsLightTheme] = useState(false);
   const projectMenuRef = useRef<HTMLDivElement>(null);
 
   const { data: projectsData } = useGithubProjects("all");
@@ -50,6 +51,25 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
   const currentProjectId = isProjectScoped ? segments[1] : undefined;
   const currentTool = isProjectScoped ? segments[2] : undefined;
   const currentProject = projects.find((p) => p._id === currentProjectId);
+
+  useEffect(() => {
+    const checkTheme = () => {
+      const theme = document.documentElement.getAttribute("data-theme");
+      const lightThemes = ["alabaster", "verdant"];
+      setIsLightTheme(lightThemes.includes(theme || ""));
+    };
+
+    checkTheme();
+
+    // Watch for theme changes
+    const observer = new MutationObserver(checkTheme);
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["data-theme"],
+    });
+
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -84,15 +104,15 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
       <div className="flex h-14 shrink-0 items-center gap-3 border-b border-neutral-border px-5">
         <Link href="/" className="flex items-center gap-2">
           <Image
-            src="/logo.png"
+            src={isLightTheme ? "/logo-dark.png" : "/logo.png"}
             alt="DevMatrix"
-            width={24}
+            width={150}
             height={24}
             className="rounded"
           />
-          <span className="font-mono text-sm font-bold tracking-tight text-neutral-text-primary">
+          {/* <span className="font-mono text-sm font-bold tracking-tight text-neutral-text-primary">
             DevMatrix
-          </span>
+          </span> */}
         </Link>
       </div>
 
