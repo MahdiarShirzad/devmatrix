@@ -19,6 +19,7 @@
   --color-neutral-border: var(--theme-border);
   --color-neutral-text-secondary: var(--theme-text-secondary);
   --color-neutral-text-primary: var(--theme-text-primary);
+  --color-button-text: var(--theme-button-text);
 
   /* Status / semantic colors (Unaffected by themes) */
   --color-success: #4caf50;
@@ -49,6 +50,7 @@
     --theme-highlight: #ffffff;
     --theme-text-secondary: #a3a3a3;
     --theme-text-primary: #ffffff;
+    --theme-button-text: #000000; /* Dark text on light orange */
   }
 
   /* 2. Deep Blue */
@@ -63,6 +65,7 @@
     --theme-highlight: #f8fafc;
     --theme-text-secondary: #64748b;
     --theme-text-primary: #f8fafc;
+    --theme-button-text: #ffffff; /* White text on blue */
   }
 
   /* 3. Terminal */
@@ -77,6 +80,7 @@
     --theme-highlight: #f2f5f7;
     --theme-text-secondary: #8a949e;
     --theme-text-primary: #f2f5f7;
+    --theme-button-text: #0a0a0a; /* Dark text on light green */
   }
 
   /* 4. Arctic */
@@ -91,6 +95,7 @@
     --theme-highlight: #ffffff;
     --theme-text-secondary: #7a9bb5;
     --theme-text-primary: #ffffff;
+    --theme-button-text: #0a1823; /* Dark text on light cyan */
   }
 
   /* 5. Amethyst */
@@ -105,20 +110,7 @@
     --theme-highlight: #f5f0ff;
     --theme-text-secondary: #6d5c9e;
     --theme-text-primary: #f5f0ff;
-  }
-
-  /* 7. Monochrome */
-  [data-theme="monochrome"],
-  .theme-preview-monochrome {
-    --theme-bg: #0a0a0a;
-    --theme-surface: #141414;
-    --theme-surface-2: #1f1f1f;
-    --theme-border: rgba(229, 231, 235, 0.12);
-    --theme-primary: #e5e7eb;
-    --theme-accent: #8ca3b8;
-    --theme-highlight: #ffffff;
-    --theme-text-secondary: #9ca3af;
-    --theme-text-primary: #ffffff;
+    --theme-button-text: #0d0b14; /* Dark text on light purple */
   }
 
   /* 6. Verdant */
@@ -133,6 +125,22 @@
     --theme-highlight: #0d2231;
     --theme-text-secondary: #8c99a2;
     --theme-text-primary: #0d2231;
+    --theme-button-text: #ffffff; /* White text on dark navy */
+  }
+
+  /* 7. Monochrome */
+  [data-theme="monochrome"],
+  .theme-preview-monochrome {
+    --theme-bg: #0a0a0a;
+    --theme-surface: #141414;
+    --theme-surface-2: #1f1f1f;
+    --theme-border: rgba(229, 231, 235, 0.12);
+    --theme-primary: #e5e7eb;
+    --theme-accent: #8ca3b8;
+    --theme-highlight: #ffffff;
+    --theme-text-secondary: #9ca3af;
+    --theme-text-primary: #ffffff;
+    --theme-button-text: #0a0a0a; /* Dark text on light gray */
   }
 
   /* 8. Alabaster */
@@ -147,6 +155,7 @@
     --theme-highlight: #1a1a1a;
     --theme-text-secondary: #8d9a9e;
     --theme-text-primary: #1a1a1a;
+    --theme-button-text: #ffffff; /* White text on dark slate */
   }
 
   body {

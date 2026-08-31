@@ -25,8 +25,7 @@ export function DashboardHeader({
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const greeting = getGreeting();
-  const current =
-    TIME_RANGES.find((r) => r.value === range) ?? TIME_RANGES[0];
+  const current = TIME_RANGES.find((r) => r.value === range) ?? TIME_RANGES[0];
 
   useEffect(() => {
     function onClickOutside(e: MouseEvent) {
@@ -41,7 +40,7 @@ export function DashboardHeader({
   return (
     <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight text-white">
+        <h1 className="text-2xl font-semibold tracking-tight text-[var(--color-neutral-text-primary)]">
           {greeting}, {name}
         </h1>
         <p className="mt-1 text-sm text-[var(--color-neutral-text-secondary)]/70">
@@ -53,7 +52,7 @@ export function DashboardHeader({
         <button
           type="button"
           onClick={() => setOpen((o) => !o)}
-          className="flex items-center gap-2 rounded-lg border border-[var(--color-neutral-border)] bg-[var(--color-neutral-surface-1)] px-3 py-2 text-sm text-white transition-colors hover:border-[var(--color-neutral-text-secondary)]/30"
+          className="flex items-center gap-2 rounded-lg border border-[var(--color-neutral-border)] bg-[var(--color-neutral-surface-1)] px-3 py-2 text-sm text-[var(--color-neutral-text-primary)] transition-colors hover:border-[var(--color-neutral-text-secondary)]/30"
         >
           {current.label}
           <ChevronDown className="h-3.5 w-3.5 text-[var(--color-neutral-text-secondary)]/60" />

@@ -7,7 +7,9 @@ export default function SiteFooter() {
       <div className="container mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-lg bg-brand-primary flex items-center justify-center">
-            <span className="text-btn-primary font-bold text-sm">D</span>
+            <span className="text-[var(--color-button-text)] font-bold text-sm">
+              D
+            </span>
           </div>
           <span className="text-lg font-semibold text-neutral-text-primary tracking-tight">
             DevMatrix

@@ -59,7 +59,7 @@ export default function NewIdeaForm() {
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="e.g. Async standup bot for remote teams"
-            className="w-full rounded-xl border border-neutral-border bg-[#0d1117] px-4 py-3 text-sm text-neutral-text-primary placeholder:text-neutral-text-secondary transition-all focus:border-brand-primary focus:outline-none focus:ring-1 focus:ring-brand-primary disabled:cursor-not-allowed disabled:opacity-60"
+            className="w-full rounded-xl border border-neutral-border bg-neutral-bg px-4 py-3 text-sm text-neutral-text-primary placeholder:text-neutral-text-secondary transition-all focus:border-brand-primary focus:outline-none focus:ring-1 focus:ring-brand-primary disabled:cursor-not-allowed disabled:opacity-60"
           />
         </div>
 
@@ -84,7 +84,7 @@ export default function NewIdeaForm() {
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="What exactly does it do? Who is the primary target audience? How do you plan to monetize it?"
-            className="w-full resize-none rounded-xl border border-neutral-border bg-[#0d1117] p-4 text-sm leading-relaxed text-neutral-text-primary placeholder:text-neutral-text-secondary transition-all focus:border-brand-primary focus:outline-none focus:ring-1 focus:ring-brand-primary disabled:cursor-not-allowed disabled:opacity-60"
+            className="w-full resize-none rounded-xl border border-neutral-border bg-neutral-bg p-4 text-sm leading-relaxed text-neutral-text-primary placeholder:text-neutral-text-secondary transition-all focus:border-brand-primary focus:outline-none focus:ring-1 focus:ring-brand-primary disabled:cursor-not-allowed disabled:opacity-60"
           />
           <p className="mt-2.5 text-xs text-neutral-text-secondary">
             The more context you provide, the more accurate the validation score
@@ -104,7 +104,7 @@ export default function NewIdeaForm() {
         <button
           type="submit"
           disabled={!title.trim() || !description.trim() || isPending}
-          className="group flex w-full items-center justify-center gap-2 rounded-xl bg-brand-primary px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-brand-primary/20 transition-all hover:bg-brand-primary/90 focus:ring-4 focus:ring-brand-primary/20 disabled:cursor-not-allowed disabled:opacity-50 disabled:shadow-none sm:w-auto active:scale-95"
+          className="group flex w-full items-center justify-center gap-2 rounded-xl bg-brand-primary px-6 py-3.5 text-sm font-semibold text-[var(--color-button-text)] shadow-lg shadow-brand-primary/20 transition-all hover:bg-brand-primary/90 focus:ring-4 focus:ring-brand-primary/20 disabled:cursor-not-allowed disabled:opacity-50 disabled:shadow-none sm:w-auto active:scale-95"
         >
           {isPending ? (
             <>

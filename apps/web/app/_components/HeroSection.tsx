@@ -30,7 +30,7 @@ export default function HeroSection() {
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
           <Link
             href="/register"
-            className="flex items-center gap-2 w-full sm:w-auto px-8 py-4 rounded-xl bg-brand-primary text-btn-primary font-bold transition-all hover:bg-brand-primary/90 hover:scale-105 active:scale-95"
+            className="flex items-center gap-2 w-full sm:w-auto px-8 py-4 rounded-xl bg-brand-primary text-[var(--color-button-text)] font-bold transition-all hover:bg-brand-primary/90 hover:scale-105 active:scale-95"
           >
             Get Started <ArrowRight size={18} />
           </Link>

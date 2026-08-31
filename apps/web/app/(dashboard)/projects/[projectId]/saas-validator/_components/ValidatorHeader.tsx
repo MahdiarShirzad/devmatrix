@@ -1,7 +1,10 @@
 import Link from "next/link";
 import { Settings, Plus } from "lucide-react";
+import { useParams } from "next/navigation";
 
 export default function ValidatorHeader() {
+  const { projectId } = useParams<{ projectId: string }>();
+
   return (
     <div className="mb-8 flex flex-col gap-4 border-b border-neutral-border pb-6 md:flex-row md:items-center md:justify-between">
       <div>
@@ -23,7 +26,7 @@ export default function ValidatorHeader() {
           <Settings size={18} />
         </Link> */}
         <Link
-          href="/saas-validator/new"
+          href={`/projects/${projectId}/saas-validator/new`}
           className="flex h-10 items-center gap-2 rounded-lg bg-brand-primary px-4 font-medium text-white shadow-lg shadow-brand-primary/20 transition-all hover:bg-brand-primary/90 focus:ring-2 focus:ring-brand-accent focus:ring-offset-2 focus:ring-offset-neutral-bg active:scale-95"
         >
           <Plus size={18} />
