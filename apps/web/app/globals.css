@@ -35,6 +35,11 @@
   :root {
     color-scheme: dark;
   }
+  :root {
+    /* Font variables - these will be overridden by font selection */
+    --font-sans: var(--font-inter);
+    --font-mono: var(--font-mono);
+  }
 
   /* 1. Obsidian (Default — unchanged) */
   :root,

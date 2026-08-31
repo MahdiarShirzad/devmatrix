@@ -15,7 +15,8 @@ export default function CtaSection() {
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
           <Link
             href="/register"
-            className="px-8 py-4 rounded-xl bg-brand-primary text-[var(--color-button-text)] font-bold shadow-lg shadow-brand-primary/20 transition-all hover:shadow-brand-primary/40 hover:bg-brand-primary/90 hover:scale-105 active:scale-95"
+            className="px-8 py-4 rounded-xl bg-brand-primary font-bold shadow-lg shadow-brand-primary/20 transition-all hover:shadow-brand-primary/40 hover:bg-brand-primary/90 hover:scale-105 active:scale-95"
+            style={{ color: "var(--theme-button-text)" }}
           >
             Create Account
           </Link>

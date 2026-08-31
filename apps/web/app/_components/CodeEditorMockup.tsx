@@ -28,7 +28,7 @@ export default function CodeEditorMockup() {
           {"  "}framework:{" "}
           <span className="text-green-400">&apos;Next.js&apos;</span>,
           <br />
-          {"  "}teamSize: <span className="text-orange-400">5</span>,
+          {"  "}teamSize: <span className="text-orange-400">1</span>,
           <br />
           {"  "}autoScale: <span className="text-brand-accent">true</span>
           <br />

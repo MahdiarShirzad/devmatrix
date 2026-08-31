@@ -5,8 +5,36 @@ import { Check } from "lucide-react";
 import { AVAILABLE_THEMES } from "../theme-config";
 
 const THEME_STORAGE_KEY = "devmatrix-theme";
+const FONT_STORAGE_KEY = "devmatrix-font";
 const DEFAULT_THEME = "obsidian";
 
+// Font configuration matching layout.tsx
+const AVAILABLE_FONTS = [
+  { id: "inter", name: "Inter", variable: "--font-inter" },
+  { id: "geist", name: "Geist", variable: "--font-geist" },
+  { id: "manrope", name: "Manrope", variable: "--font-manrope" },
+  {
+    id: "plus-jakarta-sans",
+    name: "Plus Jakarta Sans",
+    variable: "--font-plus-jakarta-sans",
+  },
+  {
+    id: "ibm-plex-sans",
+    name: "IBM Plex Sans",
+    variable: "--font-ibm-plex-sans",
+  },
+  {
+    id: "space-grotesk",
+    name: "Space Grotesk",
+    variable: "--font-space-grotesk",
+  },
+  { id: "dm-sans", name: "DM Sans", variable: "--font-dm-sans" },
+  { id: "roboto", name: "Roboto", variable: "--font-roboto" },
+] as const;
+
+type FontId = (typeof AVAILABLE_FONTS)[number]["id"];
+
+// Theme subscription
 function subscribeToTheme(callback: () => void) {
   window.addEventListener("storage", callback);
   return () => window.removeEventListener("storage", callback);
@@ -24,23 +52,60 @@ function getServerThemeSnapshot(): string {
   return DEFAULT_THEME;
 }
 
+// Font subscription
+function subscribeToFont(callback: () => void) {
+  window.addEventListener("storage", callback);
+  return () => window.removeEventListener("storage", callback);
+}
+
+function getFontSnapshot(): FontId {
+  const savedFont = localStorage.getItem(FONT_STORAGE_KEY) as FontId | null;
+  const validFontIds = AVAILABLE_FONTS.map((f) => f.id);
+  if (savedFont && validFontIds.includes(savedFont)) {
+    return savedFont;
+  }
+  return "inter";
+}
+
+function getServerFontSnapshot(): FontId {
+  return "inter";
+}
+
 export default function AppearanceSettingsPanel() {
+  // Theme state
   const currentTheme = useSyncExternalStore(
     subscribeToTheme,
     getThemeSnapshot,
     getServerThemeSnapshot,
   );
 
+  // Font state
+  const currentFont = useSyncExternalStore(
+    subscribeToFont,
+    getFontSnapshot,
+    getServerFontSnapshot,
+  );
+
   const handleThemeSelect = (themeId: string) => {
     localStorage.setItem(THEME_STORAGE_KEY, themeId);
     document.documentElement.setAttribute("data-theme", themeId);
-
     const isLightTheme = themeId === "verdant" || themeId === "alabaster";
     document.documentElement.style.setProperty(
       "color-scheme",
       isLightTheme ? "light" : "dark",
     );
+    window.dispatchEvent(new Event("storage"));
+  };
 
+  const handleFontSelect = (fontId: FontId) => {
+    localStorage.setItem(FONT_STORAGE_KEY, fontId);
+    const font = AVAILABLE_FONTS.find((f) => f.id === fontId);
+    if (font) {
+      document.documentElement.style.setProperty(
+        "--font-sans",
+        `var(${font.variable})`,
+      );
+    }
     window.dispatchEvent(new Event("storage"));
   };
 
@@ -55,12 +120,12 @@ export default function AppearanceSettingsPanel() {
         </p>
       </div>
 
+      {/* Theme Section */}
       <div className="space-y-4">
         <h3 className="text-sm font-medium text-neutral-text-primary">Theme</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
           {AVAILABLE_THEMES.map((theme) => {
             const isSelected = currentTheme === theme.id;
-            // دسترسی راحت‌تر به پالت رنگی هر تم
             const [bg, surface, primary, accent, text] = theme.colors;
 
             return (
@@ -73,7 +138,6 @@ export default function AppearanceSettingsPanel() {
                     : "border-neutral-border hover:border-neutral-text-secondary/50 hover:bg-neutral-surface-2"
                 }`}
               >
-                {/* IDE Mockup Preview - استفاده از Inline Styles مستقل از تم اصلی */}
                 <div
                   className="w-full h-32 border-b flex overflow-hidden"
                   style={{ backgroundColor: bg, borderColor: surface }}
@@ -131,7 +195,6 @@ export default function AppearanceSettingsPanel() {
                     </div>
                   </div>
                 </div>
-
                 {/* Card Footer */}
                 <div className="p-4 flex items-center justify-between w-full">
                   <div>
@@ -163,6 +226,66 @@ export default function AppearanceSettingsPanel() {
                   >
                     <Check size={14} strokeWidth={3} />
                   </div>
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Font Section */}
+      <div className="space-y-4 pt-4 border-t border-neutral-border">
+        <div>
+          <h3 className="text-sm font-medium text-neutral-text-primary">
+            Font
+          </h3>
+          <p className="text-xs text-neutral-text-secondary mt-0.5">
+            Choose the font used throughout the DevMatrix interface.
+          </p>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+          {AVAILABLE_FONTS.map((font) => {
+            const isSelected = currentFont === font.id;
+            return (
+              <button
+                key={font.id}
+                onClick={() => handleFontSelect(font.id)}
+                className={`group flex flex-col text-left rounded-xl border bg-neutral-surface-1 transition-all duration-200 p-4 ${
+                  isSelected
+                    ? "border-brand-primary ring-1 ring-brand-primary shadow-lg shadow-brand-primary/10"
+                    : "border-neutral-border hover:border-neutral-text-secondary/50 hover:bg-neutral-surface-2"
+                }`}
+                style={{
+                  fontFamily: `var(${font.variable})`,
+                }}
+              >
+                <div className="flex items-center justify-between w-full">
+                  <span
+                    className={`text-sm font-medium ${
+                      isSelected
+                        ? "text-brand-primary"
+                        : "text-neutral-text-primary"
+                    }`}
+                  >
+                    {font.name}
+                  </span>
+                  <div
+                    className={`flex items-center justify-center w-6 h-6 rounded-full transition-colors ${
+                      isSelected
+                        ? "bg-brand-primary text-brand-bg"
+                        : "bg-neutral-border text-transparent group-hover:bg-neutral-surface-2"
+                    }`}
+                  >
+                    <Check size={14} strokeWidth={3} />
+                  </div>
+                </div>
+                <div className="mt-3 space-y-1">
+                  <p className="text-base font-medium text-neutral-text-primary">
+                    Build better software.
+                  </p>
+                  <p className="text-xs text-neutral-text-secondary">
+                    Aa Bb Cc 123
+                  </p>
                 </div>
               </button>
             );

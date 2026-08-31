@@ -7,7 +7,10 @@ export default function SiteFooter() {
       <div className="container mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-lg bg-brand-primary flex items-center justify-center">
-            <span className="text-[var(--color-button-text)] font-bold text-sm">
+            <span
+              className="font-bold text-sm"
+              style={{ color: "var(--theme-button-text)" }}
+            >
               D
             </span>
           </div>
