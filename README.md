@@ -4,7 +4,7 @@
 
 DevMatrix is a developer-focused platform that brings essential software development workflows into one connected workspace.
 
-From understanding development activity and experimenting with APIs to debugging code with AI and validating new product ideas, DevMatrix is designed to reduce context switching and turn everyday development data into actionable insight.
+From understanding development activity and experimenting with APIs to debugging code with AI, validating product ideas, and customizing the development environment, DevMatrix is designed to reduce context switching and turn everyday development data into actionable insight.
 
 The platform is built around a simple idea:
 
@@ -27,6 +27,7 @@ With DevMatrix, developers can:
 * 🧪 Test and experiment with APIs
 * 💡 Validate software and product ideas
 * 🚀 Organize development around projects
+* 🎨 Customize the application experience with themes and fonts
 * 🧠 Turn development data into actionable insights
 
 Rather than replacing the tools developers already use, DevMatrix acts as an **intelligence and productivity layer around the development workflow**.
@@ -212,9 +213,104 @@ Conceptually:
 
 ---
 
+## 🎨 Themes & Customization
+
+DevMatrix provides a customizable visual experience so developers can adapt the platform to their preferred working environment.
+
+Users can switch between different application themes while keeping the overall interface and design system consistent.
+
+Theme customization is designed around a centralized design-token architecture, allowing colors and interface styles to change without requiring individual components to be redesigned.
+
+### Theme System
+
+DevMatrix supports multiple visual themes, including:
+
+* Light themes
+* Dark themes
+* Developer-focused visual themes
+* Custom color palettes
+
+Themes can modify the application's core visual tokens, including:
+
+* Background colors
+* Surface colors
+* Text colors
+* Accent colors
+* Borders
+* Interactive states
+* Buttons
+* Inputs
+* Navigation elements
+* Cards and panels
+
+The theme system is designed to keep the UI consistent across the entire platform.
+
+Conceptually:
+
+```text
+                    Theme System
+                         │
+            ┌────────────┼────────────┐
+            │            │            │
+            ▼            ▼            ▼
+         Colors       Surfaces     States
+            │            │            │
+            └────────────┼────────────┘
+                         │
+                         ▼
+                  Design Tokens
+                         │
+                         ▼
+                Shared UI Components
+```
+
+This architecture makes it possible to introduce additional themes without rewriting the application's UI components.
+
+---
+
+## 🔤 Font Customization
+
+Typography is another part of the DevMatrix customization system.
+
+Users can choose from supported application fonts depending on their preferred visual style and reading experience.
+
+Font customization can affect:
+
+* Interface text
+* Headings
+* Navigation
+* Form elements
+* Developer-oriented content
+* Code and technical interfaces
+
+The font system is integrated into the application's design tokens so typography remains consistent across themes and components.
+
+Conceptually:
+
+```text
+                  Typography System
+                         │
+            ┌────────────┴────────────┐
+            │                         │
+            ▼                         ▼
+         UI Font                  Code Font
+            │                         │
+            └────────────┬────────────┘
+                         │
+                         ▼
+                  Design Tokens
+                         │
+                         ▼
+                  Application UI
+```
+
+Themes and fonts work together to create a personalized development environment without compromising UI consistency.
+
+---
+
 # 🧠 Product Philosophy
 
-DevMatrix is built around three core principles.
+DevMatrix is built around four core principles.
 
 ## Developer-Centric
 
@@ -235,6 +331,14 @@ DevMatrix turns these signals into information developers can actually use.
 AI is not treated as an isolated feature.
 
 It is integrated into workflows where reasoning, analysis, and contextual assistance can provide real value.
+
+## Personalizable
+
+Developers spend a significant amount of time inside development tools.
+
+DevMatrix therefore treats the interface itself as part of the developer experience.
+
+Themes, typography, and other customization features are designed to let developers shape the environment around their preferences.
 
 ---
 
@@ -335,6 +439,8 @@ External authentication providers such as GitHub can also be integrated into the
 * TypeScript
 * Tailwind CSS
 * Component-driven architecture
+* Design-token based theming
+* Customizable typography
 
 ## Backend
 
@@ -509,6 +615,8 @@ Development should favor:
 * Minimal duplication
 * Explicit business logic
 * Maintainable abstractions
+* Consistent design tokens
+* Reusable theme and typography systems
 
 Features should be designed so they can evolve independently without creating unnecessary coupling throughout the system.
 
@@ -532,6 +640,10 @@ Potential future directions include:
 * [ ] AI-generated project insights
 * [ ] Personalized developer recommendations
 * [ ] Additional external integrations
+* [ ] More application themes
+* [ ] User-created custom themes
+* [ ] Expanded font library
+* [ ] Per-project visual preferences
 
 The roadmap may change as the platform develops and new requirements emerge.
 
@@ -560,6 +672,9 @@ What should I improve?
         │
         ▼
 What should I build next?
+        │
+        ▼
+How should my workspace adapt?
 ```
 
 DevMatrix aims to connect these questions into one continuous development experience.
@@ -577,8 +692,7 @@ APIs.
 Errors.
 Experiments.
 Projects.
-Ideas.
-Solutions.**
+Ideas.**
 
 Most of that information remains fragmented across different tools.
 
@@ -591,6 +705,7 @@ The goal is to build a system that understands the **context around development*
 > **Your code tells you what you built.
 > Your activity tells you how you built it.
 > Your projects tell you what you're building toward.
+> Your workspace reflects how you prefer to work.
 > DevMatrix helps you understand the bigger picture.**
 
 ---
