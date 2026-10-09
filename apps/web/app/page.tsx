@@ -1,22 +1,24 @@
 import Header from "./_components/Header";
-import HeroSection from "./_components/HeroSection";
-import CoreModulesSection from "./_components/CoreModulesSection";
-import HowItWorksSection from "./_components/HowItWorksSection";
-import DeveloperExperienceSection from "./_components/DeveloperExperienceSection";
-import UseCasesSection from "./_components/UseCasesSection";
-import CtaSection from "./_components/CtaSection";
 import SiteFooter from "./_components/SiteFooter";
+import Hero from "./_components/landing/Hero";
+import ProblemStrip from "./_components/landing/ProblemStrip";
+import Modules from "./_components/landing/Modules";
+import ProjectContext from "./_components/landing/ProjectContext";
+import ThemeLab from "./_components/landing/ThemeLab";
+import CtaBand from "./_components/landing/CtaBand";
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-neutral-bg text-neutral-text-primary font-sans selection:bg-brand-primary/30">
+    <div className="min-h-screen bg-neutral-bg font-sans text-neutral-text-primary selection:bg-brand-primary/30 selection:text-button-text">
       <Header />
-      <HeroSection />
-      <CoreModulesSection />
-      <HowItWorksSection />
-      <DeveloperExperienceSection />
-      <UseCasesSection />
-      <CtaSection />
+      <main>
+        <Hero />
+        <ProblemStrip />
+        <Modules />
+        <ProjectContext />
+        <ThemeLab />
+        <CtaBand />
+      </main>
       <SiteFooter />
     </div>
   );

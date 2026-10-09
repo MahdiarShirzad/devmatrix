@@ -2,13 +2,21 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Menu, X, LayoutDashboard, LogOut } from "lucide-react";
 import Image from "next/image";
 
 import { useMe } from "@/hooks/useMe";
 import { useLogout } from "@/hooks/useAuth";
 
+const NAV_LINKS = [
+  { label: "Modules", href: "#modules" },
+  { label: "Docs", href: "/docs/introduction" },
+  { label: "GitHub", href: "https://github.com/MahdiarShirzad/devmatrix" },
+];
+
 const Header = () => {
+  const router = useRouter();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isLightTheme, setIsLightTheme] = useState(false);
@@ -18,9 +26,10 @@ const Header = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
+      setIsScrolled(window.scrollY > 8);
     };
-    window.addEventListener("scroll", handleScroll);
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -33,7 +42,6 @@ const Header = () => {
 
     checkTheme();
 
-    // Watch for theme changes
     const observer = new MutationObserver(checkTheme);
     observer.observe(document.documentElement, {
       attributes: true,
@@ -45,163 +53,178 @@ const Header = () => {
 
   const handleLogout = async () => {
     await logoutMutation.mutateAsync();
-    window.location.href = "/";
+    router.push("/");
+    router.refresh();
   };
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        isScrolled ? "py-3" : "py-5"
+      className={`fixed inset-x-0 top-0 z-50 transition-colors duration-300 ${
+        isScrolled
+          ? "border-b border-neutral-border bg-neutral-bg/92 backdrop-blur-md"
+          : "border-b border-transparent bg-transparent"
       }`}
     >
-      <div
-        className={`mx-auto max-w-7xl transition-all duration-500 ${
-          isScrolled
-            ? "w-[92%] rounded-2xl border border-neutral-border bg-neutral-surface-1/30 px-6 shadow-[0_8px_32px_0_rgba(0,0,0,0.3)] backdrop-blur-xl md:w-[85%]"
-            : "w-full border-transparent bg-transparent px-6"
-        }`}
-      >
-        <div className="flex h-14 items-center justify-between">
-          <Link href="/" className="group flex items-center gap-2">
+      <div className="dm-shell">
+        <div className="flex h-16 items-center justify-between gap-6">
+          <Link href="/" className="shrink-0" aria-label="DevMatrix home">
             <Image
               src={isLightTheme ? "/logo-dark.png" : "/logo2.png"}
-              alt="logo"
-              width={170}
-              height={50}
+              alt="DevMatrix"
+              width={132}
+              height={48}
               priority
+              className="h-auto w-[118px] sm:w-[132px]"
             />
           </Link>
 
-          <nav className="hidden items-center gap-8 md:flex">
-            <Link
-              href="#features"
-              className="text-sm font-medium text-neutral-text-secondary transition-colors hover:text-neutral-text-primary"
-            >
-              Features
-            </Link>
-            <Link
-              href="/docs"
-              className="text-sm font-medium text-neutral-text-secondary transition-colors hover:text-neutral-text-primary"
-            >
-              Docs
-            </Link>
-            <Link
-              href="#"
-              className="text-sm font-medium text-neutral-text-secondary transition-colors hover:text-neutral-text-primary"
-            >
-              Pricing
-            </Link>
+          <nav aria-label="Primary" className="hidden items-center gap-7 md:flex">
+            {NAV_LINKS.map((link) =>
+              link.href.startsWith("http") ? (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[13px] font-medium text-neutral-text-secondary transition-colors hover:text-neutral-text-primary"
+                >
+                  {link.label}
+                </a>
+              ) : (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="text-[13px] font-medium text-neutral-text-secondary transition-colors hover:text-neutral-text-primary"
+                >
+                  {link.label}
+                </Link>
+              ),
+            )}
           </nav>
 
-          <div className="hidden items-center gap-4 md:flex">
+          <div className="hidden items-center gap-3 md:flex">
             {isLoading ? (
-              <div className="h-9 w-32 animate-pulse rounded-xl bg-neutral-surface-2" />
+              <div className="h-8 w-28 animate-pulse rounded-md bg-neutral-surface-2" aria-hidden />
             ) : user ? (
               <>
                 <Link
                   href="/dashboard"
-                  className="flex items-center gap-2 text-sm font-medium text-neutral-text-secondary transition-colors hover:text-neutral-text-primary"
+                  className="inline-flex items-center gap-1.5 rounded-md px-3 py-2 text-[13px] font-medium text-neutral-text-secondary transition-colors hover:bg-neutral-surface-1 hover:text-neutral-text-primary"
                 >
-                  <LayoutDashboard size={16} />
+                  <LayoutDashboard size={15} />
                   Dashboard
                 </Link>
                 <button
+                  type="button"
                   onClick={handleLogout}
-                  className="flex items-center gap-2 rounded-xl border border-neutral-border bg-neutral-surface-1 px-5 py-2 text-sm font-medium text-neutral-text-primary transition-all hover:bg-neutral-surface-2 hover:shadow-[0_0_20px_rgba(239,83,80,0.15)] active:scale-95"
                   disabled={logoutMutation.isPending}
+                  className="inline-flex items-center gap-1.5 rounded-md border border-neutral-border px-3.5 py-2 text-[13px] font-medium text-neutral-text-secondary transition-colors hover:border-neutral-text-secondary/50 hover:text-neutral-text-primary disabled:opacity-60"
                 >
-                  <LogOut size={16} />
-                  {logoutMutation.isPending ? "Logging out..." : "Log out"}
+                  <LogOut size={14} />
+                  {logoutMutation.isPending ? "Logging out…" : "Log out"}
                 </button>
               </>
             ) : (
               <>
                 <Link
                   href="/login"
-                  className="text-sm font-medium text-neutral-text-secondary transition-colors hover:text-neutral-text-primary"
+                  className="rounded-md px-3 py-2 text-[13px] font-medium text-neutral-text-secondary transition-colors hover:text-neutral-text-primary"
                 >
                   Log in
                 </Link>
                 <Link
                   href="/register"
-                  className="rounded-xl border border-transparent bg-brand-primary px-5 py-2 text-sm font-bold text-[var(--color-button-text)] transition-all hover:bg-brand-primary/90 hover:shadow-[0_0_20px_rgba(252,163,17,0.3)] active:scale-95"
+                  className="rounded-md bg-brand-primary px-4 py-2 text-[13px] font-semibold text-button-text transition-colors hover:bg-brand-primary/90"
                 >
-                  Get Started
+                  Start a project
                 </Link>
               </>
             )}
           </div>
 
           <button
-            className="flex items-center justify-center rounded-lg p-2 text-neutral-text-secondary transition-colors hover:bg-neutral-surface-1 hover:text-neutral-text-primary md:hidden"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            type="button"
+            className="-mr-2 inline-flex items-center justify-center rounded-md p-2 text-neutral-text-secondary transition-colors hover:bg-neutral-surface-1 hover:text-neutral-text-primary md:hidden"
+            onClick={() => setIsMobileMenuOpen((open) => !open)}
+            aria-expanded={isMobileMenuOpen}
+            aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
           >
-            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
         </div>
       </div>
 
+      {/* Mobile panel — solid surface, no glass */}
       <div
-        className={`absolute left-4 right-4 top-20 overflow-hidden rounded-2xl border border-neutral-border bg-neutral-bg/90 px-6 backdrop-blur-2xl transition-all duration-300 md:hidden ${
+        className={`overflow-hidden border-b border-neutral-border bg-neutral-bg transition-[max-height,opacity] duration-300 md:hidden ${
           isMobileMenuOpen
-            ? "visible max-h-[500px] py-6 opacity-100 shadow-2xl"
-            : "invisible max-h-0 py-0 opacity-0"
+            ? "max-h-[420px] opacity-100"
+            : "pointer-events-none max-h-0 opacity-0"
         }`}
       >
-        <nav className="flex flex-col gap-4">
-          <Link
-            href="#features"
-            className="text-base font-medium text-neutral-text-secondary hover:text-neutral-text-primary"
-          >
-            Features
-          </Link>
-          <Link
-            href="/docs"
-            className="text-base font-medium text-neutral-text-secondary hover:text-neutral-text-primary"
-          >
-            Docs
-          </Link>
-          <Link
-            href="#"
-            className="text-base font-medium text-neutral-text-secondary hover:text-neutral-text-primary"
-          >
-            Pricing
-          </Link>
+        <nav aria-label="Mobile" className="dm-shell flex flex-col gap-1 py-4">
+          {NAV_LINKS.map((link) =>
+            link.href.startsWith("http") ? (
+              <a
+                key={link.href}
+                href={link.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-md px-3 py-2.5 text-sm font-medium text-neutral-text-secondary transition-colors hover:bg-neutral-surface-1 hover:text-neutral-text-primary"
+              >
+                {link.label}
+              </a>
+            ) : (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="rounded-md px-3 py-2.5 text-sm font-medium text-neutral-text-secondary transition-colors hover:bg-neutral-surface-1 hover:text-neutral-text-primary"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                {link.label}
+              </Link>
+            ),
+          )}
+
           <div className="my-2 h-px w-full bg-neutral-border" />
 
           {isLoading ? (
-            <div className="h-12 w-full animate-pulse rounded-xl bg-neutral-surface-2" />
+            <div className="mx-3 h-10 animate-pulse rounded-md bg-neutral-surface-2" aria-hidden />
           ) : user ? (
             <>
               <Link
                 href="/dashboard"
-                className="flex items-center gap-2 text-base font-medium text-neutral-text-secondary hover:text-neutral-text-primary"
+                className="flex items-center gap-2 rounded-md px-3 py-2.5 text-sm font-medium text-neutral-text-secondary transition-colors hover:bg-neutral-surface-1 hover:text-neutral-text-primary"
+                onClick={() => setIsMobileMenuOpen(false)}
               >
-                <LayoutDashboard size={18} />
+                <LayoutDashboard size={16} />
                 Dashboard
               </Link>
               <button
+                type="button"
                 onClick={handleLogout}
-                className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-neutral-surface-1 py-3 text-sm font-medium text-neutral-text-primary transition-colors hover:bg-red-500/20 hover:text-red-400"
                 disabled={logoutMutation.isPending}
+                className="mt-1 flex w-full items-center justify-center gap-2 rounded-md border border-neutral-border px-3 py-2.5 text-sm font-medium text-neutral-text-secondary transition-colors hover:text-error disabled:opacity-60"
               >
-                <LogOut size={18} />
-                {logoutMutation.isPending ? "Logging out..." : "Log out"}
+                <LogOut size={16} />
+                {logoutMutation.isPending ? "Logging out…" : "Log out"}
               </button>
             </>
           ) : (
             <>
               <Link
                 href="/login"
-                className="text-base font-medium text-neutral-text-secondary hover:text-neutral-text-primary"
+                className="rounded-md px-3 py-2.5 text-sm font-medium text-neutral-text-secondary transition-colors hover:bg-neutral-surface-1 hover:text-neutral-text-primary"
+                onClick={() => setIsMobileMenuOpen(false)}
               >
                 Log in
               </Link>
               <Link
                 href="/register"
-                className="mt-2 flex w-full justify-center rounded-xl bg-brand-primary py-3 text-sm font-bold text-[var(--color-button-text)] transition-colors hover:bg-brand-primary/90"
+                className="mt-1 flex w-full items-center justify-center rounded-md bg-brand-primary px-3 py-2.5 text-sm font-semibold text-button-text transition-colors hover:bg-brand-primary/90"
+                onClick={() => setIsMobileMenuOpen(false)}
               >
-                Get Started
+                Start a project
               </Link>
             </>
           )}

@@ -19,6 +19,7 @@
   --color-neutral-border: var(--theme-border);
   --color-neutral-text-secondary: var(--theme-text-secondary);
   --color-neutral-text-primary: var(--theme-text-primary);
+  --color-button-text: var(--theme-button-text);
 
   /* Status / semantic colors (Unaffected by themes) */
   --color-success: #4caf50;
@@ -187,5 +188,119 @@
 
   ::-webkit-scrollbar-thumb:hover {
     background-color: var(--color-neutral-text-secondary);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--theme-primary);
+    outline-offset: 3px;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Landing design system
+   Shared primitives for the marketing surface. Everything is expressed through
+   the product's own theme tokens, so the page re-colors with the app.
+--------------------------------------------------------------------------- */
+
+@layer utilities {
+  /* Editorial shell — slightly tighter than the app's max-w-7xl */
+  .dm-shell {
+    margin-inline: auto;
+    width: 100%;
+    max-width: 72rem;
+    padding-inline: 1.5rem;
+  }
+
+  /* Tiny monospace chrome label, e.g. "01 / API PLAYGROUND" */
+  .dm-mono-label {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    line-height: 1;
+  }
+
+  /* Hairline technical panel used by every vignette */
+  .dm-panel {
+    border: 1px solid var(--theme-border);
+    background-color: var(--theme-surface);
+  }
+
+  /* Logo variants for the two light themes vs. the six dark ones */
+  .theme-light-only {
+    display: none;
+  }
+
+  [data-theme="verdant"] .theme-light-only,
+  [data-theme="alabaster"] .theme-light-only {
+    display: block;
+  }
+
+  [data-theme="verdant"] .theme-dark-only,
+  [data-theme="alabaster"] .theme-dark-only {
+    display: none;
+  }
+
+  /* Entrance reveal — paired with the <Reveal> client wrapper */
+  .dm-reveal {
+    opacity: 0;
+    transform: translateY(14px);
+    transition:
+      opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+    transition-delay: var(--dm-reveal-delay, 0ms);
+  }
+
+  .dm-reveal[data-revealed="true"] {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Routing pulse that travels along the hub diagram connections */
+  .dm-route-pulse {
+    stroke-dasharray: 3 10;
+    animation: dm-route-flow 2.6s linear infinite;
+  }
+
+  .dm-route-pulse:nth-of-type(2) {
+    animation-delay: 0.4s;
+  }
+
+  .dm-route-pulse:nth-of-type(3) {
+    animation-delay: 0.8s;
+  }
+
+  .dm-route-pulse:nth-of-type(4) {
+    animation-delay: 1.2s;
+  }
+}
+
+@keyframes dm-route-flow {
+  to {
+    stroke-dashoffset: -26;
+  }
+}
+
+/* The page must stay complete when motion is off. */
+@media (prefers-reduced-motion: reduce) {
+  .dm-reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .dm-route-pulse {
+    animation: none;
+    stroke-dasharray: none;
+    opacity: 0.55;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

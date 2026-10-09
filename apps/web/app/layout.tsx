@@ -72,9 +72,9 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "DevMatrix | Developer Productivity Suite",
+  title: "DevMatrix — Developer intelligence, project by project",
   description:
-    "A centralized platform for developers to manage, analyze, and debug projects.",
+    "DevMatrix brings API testing, AI debugging, developer analytics, and idea validation around a single project, so development context never gets lost between tools.",
   icons: {
     icon: "/logo.png",
   },
@@ -172,6 +172,10 @@ export default function RootLayout({
           strategy="beforeInteractive"
           dangerouslySetInnerHTML={{ __html: fontInitScript }}
         />
+        {/* Reveal animations are JS-enhanced; without JS the page is fully visible. */}
+        <noscript>
+          <style>{`.dm-reveal{opacity:1!important;transform:none!important}`}</style>
+        </noscript>
       </head>
       <body className="flex min-h-full flex-col bg-neutral-bg text-neutral-text-primary">
         <QueryProvider>{children}</QueryProvider>
