@@ -27,11 +27,18 @@ const corsOrigins = (() => {
 })();
 
 const sameSite = (() => {
-  const raw = (process.env.COOKIE_SAME_SITE ?? "lax").toLowerCase();
+  const raw = (process.env.COOKIE_SAME_SITE ?? "").toLowerCase();
   if (raw === "none" || raw === "strict" || raw === "lax") {
     return raw as SameSite;
   }
-  return "lax" as SameSite;
+
+  // In production the web app (e.g. *.vercel.app) and the API live on
+  // different sites, so the auth cookies are third-party cookies. Browsers
+  // only store and return them on cross-origin requests when they are
+  // SameSite=None (which itself requires Secure — enforced below). CSRF is
+  // still enforced independently by requireTrustedOrigin, so None is safe
+  // here. Local development keeps Lax since web and API share a site.
+  return (isProduction ? "none" : "lax") as SameSite;
 })();
 
 export const env = {
