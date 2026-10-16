@@ -163,7 +163,10 @@ export default function AiDebugPage() {
               </div>
 
               {analytics.attentionSessions.length > 0 && (
-                <NeedsAttention sessions={analytics.attentionSessions} />
+                <NeedsAttention
+                  sessions={analytics.attentionSessions}
+                  projectId={projectId}
+                />
               )}
 
               <div className="flex flex-col gap-4">

@@ -1,10 +1,6 @@
 import { AlertTriangle } from "lucide-react";
 
-interface DangerZoneProps {
-  currentUser?: { email: string };
-}
-
-export default function DangerZone({ currentUser }: DangerZoneProps) {
+export default function DangerZone() {
   return (
     <section>
       <div className="mb-6">
@@ -24,15 +20,16 @@ export default function DangerZone({ currentUser }: DangerZoneProps) {
               Delete Account
             </h3>
             <p className="mt-1 text-sm leading-relaxed text-neutral-text-secondary/50">
-              Permanently delete your account and all associated data. This
-              action cannot be undone.
+              Permanently delete your account and all associated data. Account
+              deletion isn&apos;t available yet — contact support if you need
+              your account removed.
             </p>
           </div>
           <button
-            className="shrink-0 rounded-lg border border-error/20 bg-error/10 px-4 py-2.5 text-sm font-medium text-error transition-all hover:bg-error hover:text-white focus:outline-none focus:ring-2 focus:ring-error/30"
-            onClick={() => {
-              console.log("Delete account requested for:", currentUser?.email);
-            }}
+            type="button"
+            disabled
+            title="Account deletion is not available yet"
+            className="shrink-0 cursor-not-allowed rounded-lg border border-error/20 bg-error/10 px-4 py-2.5 text-sm font-medium text-error/50"
           >
             Delete Account
           </button>

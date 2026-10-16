@@ -1,22 +1,10 @@
 "use client";
 
-import { useParams } from "next/navigation";
 import { Loader2, FolderX } from "lucide-react";
 import { ProjectProvider, useProjectContext } from "@/contexts/ProjectContext";
 
 function ProjectGate({ children }: { children: React.ReactNode }) {
-  const { projectId } = useParams<{ projectId: string }>();
   const { project, projects, isLoading, isError } = useProjectContext();
-
-  // TEMP DEBUG — remove after diagnosing
-  console.log("[ProjectGate]", {
-    projectId,
-    projectsCount: projects.length,
-    projectIds: projects.map((p) => p._id),
-    foundProject: project,
-    isLoading,
-    isError,
-  });
 
   if (isLoading) {
     return (

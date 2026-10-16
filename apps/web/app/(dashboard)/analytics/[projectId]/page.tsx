@@ -37,7 +37,7 @@ export default function AnalyticsProjectPage() {
 
   const { data: commitsData, isLoading: isCommitsLoading } = useCommitsByDay(
     projectId,
-    Number(commitsRange),
+    commitsRange,
   );
   const { data: heatmapData, isLoading: isHeatmapLoading } = useHeatmap(
     projectId,

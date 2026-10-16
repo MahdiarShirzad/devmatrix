@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   useCollection,
   useExecuteRequest,
@@ -53,8 +53,14 @@ export function usePlaygroundWorkspace(
     setDraftMethod(currentReq.method);
     setDraftPath(currentReq.path);
     setDraftBody(currentReq.body ?? "");
-    executeRequest.reset();
   }
+
+  // Clearing a previous execution result is a side effect, so it belongs in
+  // an effect rather than during render.
+  const resetExecution = executeRequest.reset;
+  useEffect(() => {
+    resetExecution();
+  }, [activeRequestId, resetExecution]);
 
   const fullUrl = `${collection?.baseUrl ?? ""}${draftPath}`;
 

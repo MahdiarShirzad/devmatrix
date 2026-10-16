@@ -1,5 +1,10 @@
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || "https://api.devmatrix.mahdyardev.ir/api";
+const DEFAULT_API_BASE_URL =
+  process.env.NODE_ENV === "production"
+    ? "https://api.devmatrix.mahdyardev.ir/api"
+    : "http://localhost:3001/api";
+
+export const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_URL || DEFAULT_API_BASE_URL;
 
 export class ApiError extends Error {
   status: number;

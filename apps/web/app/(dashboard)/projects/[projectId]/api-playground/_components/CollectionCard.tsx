@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { Folder } from "lucide-react";
-import CollectionMenu from "./CollectionMenu";
 import { useParams } from "next/navigation";
 
 export interface Collection {
@@ -44,8 +43,6 @@ export default function CollectionCard({ collection }: CollectionCardProps) {
             </div>
           </div>
         </div>
-
-        <CollectionMenu collectionId={collection.id} />
       </div>
 
       <div className="mt-4 flex items-center justify-between border-t border-neutral-border pt-3">

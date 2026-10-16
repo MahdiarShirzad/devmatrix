@@ -1,64 +1,16 @@
-"use client";
-
-import { useState } from "react";
-import WeightTotalIndicator from "./WeightTotalIndicator";
-import WeightSlider from "./WeightSlider";
-import SaveWeightsButton from "./SaveWeightsButton";
-import { WEIGHT_SLIDERS } from "./weight-sliders-config";
-import type { Weights } from "./weight-types";
+import { SlidersHorizontal } from "lucide-react";
 
 export default function ValidatorSettingsForm() {
-  const [weights, setWeights] = useState<Weights>({
-    market: 40,
-    competition: 30,
-    risk: 30,
-  });
-
-  const [isSaving, setIsSaving] = useState(false);
-  const [isSaved, setIsSaved] = useState(false);
-
-  const totalWeight = weights.market + weights.competition + weights.risk;
-  const isValid = totalWeight === 100;
-
-  const handleSave = () => {
-    if (!isValid) return;
-    setIsSaving(true);
-    setIsSaved(false);
-
-    // شبیه‌سازی ذخیره‌سازی در سرور
-    setTimeout(() => {
-      setIsSaving(false);
-      setIsSaved(true);
-      setTimeout(() => setIsSaved(false), 3000); // بازگشت دکمه به حالت عادی بعد از ۳ ثانیه
-    }, 1200);
-  };
-
   return (
-    <>
-      <WeightTotalIndicator totalWeight={totalWeight} isValid={isValid} />
-
-      <div className="mb-8 space-y-2 rounded-2xl border border-neutral-border bg-neutral-surface-1 p-2 shadow-sm">
-        {WEIGHT_SLIDERS.map((slider) => (
-          <WeightSlider
-            key={slider.key}
-            icon={slider.icon}
-            label={slider.label}
-            description={slider.description}
-            color={slider.color}
-            value={weights[slider.key]}
-            onChange={(value) =>
-              setWeights({ ...weights, [slider.key]: value })
-            }
-          />
-        ))}
-      </div>
-
-      <SaveWeightsButton
-        isValid={isValid}
-        isSaving={isSaving}
-        isSaved={isSaved}
-        onSave={handleSave}
-      />
-    </>
+    <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-neutral-border bg-neutral-surface-1/20 py-20 text-center">
+      <SlidersHorizontal size={32} className="mb-4 text-neutral-text-secondary/40" />
+      <h3 className="text-lg font-medium text-neutral-text-primary">
+        Coming Soon
+      </h3>
+      <p className="mt-1 max-w-sm text-sm text-neutral-text-secondary">
+        Configurable scoring weights aren&apos;t available yet. Ideas are
+        currently scored with the default weighting.
+      </p>
+    </div>
   );
 }

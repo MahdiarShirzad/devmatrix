@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import Link from "next/link";
 import { AlertTriangle, Circle, CheckCircle2, ChevronRight } from "lucide-react";
 import { ListCardSkeleton } from "./Skeletons";
+import { useNow } from "@/hooks/useNow";
 import type { DebugSession } from "@/types/aiDebug.types";
 import type { GithubProject } from "@/types/githubAnalytics.types";
 import type { AllIdeasOverviewStats } from "@/hooks/useAllIdeasOverviewStats";
@@ -38,9 +39,12 @@ export function NeedsAttention({
   projects,
   isLoading,
 }: NeedsAttentionProps) {
+  // External clock keeps render pure while still refreshing time-relative UI.
+  const now = useNow();
+
   const items = useMemo<AttentionRow[]>(() => {
     const result: AttentionRow[] = [];
-    const now = Date.now();
+    const firstProjectId = projects?.[0]?._id;
 
     // Group unresolved debug sessions by project so each project gets
     // one actionable row instead of one giant "N unresolved" blob.
@@ -60,7 +64,11 @@ export function NeedsAttention({
         tone: "warning",
         title: `${count} unresolved debugging session${count > 1 ? "s" : ""}`,
         subtitle: project?.name ?? "Unknown project",
-        href: project ? `/projects/${pid}/ai-debug` : "/ai-debug",
+        href: project
+          ? `/projects/${pid}/ai-debug`
+          : firstProjectId
+            ? `/projects/${firstProjectId}/ai-debug`
+            : "/analytics",
       });
     }
 
@@ -73,7 +81,9 @@ export function NeedsAttention({
           ideasStats.pendingCount > 1 ? "s" : ""
         } waiting for review`,
         subtitle: "Across your projects",
-        href: "/saas-validator",
+        href: firstProjectId
+          ? `/projects/${firstProjectId}/saas-validator`
+          : "/analytics",
       });
     }
 
@@ -95,7 +105,7 @@ export function NeedsAttention({
     }
 
     return result;
-  }, [attentionSessions, ideasStats, projects]);
+  }, [attentionSessions, ideasStats, projects, now]);
 
   if (isLoading) return <ListCardSkeleton rows={3} />;
 

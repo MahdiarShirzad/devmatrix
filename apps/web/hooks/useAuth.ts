@@ -27,3 +27,15 @@ export function useLogout() {
     },
   });
 }
+
+export function useUpdateProfile() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (values: { name: string }) =>
+      api.patch<AuthResponse>("/auth/me", values),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["auth", "me"] });
+    },
+  });
+}

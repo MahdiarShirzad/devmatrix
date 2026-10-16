@@ -5,7 +5,6 @@ import MobileHeader from "./MobileHeader";
 import SettingsSidebar from "./SettingsSidebar";
 import ContentHeader from "./ContentHeader";
 import ProfileSettingsPanel from "./ProfileSettingsPanel";
-import ApiKeysPanel from "./ApiKeysPanel";
 import GithubSettingsPanel from "./GithubSettingsPanel";
 import AppearanceSettingsPanel from "./AppearanceSettingsPanel";
 import ComingSoonPlaceholder from "./ComingSoonPlaceholder";
@@ -17,12 +16,6 @@ export default function SettingsPageClient() {
   const { data: currentUser } = useMe();
   const [activeTab, setActiveTab] = useState<string>("profile");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
-
-  const handleSave = () => {
-    setIsSaving(true);
-    setTimeout(() => setIsSaving(false), 1000);
-  };
 
   const handleSelectTab = (id: string) => {
     setActiveTab(id);
@@ -45,17 +38,15 @@ export default function SettingsPageClient() {
           />
 
           <main className="flex-1 min-w-0 pb-20">
-            <ContentHeader
-              activeTab={activeTab}
-              isSaving={isSaving}
-              onSave={handleSave}
-            />
+            <ContentHeader activeTab={activeTab} />
 
             <div className="max-w-4xl">
               {activeTab === "profile" && (
                 <ProfileSettingsPanel currentUser={currentUser} />
               )}
-              {activeTab === "api-keys" && <ApiKeysPanel />}
+              {activeTab === "api-keys" && (
+                <ComingSoonPlaceholder tabLabel="API Keys" />
+              )}
               {activeTab === "github" && <GithubSettingsPanel />}
               {activeTab === "appearance" && <AppearanceSettingsPanel />}
 

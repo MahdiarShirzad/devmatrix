@@ -1,4 +1,4 @@
-import { CheckCircle2, Shield } from "lucide-react";
+import { CheckCircle2 } from "lucide-react";
 import { User } from "@/types/user";
 
 interface ProfileIdentityCardProps {

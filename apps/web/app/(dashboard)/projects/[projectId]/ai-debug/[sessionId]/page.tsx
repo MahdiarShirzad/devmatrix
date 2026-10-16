@@ -28,7 +28,9 @@ export default function DebugSessionPage() {
       {/* 1. Universal Navigation Context 
           (Always kept visible so the user is never trapped during an error) */}
       <div className="shrink-0">
-        <BackToSessionsButton onClick={() => router.push("/ai-debug")} />
+        <BackToSessionsButton
+          onClick={() => router.push(`/projects/${projectId}/ai-debug`)}
+        />
       </div>
 
       {/* 2. Loading State */}

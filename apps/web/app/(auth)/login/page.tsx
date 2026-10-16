@@ -8,10 +8,7 @@ import GithubIcon from "@/app/_utils/GithubIcon";
 import { Mail, Lock, LogIn, Loader2 } from "lucide-react";
 import { loginSchema, type LoginFormValues } from "@/lib/auth.schemas";
 import { useLogin } from "@/hooks/useAuth";
-import { ApiError } from "@/lib/apiClient";
-
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api";
+import { API_BASE_URL, ApiError } from "@/lib/apiClient";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -36,7 +33,8 @@ export default function LoginPage() {
   const handleGithubLogin = () => {
     // Full page redirect — this kicks off the passport GitHub OAuth flow,
     // which isn't something a client-side fetch can drive.
-    window.location.href = `${API_BASE_URL}/auth/github`;
+    // eslint-disable-next-line @next/next/no-location-assign-relative-destination
+    window.location.assign(`${API_BASE_URL}/auth/github`);
   };
 
   const errorMessage =

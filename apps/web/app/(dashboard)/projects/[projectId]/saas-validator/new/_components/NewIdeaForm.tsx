@@ -27,7 +27,7 @@ export default function NewIdeaForm() {
       { title, description },
       {
         onSuccess: (data) => {
-          router.push(`/saas-validator/${data.idea._id}`);
+          router.push(`/projects/${projectId}/saas-validator/${data.idea._id}`);
         },
       },
     );

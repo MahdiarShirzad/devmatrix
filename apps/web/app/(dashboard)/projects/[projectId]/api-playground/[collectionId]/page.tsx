@@ -27,7 +27,6 @@ export default function PlaygroundCollectionPage() {
     currentReq,
     draftMethod,
     setDraftMethod,
-    draftPath,
     setDraftPath,
     draftBody,
     setDraftBody,

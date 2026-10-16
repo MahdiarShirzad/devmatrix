@@ -16,7 +16,7 @@ const KEYS = {
   list: ["github-projects", "list"] as const,
   detail: (id: string) => ["github-projects", "detail", id] as const,
   stats: (id: string) => ["github-projects", "stats", id] as const,
-  commits: (id: string, days: number) =>
+  commits: (id: string, days: string) =>
     ["github-projects", "commits", id, days] as const,
   heatmap: (id: string, weeks: number) =>
     ["github-projects", "heatmap", id, weeks] as const,
@@ -43,9 +43,9 @@ export function useProjectStats(id: string) {
   });
 }
 
-export function useCommitsByDay(id: string, days: number = 7) {
+export function useCommitsByDay(id: string, days: string = "7") {
   return useQuery({
-    queryKey: KEYS.commits(id, days) as unknown as readonly unknown[],
+    queryKey: KEYS.commits(id, days),
     queryFn: () =>
       api.get<{ data: CommitsByDay[] }>(
         `/github-projects/${id}/commits?days=${days}`,

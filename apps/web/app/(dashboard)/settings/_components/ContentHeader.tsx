@@ -2,15 +2,9 @@
 
 interface ContentHeaderProps {
   activeTab: string;
-  isSaving: boolean;
-  onSave: () => void;
 }
 
-export default function ContentHeader({
-  activeTab,
-  isSaving,
-  onSave,
-}: ContentHeaderProps) {
+export default function ContentHeader({ activeTab }: ContentHeaderProps) {
   const formatTabName = (tab: string) => {
     return tab.replace(/-/g, " ");
   };
@@ -22,31 +16,6 @@ export default function ContentHeader({
           {formatTabName(activeTab)}
         </h2>
       </div>
-
-      {activeTab === "profile" && (
-        <button
-          onClick={onSave}
-          disabled={isSaving}
-          className="flex items-center gap-2 rounded-lg bg-brand-primary px-5 py-2 text-sm font-semibold transition-all hover:bg-brand-primary/90 active:scale-95 disabled:opacity-70 disabled:pointer-events-none whitespace-nowrap"
-          style={{ color: "var(--theme-button-text)" }}
-        >
-          {isSaving ? (
-            <>
-              <div
-                className="h-4 w-4 rounded-full border-2 animate-spin"
-                style={{
-                  borderColor:
-                    "color-mix(in srgb, var(--theme-button-text) 30%, transparent)",
-                  borderTopColor: "var(--theme-button-text)",
-                }}
-              />
-              Saving...
-            </>
-          ) : (
-            "Save Changes"
-          )}
-        </button>
-      )}
     </header>
   );
 }

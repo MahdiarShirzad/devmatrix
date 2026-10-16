@@ -6,7 +6,6 @@ import Link from "next/link";
 import {
   Terminal,
   Activity,
-  FlaskConical,
   Sparkles,
   Loader2,
 } from "lucide-react";

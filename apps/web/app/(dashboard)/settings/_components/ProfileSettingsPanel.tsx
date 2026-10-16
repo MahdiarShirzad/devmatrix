@@ -4,6 +4,7 @@ import ProfileFields from "./ProfileFields";
 import DangerZone from "./DangerZone";
 import StickyActionBar from "./StickyActionBar";
 import { User } from "@/types/user";
+import { useUpdateProfile } from "@/hooks/useAuth";
 
 interface ProfileSettingsPanelProps {
   currentUser?: User;
@@ -16,24 +17,34 @@ export default function ProfileSettingsPanel({
   const [savedSnapshot, setSavedSnapshot] = useState({
     displayName: currentUser?.name ?? "",
   });
-  const [saveState, setSaveState] = useState<"idle" | "saving" | "success">(
-    "idle",
-  );
+  const [saveState, setSaveState] = useState<
+    "idle" | "saving" | "success" | "error"
+  >("idle");
+
+  const updateProfile = useUpdateProfile();
 
   const isDirty = useMemo(
     () => displayName !== savedSnapshot.displayName,
     [displayName, savedSnapshot],
   );
 
-  const handleSave = async () => {
+  const handleSave = () => {
     if (saveState === "saving") return;
 
     setSaveState("saving");
-    await new Promise((resolve) => setTimeout(resolve, 800));
-
-    setSavedSnapshot({ displayName });
-    setSaveState("success");
-    setTimeout(() => setSaveState("idle"), 1500);
+    updateProfile.mutate(
+      { name: displayName },
+      {
+        onSuccess: () => {
+          setSavedSnapshot({ displayName });
+          setSaveState("success");
+          setTimeout(() => setSaveState("idle"), 1500);
+        },
+        onError: () => {
+          setSaveState("error");
+        },
+      },
+    );
   };
 
   const handleCancel = () => {
@@ -80,7 +91,7 @@ export default function ProfileSettingsPanel({
 
           {/* Danger Zone */}
           <div className="mt-24">
-            <DangerZone currentUser={currentUser} />
+            <DangerZone />
           </div>
         </div>
       </div>
@@ -93,6 +104,14 @@ export default function ProfileSettingsPanel({
         onSave={handleSave}
         onCancel={handleCancel}
       />
+
+      {saveState === "error" && (
+        <div className="fixed bottom-24 left-0 right-0 z-50 mx-auto max-w-2xl px-4 sm:px-6 lg:px-8">
+          <p className="rounded-lg border border-error/30 bg-error/10 px-4 py-3 text-sm text-error">
+            Couldn&apos;t save your changes. Please try again.
+          </p>
+        </div>
+      )}
     </div>
   );
 }

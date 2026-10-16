@@ -1,4 +1,3 @@
-import Image from "next/image";
 import type { Contributor } from "@/types/githubAnalytics.types";
 
 interface ContributorsTableProps {

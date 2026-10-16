@@ -8,10 +8,7 @@ import GithubIcon from "@/app/_utils/GithubIcon";
 import { User, Mail, Lock, UserPlus, Loader2 } from "lucide-react";
 import { registerSchema, type RegisterFormValues } from "@/lib/auth.schemas";
 import { useRegister } from "@/hooks/useAuth";
-import { ApiError } from "@/lib/apiClient";
-
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api";
+import { API_BASE_URL, ApiError } from "@/lib/apiClient";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -34,7 +31,9 @@ export default function RegisterPage() {
   };
 
   const handleGithubLogin = () => {
-    window.location.href = `${API_BASE_URL}/auth/github`;
+    // Full page redirect to the API's GitHub OAuth entrypoint (external origin).
+    // eslint-disable-next-line @next/next/no-location-assign-relative-destination
+    window.location.assign(`${API_BASE_URL}/auth/github`);
   };
 
   const errorMessage =

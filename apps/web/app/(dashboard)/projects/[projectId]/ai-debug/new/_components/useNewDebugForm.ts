@@ -38,21 +38,20 @@ export function useNewDebugForm() {
 
   const onSubmit = handleFormSubmit(
     async (values) => {
-      console.log("SUBMIT FIRED with values:", values); // این باید همیشه چاپ بشه
       try {
         const { session } = await createSession.mutateAsync(values);
-        router.push(`/ai-debug/${session._id}`);
-      } catch (err) {
-        console.error("SUBMIT FAILED:", err); // خطای واقعی اینجا میفته
+        router.push(`/projects/${projectId}/ai-debug/${session._id}`);
+      } catch {
+        // The mutation error is surfaced to the user via `submitError`.
       }
     },
-    (validationErrors) => {
-      console.log("VALIDATION FAILED:", validationErrors); // اگه zod رد کنه، اینجا چاپ میشه
+    () => {
+      // Field-level validation errors are surfaced through `errors`.
     },
   );
 
   const handleBack = () => {
-    router.push("/ai-debug");
+    router.push(`/projects/${projectId}/ai-debug`);
   };
 
   return {

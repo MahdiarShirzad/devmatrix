@@ -6,7 +6,6 @@ import {
   Search,
   Bell,
   Menu,
-  User,
   Settings,
   LogOut,
   Folder,
@@ -16,14 +15,13 @@ import {
 import Link from "next/link";
 import { useMe } from "@/hooks/useMe";
 import { useLogout } from "@/hooks/useAuth";
-import { useQueryClient } from "@tanstack/react-query";
+import { useGithubProjects } from "@/hooks/useGithubAnalytics";
 
 interface TopbarProps {
   onMenuClick: () => void;
 }
 
 export default function Topbar({ onMenuClick }: TopbarProps) {
-  const queryClient = useQueryClient();
   const [isSearchActive, setIsSearchActive] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -37,6 +35,8 @@ export default function Topbar({ onMenuClick }: TopbarProps) {
   const router = useRouter();
   const { data: user } = useMe();
   const logout = useLogout();
+  const { data: projectsData } = useGithubProjects("all");
+  const projects = projectsData?.projects ?? [];
 
   const initials = user?.name
     ? user.name
@@ -47,10 +47,7 @@ export default function Topbar({ onMenuClick }: TopbarProps) {
         .toUpperCase()
     : "";
 
-  const closeAllDropdowns = () => {
-    setIsProfileOpen(false);
-    setIsNotifOpen(false);
-  };
+  const closeSearch = () => setIsSearchActive(false);
 
   const handleLogout = () => {
     logout.mutate(undefined, {
@@ -58,12 +55,6 @@ export default function Topbar({ onMenuClick }: TopbarProps) {
         router.replace("/login");
       },
     });
-  };
-
-  const handleNavigation = (href: string) => {
-    closeAllDropdowns();
-    setIsSearchActive(false);
-    router.push(href);
   };
 
   useEffect(() => {
@@ -119,13 +110,21 @@ export default function Topbar({ onMenuClick }: TopbarProps) {
     };
   }, []);
 
+  const searchPanel = (
+    <SearchPanel
+      projects={projects}
+      query={searchQuery}
+      onSelect={closeSearch}
+    />
+  );
+
   return (
     <header className="relative z-40 flex h-14 shrink-0 items-center justify-between gap-4 border-b border-neutral-border bg-neutral-bg px-4 md:px-6">
       {/* Search Overlay */}
       {isSearchActive && (
         <div
           className="fixed inset-0 top-14 z-40 bg-black/60 backdrop-blur-sm"
-          onClick={() => setIsSearchActive(false)}
+          onClick={closeSearch}
         />
       )}
 
@@ -170,7 +169,7 @@ export default function Topbar({ onMenuClick }: TopbarProps) {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search commands, projects..."
+              placeholder="Search projects..."
               className="w-full flex-1 bg-transparent outline-none placeholder:text-neutral-text-secondary"
               onFocus={() => setIsSearchActive(true)}
             />
@@ -197,52 +196,7 @@ export default function Topbar({ onMenuClick }: TopbarProps) {
           {/* Desktop Search Dropdown */}
           {isSearchActive && (
             <div className="absolute left-0 right-0 top-full z-50 mt-2 max-h-80 overflow-y-auto rounded-lg border border-neutral-border bg-neutral-surface-1 shadow-2xl ring-1 ring-black/5">
-              <div className="flex flex-col gap-1 p-2">
-                {searchQuery.length > 0 ? (
-                  <div className="px-3 py-2 text-sm text-neutral-text-secondary">
-                    Search results for &ldquo;
-                    {searchQuery}
-                    &rdquo;...
-                  </div>
-                ) : (
-                  <>
-                    <div className="px-2 pb-1 pt-2 text-[10px] font-semibold uppercase tracking-wider text-neutral-text-secondary">
-                      Quick Links
-                    </div>
-
-                    <Link
-                      href="/dashboard"
-                      onClick={() => setIsSearchActive(false)}
-                      className="flex w-full items-center gap-2 rounded-md px-2 py-2 text-left text-sm text-neutral-text-secondary transition-colors hover:bg-neutral-surface-2 hover:text-neutral-text-primary"
-                    >
-                      <LayoutDashboard size={16} />
-                      Go to Dashboard
-                    </Link>
-
-                    <div className="px-2 pb-1 pt-3 text-[10px] font-semibold uppercase tracking-wider text-neutral-text-secondary">
-                      Projects
-                    </div>
-
-                    <Link
-                      href="/projects/my-trip"
-                      onClick={() => setIsSearchActive(false)}
-                      className="flex w-full items-center gap-2 rounded-md px-2 py-2 text-left text-sm text-neutral-text-secondary transition-colors hover:bg-neutral-surface-2 hover:text-neutral-text-primary"
-                    >
-                      <Folder size={16} />
-                      my-trip
-                    </Link>
-
-                    <Link
-                      href="/projects/devmatrix"
-                      onClick={() => setIsSearchActive(false)}
-                      className="flex w-full items-center gap-2 rounded-md px-2 py-2 text-left text-sm text-neutral-text-secondary transition-colors hover:bg-neutral-surface-2 hover:text-neutral-text-primary"
-                    >
-                      <Folder size={16} />
-                      devmatrix
-                    </Link>
-                  </>
-                )}
-              </div>
+              {searchPanel}
             </div>
           )}
         </div>
@@ -280,8 +234,6 @@ export default function Topbar({ onMenuClick }: TopbarProps) {
             aria-label="Notifications"
           >
             <Bell size={18} />
-
-            <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-brand-highlight ring-2 ring-neutral-bg" />
           </button>
 
           {isNotifOpen && (
@@ -290,17 +242,9 @@ export default function Topbar({ onMenuClick }: TopbarProps) {
                 Notifications
               </div>
 
-              <div className="flex flex-col gap-1">
-                <div className="cursor-pointer rounded-md p-2 transition-colors hover:bg-neutral-surface-2">
-                  <p className="font-medium text-neutral-text-primary">
-                    Build successful
-                  </p>
-
-                  <p className="text-xs text-neutral-text-secondary">
-                    my-trip deployed to production.
-                  </p>
-                </div>
-              </div>
+              <p className="px-2 py-4 text-center text-sm text-neutral-text-secondary">
+                You&apos;re all caught up.
+              </p>
             </div>
           )}
         </div>
@@ -398,55 +342,65 @@ export default function Topbar({ onMenuClick }: TopbarProps) {
 
           {/* Mobile Search Dropdown */}
           <div className="absolute left-0 right-0 top-14 z-[60] max-h-80 overflow-y-auto rounded-b-lg border-x border-b border-neutral-border bg-neutral-surface-1 shadow-2xl ring-1 ring-black/5">
-            <div className="flex flex-col gap-1 p-2">
-              {searchQuery.length > 0 ? (
-                <div className="px-3 py-2 text-sm text-neutral-text-secondary">
-                  Search results for &ldquo;
-                  {searchQuery}
-                  &rdquo;...
-                </div>
-              ) : (
-                <>
-                  <div className="px-2 pb-1 pt-2 text-[10px] font-semibold uppercase tracking-wider text-neutral-text-secondary">
-                    Quick Links
-                  </div>
-
-                  <Link
-                    href="/dashboard"
-                    onClick={() => setIsSearchActive(false)}
-                    className="flex w-full items-center gap-2 rounded-md px-2 py-2 text-left text-sm text-neutral-text-secondary transition-colors hover:bg-neutral-surface-2 hover:text-neutral-text-primary"
-                  >
-                    <LayoutDashboard size={16} />
-                    Go to Dashboard
-                  </Link>
-
-                  <div className="px-2 pb-1 pt-3 text-[10px] font-semibold uppercase tracking-wider text-neutral-text-secondary">
-                    Projects
-                  </div>
-
-                  <Link
-                    href="/projects/my-trip"
-                    onClick={() => setIsSearchActive(false)}
-                    className="flex w-full items-center gap-2 rounded-md px-2 py-2 text-left text-sm text-neutral-text-secondary transition-colors hover:bg-neutral-surface-2 hover:text-neutral-text-primary"
-                  >
-                    <Folder size={16} />
-                    my-trip
-                  </Link>
-
-                  <Link
-                    href="/projects/devmatrix"
-                    onClick={() => setIsSearchActive(false)}
-                    className="flex w-full items-center gap-2 rounded-md px-2 py-2 text-left text-sm text-neutral-text-secondary transition-colors hover:bg-neutral-surface-2 hover:text-neutral-text-primary"
-                  >
-                    <Folder size={16} />
-                    devmatrix
-                  </Link>
-                </>
-              )}
-            </div>
+            {searchPanel}
           </div>
         </div>
       )}
     </header>
+  );
+}
+
+interface SearchPanelProps {
+  projects: { _id: string; name: string; fullName?: string }[];
+  query: string;
+  onSelect: () => void;
+}
+
+function SearchPanel({ projects, query, onSelect }: SearchPanelProps) {
+  const normalized = query.trim().toLowerCase();
+  const matches = normalized
+    ? projects.filter(
+        (p) =>
+          p.name.toLowerCase().includes(normalized) ||
+          p.fullName?.toLowerCase().includes(normalized),
+      )
+    : projects;
+  const visible = matches.slice(0, 6);
+
+  return (
+    <div className="flex flex-col gap-1 p-2">
+      <Link
+        href="/dashboard"
+        onClick={onSelect}
+        className="flex w-full items-center gap-2 rounded-md px-2 py-2 text-left text-sm text-neutral-text-secondary transition-colors hover:bg-neutral-surface-2 hover:text-neutral-text-primary"
+      >
+        <LayoutDashboard size={16} />
+        Go to Dashboard
+      </Link>
+
+      <div className="px-2 pb-1 pt-3 text-[10px] font-semibold uppercase tracking-wider text-neutral-text-secondary">
+        Projects
+      </div>
+
+      {visible.length === 0 ? (
+        <p className="px-2 py-2 text-sm text-neutral-text-secondary">
+          {projects.length === 0
+            ? "No projects linked yet."
+            : `No projects match "${query}".`}
+        </p>
+      ) : (
+        visible.map((project) => (
+          <Link
+            key={project._id}
+            href={`/projects/${project._id}/api-playground`}
+            onClick={onSelect}
+            className="flex w-full items-center gap-2 rounded-md px-2 py-2 text-left text-sm text-neutral-text-secondary transition-colors hover:bg-neutral-surface-2 hover:text-neutral-text-primary"
+          >
+            <Folder size={16} />
+            <span className="truncate">{project.name}</span>
+          </Link>
+        ))
+      )}
+    </div>
   );
 }

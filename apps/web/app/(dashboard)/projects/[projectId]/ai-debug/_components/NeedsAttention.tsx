@@ -4,9 +4,13 @@ import { DebugSession } from "@/types/aiDebug.types";
 
 interface NeedsAttentionProps {
   sessions: DebugSession[];
+  projectId: string;
 }
 
-export default function NeedsAttention({ sessions }: NeedsAttentionProps) {
+export default function NeedsAttention({
+  sessions,
+  projectId,
+}: NeedsAttentionProps) {
   if (sessions.length === 0) return null;
 
   const failed = sessions.filter((s) => s.status === "failed");
@@ -21,7 +25,7 @@ export default function NeedsAttention({ sessions }: NeedsAttentionProps) {
       <div className="flex flex-col gap-2">
         {failed.length > 0 && (
           <Link
-            href={`/ai-debug/${failed[0]._id}`}
+            href={`/projects/${projectId}/ai-debug/${failed[0]._id}`}
             className="flex items-center gap-2.5 rounded-lg border border-error/20 bg-error-bg px-3 py-2.5 text-sm transition-colors hover:bg-error/15"
           >
             <AlertTriangle size={15} className="shrink-0 text-error" />
@@ -35,7 +39,7 @@ export default function NeedsAttention({ sessions }: NeedsAttentionProps) {
 
         {inProgress.length > 0 && (
           <Link
-            href={`/ai-debug/${inProgress[0]._id}`}
+            href={`/projects/${projectId}/ai-debug/${inProgress[0]._id}`}
             className="flex items-center gap-2.5 rounded-lg border border-warning/20 bg-warning-bg px-3 py-2.5 text-sm transition-colors hover:bg-warning/15"
           >
             <RefreshCcw size={15} className="shrink-0 text-warning" />
