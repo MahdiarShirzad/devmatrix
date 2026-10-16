@@ -1,4 +1,5 @@
 import AppError from "../utils/appError.js";
+import logger from "../utils/logger.js";
 
 const GROQ_MODEL = "llama-3.3-70b-versatile";
 const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
@@ -27,7 +28,6 @@ export async function analyzeCode(
   input: AnalyzeCodeInput,
 ): Promise<AnalyzeCodeResult> {
   const apiKey = process.env.AI_DEBUG_GROQ_API_KEY;
-  console.log(process.env.AI_DEBUG_GROQ_API_KEY);
   if (!apiKey) {
     throw new AppError("AI Debug service is not configured", 500);
   }
@@ -58,7 +58,10 @@ export async function analyzeCode(
   }
 
   if (!response.ok) {
-    console.error("Groq API error:", response.status, await response.text());
+    logger.error("groq_api_error", {
+      service: "ai-debug",
+      status: response.status,
+    });
     throw new AppError("AI service failed to process the request", 502);
   }
 

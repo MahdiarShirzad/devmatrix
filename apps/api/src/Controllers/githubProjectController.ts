@@ -5,22 +5,10 @@ import Commit from "../Models/Commit.js";
 import PullRequest from "../Models/PullRequest.js";
 import catchAsync from "../utils/catchAsync.js";
 import AppError from "../utils/appError.js";
+import logger from "../utils/logger.js";
+import { parseDaysParam } from "../utils/parseDaysParam.js";
 import { listUserRepos, getRepo } from "../services/github/githubClient.js";
 import { syncProjectData } from "../services/github/syncProject.js";
-
-const parseDaysParam = (
-  rawDays: unknown,
-): { isAllTime: boolean; rangeStart: Date | null; days: number | null } => {
-  if (rawDays === "all") {
-    return { isAllTime: true, rangeStart: null, days: null };
-  }
-
-  const days = Math.min(Math.max(Number(rawDays) || 7, 1), 3650);
-  const rangeStart = new Date();
-  rangeStart.setDate(rangeStart.getDate() - days);
-
-  return { isAllTime: false, rangeStart, days };
-};
 
 /**
  * GET /api/github-projects/available-repos
@@ -307,10 +295,11 @@ export const linkProject = catchAsync(
       await syncProjectData((project._id as any).toString(), userId);
     } catch (err) {
       syncFailed = true;
-      console.error(
-        `Initial sync failed for project ${project._id} (${fullName}):`,
-        err,
-      );
+      logger.error("initial_sync_failed", {
+        projectId: String(project._id),
+        fullName,
+        error: err instanceof Error ? err.message : String(err),
+      });
     }
 
     // پروژه رو با آخرین نسخه از دیتابیس برمی‌گردونیم چون syncProjectData

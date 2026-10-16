@@ -2,6 +2,7 @@ import passport from "passport";
 import { Strategy as GitHubStrategy, Profile } from "passport-github2";
 import User from "../Models/User.js";
 import { VerifyCallback } from "passport-oauth2";
+import logger from "../utils/logger.js";
 
 const GITHUB_CLIENT_ID = process.env.GITHUB_CLIENT_ID as string;
 const GITHUB_CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET as string;
@@ -10,8 +11,8 @@ const GITHUB_CALLBACK_URL =
   "https://api.devmatrix.mahdyardev.ir/api/auth/github/callback";
 
 if (!GITHUB_CLIENT_ID || !GITHUB_CLIENT_SECRET) {
-  console.warn(
-    "هشدار: GITHUB_CLIENT_ID یا GITHUB_CLIENT_SECRET تنظیم نشده — GitHub OAuth کار نمی‌کنه",
+  logger.warn(
+    "GitHub OAuth is not configured: GITHUB_CLIENT_ID and/or GITHUB_CLIENT_SECRET are missing",
   );
 }
 
@@ -72,7 +73,7 @@ if (
     ),
   );
 } else {
-  console.warn("⚠️ GitHub OAuth disabled");
+  logger.warn("GitHub OAuth disabled");
 }
 
 export default passport;

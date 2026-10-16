@@ -1,4 +1,5 @@
 import type { Request, Response, NextFunction } from "express";
+import mongoose from "mongoose";
 import Collection from "../Models/Collection.js";
 import SavedRequest from "../Models/SavedRequest.js";
 import GithubProject from "../Models/GithubProject.js";
@@ -45,24 +46,45 @@ export const getCollections = catchAsync(
       return next(new AppError("Project not found", 404));
     }
 
-    const collections = await Collection.find({ userId, projectId }).sort(
-      "-updatedAt",
-    );
-
-    // requestCount is derived, not stored — attach it per collection
-    const withCounts = await Promise.all(
-      collections.map(async (collection) => {
-        const requestCount = await SavedRequest.countDocuments({
-          collectionId: collection._id.toString(),
-        });
-        return { ...collection.toObject(), requestCount };
-      }),
-    );
+    const collections = await Collection.aggregate([
+      {
+        $match: {
+          userId: new mongoose.Types.ObjectId(userId),
+          projectId: new mongoose.Types.ObjectId(projectId),
+        },
+      },
+      { $sort: { updatedAt: -1 } },
+      // Count related requests in a single round-trip instead of one
+      // countDocuments call per collection (N+1).
+      {
+        $lookup: {
+          from: "savedrequests",
+          let: { collectionIdString: { $toString: "$_id" } },
+          pipeline: [
+            {
+              $match: {
+                $expr: { $eq: ["$collectionId", "$$collectionIdString"] },
+              },
+            },
+            { $count: "count" },
+          ],
+          as: "requestCountArray",
+        },
+      },
+      {
+        $addFields: {
+          requestCount: {
+            $ifNull: [{ $arrayElemAt: ["$requestCountArray.count", 0] }, 0],
+          },
+        },
+      },
+      { $project: { requestCountArray: 0 } },
+    ]);
 
     res.status(200).json({
       status: "success",
-      results: withCounts.length,
-      data: { collections: withCounts },
+      results: collections.length,
+      data: { collections },
     });
   },
 );

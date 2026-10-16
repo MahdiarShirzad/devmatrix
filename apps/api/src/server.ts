@@ -3,11 +3,12 @@ dns.setServers(["8.8.8.8", "8.8.4.4"]);
 
 import "./utils/loadEnv.js";
 import mongoose from "mongoose";
+import logger from "./utils/logger.js";
 
 const DB: string | undefined = process.env.MONGODB_URI;
 
 if (!DB) {
-  console.error("❌ MONGODB_URI is not defined in environment variables");
+  logger.error("MONGODB_URI is not defined in environment variables");
   process.exit(1);
 }
 
@@ -16,21 +17,19 @@ mongoose
     family: 4,
   })
   .then(async () => {
-    console.log("🔹 Connected to MongoDB Atlas...");
+    logger.info("Connected to MongoDB");
 
     const { default: app } = await import("./app.js");
 
     const port: number = Number(process.env.PORT) || 3001;
 
     app.listen(port, () => {
-      console.log(`Server running on port ${port}`);
+      logger.info("Server listening", { port });
     });
   })
   .catch((err: unknown) => {
-    if (err instanceof Error) {
-      console.error(`❌ Database connection error: ${err.message}`);
-    } else {
-      console.error("❌ Unknown database error");
-    }
+    logger.error("Database connection error", {
+      error: err instanceof Error ? err.message : String(err),
+    });
     process.exit(1);
   });

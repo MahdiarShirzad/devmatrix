@@ -1,4 +1,5 @@
 import AppError from "../utils/appError.js";
+import logger from "../utils/logger.js";
 
 const GROQ_MODEL = "llama-3.3-70b-versatile";
 const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
@@ -64,7 +65,10 @@ export async function validateIdea(
   }
 
   if (!response.ok) {
-    console.error("Groq API error:", response.status, await response.text());
+    logger.error("groq_api_error", {
+      service: "idea-validator",
+      status: response.status,
+    });
     throw new AppError("AI service failed to process the request", 502);
   }
 

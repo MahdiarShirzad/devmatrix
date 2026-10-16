@@ -1,5 +1,10 @@
 import { Router } from "express";
 import { requireAuth } from "../middleware/authMiddleware.js";
+import { validateBody } from "../middleware/validate.js";
+import {
+  linkProjectSchema,
+  setAccessTokenSchema,
+} from "../validation/schemas.js";
 import {
   getAvailableRepos,
   listProjects,
@@ -25,11 +30,11 @@ router.use(requireAuth);
 router.get("/available-repos", getAvailableRepos);
 router.get("/overview-stats", getOverviewStats);
 
-router.patch("/access-token", setAccessToken);
+router.patch("/access-token", validateBody(setAccessTokenSchema), setAccessToken);
 router.delete("/access-token", removeAccessToken);
 
 router.get("/", listProjects);
-router.post("/", linkProject);
+router.post("/", validateBody(linkProjectSchema), linkProject);
 
 router.get("/:id", getProject);
 router.delete("/:id", unlinkProject);

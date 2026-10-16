@@ -1,4 +1,5 @@
 import jwt from "jsonwebtoken";
+import { randomUUID } from "crypto";
 import type { Types } from "mongoose";
 
 const getEnv = () => {
@@ -19,6 +20,7 @@ const REFRESH_TOKEN_EXPIRY_DAYS = 30;
 
 export interface AccessTokenPayload {
   userId: string;
+  jti?: string;
 }
 
 const { ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET } = getEnv();
@@ -43,11 +45,18 @@ export const generateAccessToken = (
 
 /**
  * تولید Refresh Token بلندمدت — این توی DB (Session model) هم ذخیره می‌شه
+ *
+ * A unique jti is embedded so two tokens issued to the same user within the
+ * same second are never byte-identical (the Session.refreshToken index is
+ * unique, and without a jti identical tokens caused 409s on rapid logins).
  */
 export const generateRefreshToken = (
   userId: Types.ObjectId | string,
 ): string => {
-  const payload: AccessTokenPayload = { userId: userId.toString() };
+  const payload: AccessTokenPayload = {
+    userId: userId.toString(),
+    jti: randomUUID(),
+  };
   return jwt.sign(payload, REFRESH_TOKEN_SECRET, {
     expiresIn: `${REFRESH_TOKEN_EXPIRY_DAYS}d`,
   });

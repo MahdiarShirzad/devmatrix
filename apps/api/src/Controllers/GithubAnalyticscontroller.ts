@@ -4,20 +4,7 @@ import Commit from "../Models/Commit.js";
 import PullRequest from "../Models/PullRequest.js";
 import catchAsync from "../utils/catchAsync.js";
 import AppError from "../utils/appError.js";
-
-const parseDaysParam = (
-  rawDays: unknown,
-): { isAllTime: boolean; rangeStart: Date | null; days: number | null } => {
-  if (rawDays === "all") {
-    return { isAllTime: true, rangeStart: null, days: null };
-  }
-
-  const days = Math.min(Math.max(Number(rawDays) || 7, 1), 3650);
-  const rangeStart = new Date();
-  rangeStart.setDate(rangeStart.getDate() - days);
-
-  return { isAllTime: false, rangeStart, days };
-};
+import { parseDaysParam } from "../utils/parseDaysParam.js";
 
 const findOwnedProject = async (projectId: string, userId: string) => {
   const project = await GithubProject.findOne({ _id: projectId, userId });

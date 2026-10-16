@@ -1,9 +1,15 @@
-import type { Response } from "express";
+import type { CookieOptions, Response } from "express";
+import { env } from "../config/env.js";
 
-const isProduction = process.env.NODE_ENV === "production";
-
-const ACCESS_TOKEN_MAX_AGE = 15 * 60 * 1000;
-const REFRESH_TOKEN_MAX_AGE = 30 * 24 * 60 * 60 * 1000;
+const baseCookieOptions = (): Pick<
+  CookieOptions,
+  "httpOnly" | "secure" | "sameSite" | "domain"
+> => ({
+  httpOnly: true,
+  secure: env.cookie.secure,
+  sameSite: env.cookie.sameSite,
+  domain: env.cookie.domain,
+});
 
 export const setAuthCookies = (
   res: Response,
@@ -11,27 +17,25 @@ export const setAuthCookies = (
   refreshToken: string,
 ): void => {
   res.cookie("accessToken", accessToken, {
-    httpOnly: true,
-    secure: true,
-    sameSite: "none",
-    maxAge: ACCESS_TOKEN_MAX_AGE,
+    ...baseCookieOptions(),
+    maxAge: env.cookie.accessTokenMaxAgeMs,
     path: "/",
   });
 
   res.cookie("refreshToken", refreshToken, {
-    httpOnly: true,
-    secure: true,
-    sameSite: isProduction ? "none" : "lax",
-    maxAge: REFRESH_TOKEN_MAX_AGE,
-    path: "/api/auth/refresh",
+    ...baseCookieOptions(),
+    maxAge: env.cookie.refreshTokenMaxAgeMs,
+    path: env.cookie.refreshTokenPath,
   });
 };
 
 export const clearAuthCookies = (res: Response): void => {
-  res.clearCookie("accessToken", { path: "/", secure: true, sameSite: "none" });
+  res.clearCookie("accessToken", {
+    ...baseCookieOptions(),
+    path: "/",
+  });
   res.clearCookie("refreshToken", {
-    path: "/api/auth/refresh",
-    secure: true,
-    sameSite: "none",
+    ...baseCookieOptions(),
+    path: env.cookie.refreshTokenPath,
   });
 };

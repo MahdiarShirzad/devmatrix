@@ -11,8 +11,9 @@ import Session from "../Models/Session.js";
 
 import catchAsync from "../utils/catchAsync.js";
 import AppError from "../utils/appError.js";
+import { env } from "../config/env.js";
 
-const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:3000";
+const FRONTEND_URL = env.frontendUrl;
 
 const issueTokensAndSession = async (
   user: IUser,
@@ -157,6 +158,36 @@ export const logout = catchAsync(
 
     clearAuthCookies(res);
     res.status(200).json({ status: "success", message: "با موفقیت خارج شدید" });
+  },
+);
+
+/**
+ * PATCH /api/auth/me
+ */
+export const updateMe = catchAsync(
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const userId = (req as any).userId;
+    const { name } = req.body;
+
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { name },
+      { new: true, runValidators: true },
+    );
+
+    if (!user) {
+      return next(new AppError("کاربر پیدا نشد", 404));
+    }
+
+    res.status(200).json({
+      status: "success",
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        avatar: user.avatar,
+      },
+    });
   },
 );
 

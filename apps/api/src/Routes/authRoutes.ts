@@ -1,5 +1,13 @@
 import { Router } from "express";
 import passport from "../config/passport.js";
+import { env } from "../config/env.js";
+import { authLimiter } from "../middleware/rateLimit.js";
+import { validateBody } from "../middleware/validate.js";
+import {
+  loginSchema,
+  registerSchema,
+  updateProfileSchema,
+} from "../validation/schemas.js";
 
 import { requireAuth } from "../middleware/authMiddleware.js";
 import {
@@ -9,16 +17,23 @@ import {
   logout,
   refresh,
   register,
+  updateMe,
 } from "../Controllers/authController.js";
 
 const router = Router();
 
 // --- Email/Password ---
-router.post("/register", register);
-router.post("/login", login);
-router.post("/refresh", refresh);
+router.post("/register", authLimiter, validateBody(registerSchema), register);
+router.post("/login", authLimiter, validateBody(loginSchema), login);
+router.post("/refresh", authLimiter, refresh);
 router.post("/logout", logout);
 router.get("/me", requireAuth, getMe);
+router.patch(
+  "/me",
+  requireAuth,
+  validateBody(updateProfileSchema),
+  updateMe,
+);
 
 // --- GitHub OAuth ---
 // مرحله ۱: کاربر رو به صفحه لاگین گیت‌هاب می‌فرسته
@@ -35,7 +50,7 @@ router.get(
   "/github/callback",
   passport.authenticate("github", {
     session: false,
-    failureRedirect: "/login",
+    failureRedirect: `${env.frontendUrl}/login`,
   }),
   githubCallback,
 );
