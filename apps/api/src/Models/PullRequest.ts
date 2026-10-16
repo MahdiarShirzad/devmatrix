@@ -75,6 +75,7 @@ const PullRequestSchema = new Schema<IPullRequest>(
 );
 
 PullRequestSchema.index({ projectId: 1, githubPrNumber: 1 }, { unique: true });
+PullRequestSchema.index({ projectId: 1, state: 1, mergedAt: -1 });
 
 const PullRequest: Model<IPullRequest> =
   mongoose.models.PullRequest ||

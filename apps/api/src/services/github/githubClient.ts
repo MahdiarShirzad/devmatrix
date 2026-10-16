@@ -28,6 +28,27 @@ export const getRepo = async (
   return data;
 };
 
+export const getRepoLanguages = async (
+  accessToken: string,
+  owner: string,
+  repo: string,
+): Promise<Record<string, number>> => {
+  const octokit = createClient(accessToken);
+
+  const { data } = await octokit.repos.listLanguages({ owner, repo });
+
+  // GitHub returns { [language]: bytes }. Never trust the shape blindly.
+  if (!data || typeof data !== "object") return {};
+
+  const result: Record<string, number> = {};
+  for (const [language, bytes] of Object.entries(data)) {
+    if (typeof bytes === "number" && bytes > 0) {
+      result[language] = bytes;
+    }
+  }
+  return result;
+};
+
 export const listCommits = async (
   accessTokrn: string,
   owner: string,

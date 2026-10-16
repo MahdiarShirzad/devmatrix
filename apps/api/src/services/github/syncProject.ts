@@ -4,7 +4,7 @@ import Commit from "../../Models/Commit.js";
 import PullRequest from "../../Models/PullRequest.js";
 import User from "../../Models/User.js";
 import AppError from "../../utils/appError.js";
-import { listCommits, listPullRequests } from "./githubClient.js";
+import { listCommits, listPullRequests, getRepoLanguages } from "./githubClient.js";
 import { mapCommits, mapPullRequests } from "./githubMapper.js";
 
 export interface SyncResult {
@@ -41,9 +41,12 @@ export const syncProjectData = async (
 
   const since = project.lastSyncedAt ?? undefined;
 
-  const [rawCommits, rawPrs] = await Promise.all([
+  const [rawCommits, rawPrs, languages] = await Promise.all([
     listCommits(user.githubAccessToken, owner, repo, since),
     listPullRequests(user.githubAccessToken, owner, repo),
+    // Language metadata is best-effort: a failure here must not fail the whole
+    // sync, so it resolves to {} instead of rejecting.
+    getRepoLanguages(user.githubAccessToken, owner, repo).catch(() => ({})),
   ]);
 
   const projectObjectId = project._id as Types.ObjectId;
@@ -58,6 +61,13 @@ export const syncProjectData = async (
 
   const syncedAt = new Date();
   project.lastSyncedAt = syncedAt;
+
+  if (Object.keys(languages).length > 0) {
+    project.languages = languages;
+    project.primaryLanguage =
+      Object.entries(languages).sort((a, b) => b[1] - a[1])[0]?.[0] ?? null;
+  }
+
   await project.save();
 
   return {

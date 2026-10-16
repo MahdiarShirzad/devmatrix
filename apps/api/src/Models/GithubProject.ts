@@ -12,6 +12,8 @@ export interface IGithubProject extends Document {
   defaultBranch: string;
   isPrivate: boolean;
   isActive: boolean;
+  primaryLanguage: string | null;
+  languages: Record<string, number>;
   lastSyncedAt: Date | null;
   createdAt: Date;
   updatedAt: Date;
@@ -60,6 +62,18 @@ const GithubProjectSchema = new Schema<IGithubProject>(
     isActive: {
       type: Boolean,
       default: true,
+    },
+    // Language breakdown (language -> bytes) fetched from GitHub during sync.
+    // Stored as Mixed because the key set is open-ended. May be empty when a
+    // repository has no detected language or was linked before this field
+    // existed (re-sync populates it).
+    languages: {
+      type: Schema.Types.Mixed,
+      default: {},
+    },
+    primaryLanguage: {
+      type: String,
+      default: null,
     },
     lastSyncedAt: {
       type: Date,

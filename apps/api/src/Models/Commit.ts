@@ -72,6 +72,7 @@ const CommitSchema = new Schema<ICommit>(
 );
 
 CommitSchema.index({ projectId: 1, sha: 1 }, { unique: true });
+CommitSchema.index({ projectId: 1, committedAt: -1 });
 
 const Commit: Model<ICommit> =
   mongoose.models.Commit || mongoose.model<ICommit>("Commit", CommitSchema);
