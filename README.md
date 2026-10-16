@@ -489,10 +489,12 @@ devmatrix/
 │   └── api/                 # Express API
 │
 ├── packages/
-│   └── ...                  # Shared packages and utilities
+│   └── types/               # Shared TypeScript types (@devmatrix/types)
 │
+├── .github/workflows/       # CI + deployment
+├── .env.example             # Documented environment variables
 ├── package.json
-├── tsconfig.json
+├── turbo.json
 └── README.md
 ```
 
@@ -534,19 +536,30 @@ npm install
 
 ## 3. Configure environment variables
 
-Create the required environment files for the applications.
+Copy the example file and fill in real values. Never commit real credentials
+or secrets to the repository.
 
-A typical configuration may look like:
-
-```env
-MONGODB_URI=
-JWT_SECRET=
-GITHUB_CLIENT_ID=
-GITHUB_CLIENT_SECRET=
-GROQ_API_KEY=
+```bash
+cp .env.example apps/api/.env
 ```
 
-Never commit real credentials or secrets to the repository.
+Key variables for the API (`apps/api/.env`):
+
+```env
+MONGODB_URI=mongodb://localhost:27017/devmatrix
+ACCESS_TOKEN_SECRET=
+REFRESH_TOKEN_SECRET=
+FRONTEND_URL=http://localhost:3000
+CORS_ORIGINS=http://localhost:3000
+GITHUB_CLIENT_ID=
+GITHUB_CLIENT_SECRET=
+GITHUB_CALLBACK_URL=http://localhost:3001/api/auth/github/callback
+AI_DEBUG_GROQ_API_KEY=
+IDEA_VALIDATOR_GROQ_API_KEY=
+```
+
+The web app reads `NEXT_PUBLIC_API_URL` (optional) from `apps/web/.env.local`;
+it defaults to `http://localhost:3001/api` in development.
 
 ## 4. Start the development environment
 
@@ -554,7 +567,20 @@ Never commit real credentials or secrets to the repository.
 npm run dev
 ```
 
-The available scripts may change as the monorepo evolves.
+## 5. Quality checks
+
+Run from the repository root (powered by Turborepo):
+
+```bash
+npm run typecheck   # tsc --noEmit across all packages
+npm run lint        # ESLint (web)
+npm run test        # Vitest (API + web)
+npm run build       # build all apps
+```
+
+The API test suite uses `mongodb-memory-server`, so no local MongoDB instance is
+required to run tests. CI (`.github/workflows/ci.yml`) runs typecheck, lint,
+test, and build on every push and pull request.
 
 ---
 

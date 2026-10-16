@@ -3,14 +3,17 @@
   "version": "1.0.0",
   "private": true,
   "packageManager": "npm@10.9.2",
-  "description": "",
-  "main": "index.js",
+  "description": "DevMatrix monorepo",
   "workspaces": [
     "apps/*",
     "packages/*"
   ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "test": "turbo run test"
   },
   "repository": {
     "type": "git",
@@ -24,18 +27,11 @@
   },
   "homepage": "https://github.com/MahdiarShirzad/devmatrix#readme",
   "devDependencies": {
-    "@types/bcrypt": "^6.0.0",
-    "@types/cookie-parser": "^1.4.10",
-    "@types/jsonwebtoken": "^9.0.10",
-    "@types/passport": "^1.0.17",
-    "@types/passport-github2": "^1.2.9",
     "turbo": "^2.10.8"
   },
-  "dependencies": {
-    "bcrypt": "^6.0.0",
-    "cookie-parser": "^1.4.7",
-    "jsonwebtoken": "^9.0.3",
-    "passport": "^0.7.0",
-    "passport-github2": "^0.1.12"
+  "allowScripts": {
+    "esbuild@0.28.2": true,
+    "unrs-resolver@1.12.2": true,
+    "mongodb-memory-server@11.3.0": true
   }
 }
