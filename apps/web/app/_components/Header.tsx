@@ -10,7 +10,7 @@ import { useMe } from "@/hooks/useMe";
 import { useLogout } from "@/hooks/useAuth";
 
 const NAV_LINKS = [
-  { label: "Modules", href: "#modules" },
+  { label: "Modules", href: "/#modules" },
   { label: "Docs", href: "/docs/introduction" },
   { label: "GitHub", href: "https://github.com/MahdiarShirzad/devmatrix" },
 ];

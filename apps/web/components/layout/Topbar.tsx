@@ -16,6 +16,8 @@ import Link from "next/link";
 import { useMe } from "@/hooks/useMe";
 import { useLogout } from "@/hooks/useAuth";
 import { useGithubProjects } from "@/hooks/useGithubAnalytics";
+import { useNotifications } from "@/hooks/useNotifications";
+import NotificationsPanel from "./NotificationsPanel";
 
 interface TopbarProps {
   onMenuClick: () => void;
@@ -37,6 +39,8 @@ export default function Topbar({ onMenuClick }: TopbarProps) {
   const logout = useLogout();
   const { data: projectsData } = useGithubProjects("all");
   const projects = projectsData?.projects ?? [];
+
+  const notifications = useNotifications();
 
   const initials = user?.name
     ? user.name
@@ -231,21 +235,33 @@ export default function Topbar({ onMenuClick }: TopbarProps) {
                 ? "bg-neutral-surface-1 text-brand-primary"
                 : "text-neutral-text-secondary"
             }`}
-            aria-label="Notifications"
+            aria-label={
+              notifications.unreadCount > 0
+                ? `Notifications (${notifications.unreadCount} unread)`
+                : "Notifications"
+            }
           >
             <Bell size={18} />
+            {notifications.unreadCount > 0 && (
+              <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-brand-primary px-1 text-[10px] font-semibold leading-none text-white">
+                {notifications.unreadCount > 9
+                  ? "9+"
+                  : notifications.unreadCount}
+              </span>
+            )}
           </button>
 
           {isNotifOpen && (
-            <div className="absolute right-0 z-50 mt-2 w-72 origin-top-right rounded-lg border border-neutral-border bg-neutral-surface-1 p-2 shadow-2xl ring-1 ring-black/5">
-              <div className="mb-2 border-b border-neutral-border px-2 pb-2 text-sm font-semibold text-neutral-text-primary">
-                Notifications
-              </div>
-
-              <p className="px-2 py-4 text-center text-sm text-neutral-text-secondary">
-                You&apos;re all caught up.
-              </p>
-            </div>
+            <NotificationsPanel
+              items={notifications.items}
+              isUnread={notifications.isUnread}
+              unreadCount={notifications.unreadCount}
+              onMarkAllRead={notifications.markAllRead}
+              isLoading={notifications.isLoading}
+              isError={notifications.isError}
+              onRetry={notifications.refetch}
+              onNavigate={() => setIsNotifOpen(false)}
+            />
           )}
         </div>
 

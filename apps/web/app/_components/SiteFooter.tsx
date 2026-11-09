@@ -23,12 +23,25 @@ const ACCOUNT_LINKS = [
   { label: "Create account", href: "/register" },
 ];
 
+const COMPANY_LINKS = [
+  { label: "About", href: "/about" },
+  { label: "FAQ", href: "/faq" },
+  { label: "Contact", href: "/contact" },
+  { label: "Security", href: "/security" },
+];
+
+const LEGAL_LINKS = [
+  { label: "Terms", href: "/terms" },
+  { label: "Privacy", href: "/privacy" },
+  { label: "Cookies", href: "/cookies" },
+];
+
 export default function SiteFooter() {
   return (
     <footer className="bg-neutral-surface-1">
       <div className="dm-shell py-14">
         <div className="grid gap-10 md:grid-cols-12 md:gap-8">
-          <div className="md:col-span-4">
+          <div className="md:col-span-3">
             <Link href="/" className="inline-flex" aria-label="DevMatrix home">
               {/* Same light/dark wordmark convention as the header. */}
               <Image
@@ -77,10 +90,26 @@ export default function SiteFooter() {
             </ul>
           </nav>
 
-          <nav aria-label="Documentation" className="md:col-span-3">
+          <nav aria-label="Documentation" className="md:col-span-2">
             <h3 className="dm-mono-label text-neutral-text-secondary">docs</h3>
             <ul className="mt-4 space-y-2.5">
               {START_LINKS.map((l) => (
+                <li key={l.href}>
+                  <Link
+                    href={l.href}
+                    className="text-[13.5px] text-neutral-text-secondary transition-colors hover:text-neutral-text-primary"
+                  >
+                    {l.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          <nav aria-label="Company" className="md:col-span-2">
+            <h3 className="dm-mono-label text-neutral-text-secondary">company</h3>
+            <ul className="mt-4 space-y-2.5">
+              {COMPANY_LINKS.map((l) => (
                 <li key={l.href}>
                   <Link
                     href={l.href}
@@ -110,8 +139,19 @@ export default function SiteFooter() {
           </nav>
         </div>
 
-        <div className="mt-12 flex flex-col gap-2 border-t border-neutral-border pt-6 text-[12px] text-neutral-text-secondary sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-12 flex flex-col gap-3 border-t border-neutral-border pt-6 text-[12px] text-neutral-text-secondary sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
           <span>© {new Date().getFullYear()} DevMatrix</span>
+          <nav aria-label="Legal" className="flex flex-wrap gap-x-5 gap-y-2">
+            {LEGAL_LINKS.map((l) => (
+              <Link
+                key={l.href}
+                href={l.href}
+                className="transition-colors hover:text-neutral-text-primary"
+              >
+                {l.label}
+              </Link>
+            ))}
+          </nav>
           <span className="font-mono text-[11px]">
             built by{" "}
             <a
