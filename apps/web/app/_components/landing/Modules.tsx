@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { ReactNode } from "react";
 import { ArrowUpRight } from "lucide-react";
 import Reveal from "./Reveal";
 import {
@@ -48,6 +49,24 @@ const MODULES = [
 ];
 
 /**
+ * Elevates a vignette on hover with a small perspective tilt and an offset
+ * backing surface, so each module reads as a layered instrument panel.
+ */
+function SurfaceStage({ children }: { children: ReactNode }) {
+  return (
+    <div className="group/surface relative">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 translate-x-2.5 translate-y-3 rounded-md border border-neutral-border bg-neutral-surface-1/50"
+      />
+      <div className="relative transition-[transform,box-shadow] duration-500 [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] motion-safe:group-hover/surface:[transform:perspective(1400px)_rotateX(1.2deg)_rotateY(-1.2deg)] motion-safe:group-hover/surface:-translate-y-1 motion-safe:group-hover/surface:shadow-[0_28px_60px_-40px_rgba(0,0,0,0.9)]">
+        {children}
+      </div>
+    </div>
+  );
+}
+
+/**
  * The four real modules, each shown through its own interface composition
  * rather than a repeated card. Rows alternate sides for rhythm.
  */
@@ -71,8 +90,15 @@ export default function Modules() {
           {MODULES.map((m, i) => {
             const textFirst = i % 2 === 0;
             return (
-              <Reveal key={m.index} as="article" className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
+              <Reveal key={m.index} as="article" className="relative grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
                 <div className={textFirst ? "lg:pr-4" : "lg:order-2 lg:pl-4"}>
+                  <span
+                    aria-hidden
+                    className="pointer-events-none absolute -top-12 right-0 hidden select-none font-mono text-[8rem] leading-none text-neutral-text-primary/[0.03] lg:block"
+                  >
+                    {m.index}
+                  </span>
+
                   <div className="flex items-baseline gap-3">
                     <span className="dm-mono-label text-brand-primary">{m.index}</span>
                     <span className="dm-mono-label text-neutral-text-secondary">
@@ -115,7 +141,9 @@ export default function Modules() {
                 </div>
 
                 <div className={textFirst ? "lg:order-2" : "lg:order-1"}>
-                  <m.Vignette />
+                  <SurfaceStage>
+                    <m.Vignette />
+                  </SurfaceStage>
                 </div>
               </Reveal>
             );

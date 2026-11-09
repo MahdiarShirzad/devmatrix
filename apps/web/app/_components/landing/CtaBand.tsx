@@ -8,8 +8,13 @@ import Reveal from "./Reveal";
  */
 export default function CtaBand() {
   return (
-    <section className="border-b border-neutral-border">
-      <div className="dm-shell py-20 md:py-28">
+    <section className="relative overflow-hidden border-b border-neutral-border">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -right-24 top-1/2 h-72 w-72 -translate-y-1/2 bg-[radial-gradient(circle_at_center,var(--theme-primary),transparent_68%)] opacity-[0.12]"
+      />
+
+      <div className="dm-shell relative py-20 md:py-28">
         <Reveal className="grid items-end gap-10 lg:grid-cols-12">
           <div className="lg:col-span-7">
             <p className="dm-mono-label text-brand-primary">get started</p>

@@ -2,6 +2,7 @@ import Header from "./_components/Header";
 import SiteFooter from "./_components/SiteFooter";
 import Hero from "./_components/landing/Hero";
 import ProblemStrip from "./_components/landing/ProblemStrip";
+import WorkbenchStory from "./_components/landing/WorkbenchStory";
 import Modules from "./_components/landing/Modules";
 import ProjectContext from "./_components/landing/ProjectContext";
 import ThemeLab from "./_components/landing/ThemeLab";
@@ -14,6 +15,7 @@ export default function HomePage() {
       <main>
         <Hero />
         <ProblemStrip />
+        <WorkbenchStory />
         <Modules />
         <ProjectContext />
         <ThemeLab />

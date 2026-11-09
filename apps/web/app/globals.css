@@ -273,11 +273,63 @@
   .dm-route-pulse:nth-of-type(4) {
     animation-delay: 1.2s;
   }
+
+  /* Ambient drift for layered marketing fragments */
+  .dm-float-slow {
+    animation: dm-float 9s ease-in-out infinite;
+  }
+
+  .dm-float-slower {
+    animation: dm-float 13s ease-in-out infinite;
+  }
+
+  /* Slow breathing ring around the project hub */
+  .dm-hub-ring {
+    animation: dm-hub-pulse 5s ease-in-out infinite;
+  }
+
+  /* Short contextual reveal used by the scroll story copy */
+  .dm-fade-up {
+    animation: dm-fade-up 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
 }
 
 @keyframes dm-route-flow {
   to {
     stroke-dashoffset: -26;
+  }
+}
+
+@keyframes dm-float {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -7px, 0);
+  }
+}
+
+@keyframes dm-hub-pulse {
+  0%,
+  100% {
+    opacity: 0.25;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.035);
+  }
+}
+
+@keyframes dm-fade-up {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 6px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
   }
 }
 
